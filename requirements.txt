@@ -1,6 +1,6 @@
 SimpleITK
 numpy
 scipy
-skimage
+scikit-image
 networkx
 pyyaml
