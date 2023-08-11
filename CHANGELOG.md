@@ -35,7 +35,7 @@ Further improvements will occur in the next versions.
 - :closed_book: [Docs] Add first version of the README instructions
 - :closed_book: [Docs] Add first version of the Sphinx documentation
 - :closed_book: [Docs] Add first version of the Read-the-Docs documentation
-- :closed_boox: [Docs] Add notebook example for geometrical meaning of the Graphomics analysis
-- :closed_boox: [Docs] Add notebook example for the graph extraction processing in 3D
-- :closed_boox: [Docs] Add notebook example for the medical imaging application in 3D
-- :closed_boox: [Docs] Add notebook example for the graphomics semantic segmentation in 2D
+- :closed_book: [Docs] Add notebook example for geometrical meaning of the Graphomics analysis
+- :closed_book: [Docs] Add notebook example for the graph extraction processing in 3D
+- :closed_book: [Docs] Add notebook example for the medical imaging application in 3D
+- :closed_book: [Docs] Add notebook example for the graphomics semantic segmentation in 2D

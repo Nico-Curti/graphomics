@@ -1,3 +1,13 @@
 setup.py
 graphomics/__init__.py
 graphomics/__version__.py
+graphomics/__main__.py
+graphomics/_basefeature.py
+graphomics/_centrality.py
+graphomics/_graph.py
+graphomics/_graphfilter.py
+graphomics/_skeletonizer.py
+graphomics/_spatial.py
+graphomics/_statistics.py
+graphomics/_topology.py
+graphomics/featureextractor.py
