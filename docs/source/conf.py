@@ -34,7 +34,6 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinx_rtd_theme',
               #'rst2pdf.pdfbuilder',
-              'breathe',
               'nbsphinx',
               'IPython.sphinxext.ipython_console_highlighting',
 ]

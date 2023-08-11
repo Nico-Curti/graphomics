@@ -747,7 +747,7 @@ class GraphThicknessImageFilter (object):
 
 if __name__ == '__main__':
 
-  import parseargs
+  import argparse
   import pylab as plt
   from skimage.morphology import skeletonize
 
@@ -769,7 +769,7 @@ if __name__ == '__main__':
   skeleton = sitk.GetImageFromArray(np_skeleton)
 
   # create the graph filter
-  graph_filter = GraphThicknessImageFilter3D()
+  graph_filter = GraphThicknessImageFilter()
   # set the number of threads to use
   graph_filter.SetGlobalDefaultNumberOfThreads(4)
   # execute the filter

@@ -473,6 +473,9 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
     # identified regions
     self._stats_shape.Execute(ws)
 
+    # initialize an empty buffer for the weights
+    weights = [1.] * len(edgelist)
+
     # loop along the identified components
     for l in self._stats_shape.GetLabels():
       # get the indices of the voxels belonging to the CC

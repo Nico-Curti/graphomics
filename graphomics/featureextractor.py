@@ -112,8 +112,9 @@ class GraphomicsFeatureExtractor (object):
     '''
 
     if name not in self._feature_classes:
+      available_classes = ', '.join(self._feature_classes)
       raise ValueError(('Invalid feature class name. '
-        'Available classes are {}. '.format(', '.join(self._feature_classes))
+        f'Available classes are {available_classes}. '
         f'Given {name}.'
       ))
 
@@ -138,8 +139,9 @@ class GraphomicsFeatureExtractor (object):
 
     for key, val in features:
       if key not in self._feature_classes:
+        available_classes = ', '.join(self._feature_classes)
         raise ValueError(('Invalid feature class name. '
-          'Available classes are {}. '.format(', '.join(self._feature_classes))
+          f'Available classes are {available_classes}. '
           f'Given {key}.'
         ))
 
