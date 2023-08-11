@@ -1,0 +1,37 @@
+[project]
+name = 'graphomics'
+version = '0.0.1'
+authors = [
+  { name='Nico Curti', email='nico.curti2@unibo.it' },
+]
+description = 'Open-source python package for the extraction of Graphomics features from 2D and 3D images and binary masks.'
+readme = 'README.md'
+requires-python = '>=3.5'
+classifiers = [
+  'Natural Language :: English',
+  'Operating System :: MacOS :: MacOS X',
+  'Operating System :: POSIX',
+  'Operating System :: POSIX :: Linux',
+  'Operating System :: Microsoft :: Windows',
+  'Programming Language :: Python',
+  'Programming Language :: Python :: 3',
+  'Programming Language :: Python :: 3.5',
+  'Programming Language :: Python :: 3.6',
+  'Programming Language :: Python :: 3.7',
+  'Programming Language :: Python :: 3.8',
+  'Programming Language :: Python :: 3.9',
+  'Programming Language :: Python :: 3.10',
+  'Programming Language :: Python :: 3.11',
+  'Programming Language :: Python :: Implementation :: CPython',
+  'Programming Language :: Python :: Implementation :: PyPy'
+]
+
+[project.urls]
+'Homepage' = 'https://github.com/Nico-Curti/graphomics'
+'Bug Tracker' = 'https://github.com/Nico-Curti/graphomics/issues'
+
+[build-system]
+requires = [
+  'setuptools>=42',
+]
+build-backend = 'setuptools.build_meta'

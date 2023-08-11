@@ -1,0 +1,101 @@
+## Pipeline metadata
+
+name: Graphomic Pipeline Template
+desc: This is the template for the management and correct usage of the Graphomics pipeline.
+pipeline_version: 0.0.1
+
+## Input images or volumes
+
+mask_filepath: /path/to/the/binary_mask/dcm_or_nii_scan
+# [Optional]
+# The label map can be used for the evaluation of the
+# weights in the skeleton graph
+label_filepath: /path/to/the/possible/labelmap/dcm_or_nii_scan
+# [Optional]
+# verify the correctness of the provided inputs in terms
+# of metadata (sizing and spacing)
+# This is just a safety check
+check_consistency: True
+
+## Graphomics Weight estimation
+
+# The skeleton graph could be processed considering the topological
+# structure (i.e. all edge-weights set as 1), or weighting the edges
+# according to pre-defined or custom metrics.
+# All the custom metrics must be defined according to the structure
+# defined in the `graphomics/_graph.py` file.
+# In this template we will set only the pre-defined implementations
+
+graph_weights: NodePairwiseDistanceFilter
+#graph_weights: EdgeLengthPathsFilter
+#graph_weights: EdgeLabelWeightFilter
+
+# enable network weights during feature evaluation
+enable_weighted_features: True
+
+## Graphomics Features
+
+# Each type of graphomic features could be enabled/disabled
+# If no other parameters are set, the entire list of available
+# graphomics features will be extracted with the default parameters.
+# The single graphomic feature could be enabled/disabled
+# and customized setting all the inner parameters using
+# the appropriated keywords
+# The list of inner parameters of each filter can be set using
+# as key the name of the filter followed by Parameters, e.g.
+#             `FilterNameParameter:`
+
+## Graphomics Topological features
+
+enable_topology_features: True # enable topology features
+
+# [Optional]
+# specify the list of desired graphomics features
+# to extract
+
+# list of available topology features
+topology:
+  NumberOfNodes: True
+  NumberOfEdges: True
+  EulerNumber: True
+  NumberOfPendantNodes: True
+  NumberOfConnectedComponents: True
+  ModularityScore: True
+  NumberOfMaximalCliques: True
+
+## Graphomics Spatial features
+
+enable_spatial_features: True # enable spatial features
+
+# [Optional]
+# specify the list of desired graphomics features
+# to extract
+
+# list of available spatial features
+spatial:
+  NodeDensityStatistics: True
+  FractalDimension: True
+
+# nested parameters of eac filter
+FractalDimensionParameters:
+  max_box_size : null
+  min_box_size : 1
+  n_samples : 10
+  n_offsets : 0
+
+## Graphomics Centrality features
+
+enable_centrality_features: True # enable centrality features
+
+# [Optional]
+# specify the list of desired graphomics features
+# to extract
+
+# list of available centrality features
+centrality:
+  NodeDegreeCentrality: True
+  NodeBetweennessCentrality: True
+  NodeClusteringCoefficient: True
+  NodeClosenessCentrality: True
+  NodePageRankCentrality: True
+  NodeHarmonicCentrality: True

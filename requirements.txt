@@ -1,0 +1,6 @@
+SimpleITK
+numpy
+scipy
+skimage
+networkx
+pyyaml

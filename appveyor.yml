@@ -1,0 +1,47 @@
+clone_folder: c:\projects\pygraphomics
+
+environment:
+
+  WORKSPACE: C:\projects
+
+  matrix:
+
+    - PYTHON: "C:\\Python34"
+      VERSION: 34
+      ARCH: x86
+    - PYTHON: "C:\\Python35"
+      VERSION: 35
+      ARCH: x86
+    - PYTHON: "C:\\Python35-x64"
+      VERSION: 35
+      ARCH: x64
+    - PYTHON: "C:\\Python36-x64"
+      VERSION: 36
+      ARCH: x64
+    - PYTHON: "C:\\Python37-x64"
+      VERSION: 37
+      ARCH: x64
+    - PYTHON: "C:\\Python38-x64"
+      VERSION: 38
+      ARCH: x64
+    - PYTHON: "C:\\Python39-x64"
+      VERSION: 39
+      ARCH: x64
+
+build: off
+
+install:
+  - "%PYTHON%\\python.exe --version"
+  - cd %WORKSPACE%\pygraphomics
+  - "%PYTHON%\\python.exe -m pip install -U pip"
+  - "%PYTHON%\\python.exe -m pip --version"
+
+  - "%PYTHON%\\python.exe -m pip install -r requirements.txt"
+  - "%PYTHON%\\python.exe setup.py install"
+
+  # testing libraries
+  - IF [%VERSION%] GEQ [35] IF [%ARCH%] == [x64] %PYTHON%\\python.exe -m pip install hypothesis
+
+test_script:
+  - IF [%VERSION%] GEQ [35] IF [%ARCH%] == [x64] %PYTHON%\\Scripts\\pytest.exe
+  - exit 0
