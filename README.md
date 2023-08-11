@@ -122,9 +122,9 @@ See [here](https://github.com/Nico-Curti/graphomics/blob/main/.github/CONTRIBUTI
 
 * <img src="https://avatars0.githubusercontent.com/u/24650975?s=400&v=4" width="25px"> **Nico Curti** [git](https://github.com/Nico-Curti), [unibo](https://www.unibo.it/sitoweb/nico.curti2)
 
-* <img src="https://avatars.githubusercontent.com/u/48323996?v=4" width="25px"> **Gianluca Carlini** [git](https://github.com/GianlucaCarlini)
+* <img src="https://avatars.githubusercontent.com/u/48323996?v=4" width="25px"> **Gianluca Carlini** [git](https://github.com/GianlucaCarlini), [unibo](https://www.unibo.it/sitoweb/gianluca.carlini3)
 
-* <img src="https://avatars.githubusercontent.com/u/48323959?v=4" width="25px;"/> **Riccardo Biondi** [git](https://github.com/RiccardoBiondi)
+* <img src="https://avatars.githubusercontent.com/u/48323959?v=4" width="25px;"/> **Riccardo Biondi** [git](https://github.com/RiccardoBiondi), [unibo](https://www.unibo.it/sitoweb/riccardo.biondi7)
 
 See also the list of [contributors](https://github.com/Nico-Curti/graphomics/contributors) [![GitHub contributors](https://img.shields.io/github/contributors/Nico-Curti/graphomics.svg?style=plastic)](https://github.com/Nico-Curti/graphomics/graphs/contributors/) who participated in this project.
 
