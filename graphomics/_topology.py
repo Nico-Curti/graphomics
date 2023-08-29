@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import powerlaw
 import networkx as nx
 import SimpleITK as sitk
 from skimage.measure import euler_number
 
+from ._statistics import _get_distribution_main_stats
 from ._basefeature import _BaseGraphomicsFeatures
 
 __author__  = ['Nico Curti',
@@ -20,7 +22,7 @@ __all__ = ['GraphomicsTopology']
 
 
 class GraphomicsTopology (_BaseGraphomicsFeatures):
-  '''
+  r'''
   Estimate graphomics topological features.
 
   This class implements the estimation of the most
@@ -41,6 +43,14 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     The number of edges of the skeleton
     graph could provides a fast information about the ramification
     of the network and the presence of holes in the original shape.
+
+  * **Edge weight statistics:**
+
+    The edges could be weighted according to a predefined
+    score metrics, highlighting the significance of that link
+    in the skeleton graph.
+    The distribution of the weight scores could be used as feature
+    for the quantification of that metric.
 
   * **Euler number:**
 
@@ -84,13 +94,12 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     two distinct vertices in the clique are adjacent.
     The number of maximal cliques as feature could provide information
     about the complexity of the skeleton graph.
-
   '''
 
   def __init__ (self, *args, **kwargs):
     super(GraphomicsTopology, self).__init__(*args, **kwargs)
 
-  def _GetNumberOfNodes (self, G : nx.Graph) -> int:
+  def _GetNumberOfNodes (self, G : nx.Graph) -> int :
     '''
     Return the number of nodes of the input graph.
 
@@ -103,10 +112,14 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     -------
       nnodes : int
         Number of nodes in the graph.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.number_of_nodes.html
     '''
     return G.number_of_nodes()
 
-  def _GetNumberOfEdges (self, G : nx.Graph) -> int:
+  def _GetNumberOfEdges (self, G : nx.Graph) -> int :
     '''
     Return the number of edges of the input graph.
 
@@ -119,12 +132,53 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     -------
       nedges : int
         Number of edges in the graph.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.number_of_edges.html
     '''
     return G.number_of_edges()
 
+  def _GetEdgeWeights (self, G : nx.Graph) -> dict :
+    '''
+    Compute the main statistics of the edge weights
+    distribution.
+
+    Parameters
+    ----------
+      G : nx.Graph
+        Input graph to analyze.
+
+    Returns
+    -------
+      stats : dict
+        Dictionary with the computed statistics.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.get_edge_data.html
+    '''
+
+    # get the weight attribute from the graph
+    weights = nx.get_edge_attributes(G, name='weight')
+    # if it is an empty dict there are no weights
+    if weights == {}:
+      # set the weights to a uniform list of ones
+      weights = [1] * G.number_of_edges()
+
+    # convert it to a list for safety evaluation
+    weight = list(weights)
+    # compute the statistics of the values distribution
+    stats = _get_distribution_main_stats(
+      x=weights,
+      prefix=f'edge_weights_'
+    )
+
+    return stats
+
   def _GetEulerNumber (self, mask : sitk.Image,
                              connectivity : int = None
-                      ) -> int:
+                      ) -> int :
     '''
     Compute the Euler number of the input image/volume.
 
@@ -175,6 +229,10 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     -------
       npendant : int
         Number of pendant nodes in the graph.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.degree.html
     '''
 
     return len((n for n, d in G.degree() if d == 1))
@@ -192,6 +250,10 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     -------
       ncomponent : int
         Number of connected components in the graph.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.components.connected_components.html
     '''
 
     return nx.number_connected_components(G=G)
@@ -215,6 +277,10 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
       modularity : float
         Modularity score of the partion of the graph
         obtained by the label propagation algorithm.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.quality.modularity.html
     '''
 
     # evaluate the graph communities for the partition
@@ -242,6 +308,10 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     -------
       ncliques : int
         The number of maximal cliques in the graph.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.clique.find_cliques.html
     '''
 
     return sum(1 for _ in nx.find_cliques(G=G, nodes=None))

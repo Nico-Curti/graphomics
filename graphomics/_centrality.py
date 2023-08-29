@@ -19,7 +19,7 @@ __all__ = ['GraphomicsCentrality']
 
 
 class GraphomicsCentrality (_BaseGraphomicsFeatures):
-  '''
+  r'''
   Estimate graphomics node-centrality statistic features.
 
   This class implements the estimation of the centrality
@@ -31,11 +31,73 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
   The list of implemented node-centrality statistic features is:
 
   * **Node degree centrality statistics:**
+
+    The node degree is the number of edges adjacent to the node.
+    The weighted node degree is the sum of the edge weights for
+    edges incident to that node.
+    The node degree centrality quantifies the importance of a
+    node in the graph in terms of the number of links connected
+    to it.
+    This metric could be informative about the presence of hubs
+    and ramifications in the skeleton structure.
+
   * **Node betweenness centrality statistics:**
+
+    Betweenness centrality of a node `v` is the sum of the fraction
+    of all-pairs shortest paths that pass through `v`:
+
+    .. math::
+      c_B(v) = \sum_{s,t \in V}\frac{\sigma(s,t|v)}{\sigma(s,t)}
+
+    where :math:`V` is the set of nodes, :math:`\sigma(s,t)` is the
+    number of shortest :math:`(s,t)` -paths, and :math:`\sigma(s,t|v)`
+    is the number of those paths passing through some node :math:`v`
+    other than :math:`s,t`.
+    The betweenness centrality quantifies the importance of a
+    node in the graph in terms of the number of paths that must pass
+    through it.
+    This metric could be informative about the presence of hubs
+    and ramifications in the skeleton structure.
+
   * **Node clustering coefficients statistics:**
+
+    The local clustering coefficient of a node in a graph
+    quantifies how close its neighbours are to being a clique
+    (complete graph).
+
   * **Node closeness centrality statistics:**
+
+    Closeness centrality of a node `u` is the reciprocal of the
+    average shortest path distance to `u` over all `n-1` reachable
+    nodes.
+
+    .. math::
+      C(u) = \frac{n-1}{\sum_{v=1}^{n-1}d(v,u)}
+
+    where :math:`d(v, u)` is the shortest-path distance between
+    `v` and `u`, and `n-1` is the number of nodes reachable from
+    `u`.
+
   * **Node page-rank centrality statistics:**
-  * **Node harming centrality statistics:**
+
+    PageRank computes a ranking of the nodes in the graph `G` based
+    on the structure of the incoming links.
+    It was originally designed as an algorithm to rank web pages.
+
+  * **Node harmonic centrality statistics:**
+
+    Harmonic centrality of a node `u` is the sum of the reciprocal
+    of the shortest path distances from all other nodes to `u`
+
+    .. math::
+      C(u) = \sum_{v\neq u}\frac{1}{d(v, u)}
+
+    where :math:`d(v, u)` is the shortest-path distance between `v`
+    and `u`.
+    The harmonic centrality quantifies the importance of a node
+    in the graph in terms of its distance to the other nodes.
+    This metric could be informative about the presence of hubs
+    and ramifications in the skeleton structure.
   '''
 
   def __init__ (self, *args, **kwargs):
@@ -60,6 +122,10 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     -------
       stats : dict
         Dictionary with the computed statistics.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.degree.html
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
@@ -92,6 +158,10 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     -------
       stats : dict
         Dictionary with the computed statistics.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/networkx-1.10/reference/generated/networkx.algorithms.centrality.betweenness_centrality.html
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
@@ -124,6 +194,10 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     -------
       stats : dict
         Dictionary with the computed statistics.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.cluster.clustering.html#networkx.algorithms.cluster.clustering
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
@@ -156,6 +230,10 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     -------
       stats : dict
         Dictionary with the computed statistics.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.centrality.closeness_centrality.html
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
@@ -188,6 +266,10 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     -------
       stats : dict
         Dictionary with the computed statistics.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.link_analysis.pagerank_alg.pagerank.html
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
@@ -220,6 +302,10 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     -------
       stats : dict
         Dictionary with the computed statistics.
+
+    References
+    ----------
+    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.centrality.harmonic_centrality.html
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'

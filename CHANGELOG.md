@@ -27,10 +27,10 @@ Further improvements will occur in the next versions.
 - :computer: [Python] Wrap of the skeletonization algorithm for an easier interface of the package
 - :computer: [Python] New technique of semantic segmnetation via Watershed algorithm, based on graphomics extraction
 
-- :construction: [Features] Add first list of Centrality Graphomics features: *Node degree centrality statistics*, *Node betweenness centrality statistics*, *Node clustering coefficients statistics*, *Node closeness centrality statistics*, *Node page-rank centrality statistics*
-- :construction: [Features] Add first list of Topological Graphomics features: *Number of nodes*, *Number of edges*, *Euler number*, *Number of pendant nodes*, *Number of connected components*, *Modularity*, *Number of maximal cliques*
-- :construction: [Features] Adding first list of Spatial Graphomics features: *Node density statistics*, *Fractal dimension*
-- :construction: [Features] Add first list of Network weighting techniques: *NodePairwiseDistanceFilter*, *EdgeLengthPathsFilter*, *EdgeLabelWeightFilter*
+- :construction: [Features] Add first list of `Centrality` Graphomics features: *Node degree centrality statistics*, *Node betweenness centrality statistics*, *Node clustering coefficients statistics*, *Node closeness centrality statistics*, *Node page-rank centrality statistics*, *Node harmonic centrality statistics*
+- :construction: [Features] Add first list of `Topological` Graphomics features: *Number of nodes*, *Number of edges*, *Edge weight statistics*, *Euler number*, *Number of pendant nodes*, *Number of connected components*, *Modularity*, *Number of maximal cliques*
+- :construction: [Features] Adding first list of `Spatial` Graphomics features: *Node density statistics*, *Fractal dimension*, *Average shortest path*, *Statistics of Eccentricity distribution*, *Center of Mass*, *Statistics of Distances of the most central nodes*, *Statistics of Distances of No-pendant nodes*, *Statistics of pendant nodes*
+- :construction: [Features] Add first list of `Network weighting` techniques: *NodePairwiseDistanceFilter*, *EdgeLengthPathsFilter*, *EdgeLabelWeightFilter*
 
 - :closed_book: [Docs] Add first version of the README instructions
 - :closed_book: [Docs] Add first version of the Sphinx documentation

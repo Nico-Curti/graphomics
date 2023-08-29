@@ -77,6 +77,8 @@ class SkeletonizeImageFilter (object):
         models via 3-D medial surface/axis thinning algorithms.
         Computer Vision, Graphics, and Image Processing,
         56(6):462-478, 1994.
+
+    [3] https://scikit-image.org/docs/stable/auto_examples/edges/plot_skeleton.html
     '''
 
     # get the dimensionality of the input

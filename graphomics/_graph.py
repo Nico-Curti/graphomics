@@ -166,6 +166,10 @@ class NodePairwiseDistanceFilter (GraphWeightsExtractorFilter):
     metric_kwds: dict (default := {})
       Arguments to pass on to the metric, such as the ``p`` value for
       Minkowski distance.
+
+  References
+  ----------
+  [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html
   '''
 
   def __init__ (self, metric : str = 'euclidean',
@@ -336,6 +340,10 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
   the required metric signal is computed masking the segmentation
   with the original mask and the score is associated as weight
   of the corresponding edge.
+
+  References
+  ----------
+  [1] https://github.com/Nico-Curti/graphomics/blob/main/notebooks/graphomics_semantic_segmentation.ipynb
   '''
 
   def __init__ (self):
@@ -511,6 +519,10 @@ class GraphFilter (object):
   The object architecture follows the same syntax of
   any other SimpleITK filter to facilitate the readability of
   the final pipeline.
+
+  References
+  ----------
+  [1] https://networkx.org/documentation/stable/tutorial.html
   '''
 
   def __init__ (self):

@@ -57,6 +57,7 @@ enable_topology_features: True # enable topology features
 topology:
   NumberOfNodes: True
   NumberOfEdges: True
+  EdgeWeights: True
   EulerNumber: True
   NumberOfPendantNodes: True
   NumberOfConnectedComponents: True
@@ -75,13 +76,22 @@ enable_spatial_features: True # enable spatial features
 spatial:
   NodeDensityStatistics: True
   FractalDimension: True
+  AverageShortestPathLength: True
+  Eccentricity: True
+  CenterOfMass: True
+  DistanceMostCentralNodes: True
+  DistanceNoPendantNodes: True
+  DistancePendantNodes: True
 
-# nested parameters of eac filter
+# nested parameters of each filter
 FractalDimensionParameters:
   max_box_size : null
   min_box_size : 1
   n_samples : 10
   n_offsets : 0
+
+DistanceMostCentralNodesParameters:
+  topk: 10
 
 ## Graphomics Centrality features
 
