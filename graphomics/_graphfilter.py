@@ -582,7 +582,7 @@ class GraphThicknessImageFilter (object):
       coords = tuple(map(int, coords))
 
       # get the 3x3[x3] voi of the -1 voxel
-      src_voi = self._get_3x3x3_voi(edge_map, coords=coords)
+      src_voi = self._get_neighborhood(edge_map, coords=coords)
 
       # get the unique set of labels found in the voi
       edge_lbl = np.unique(src_voi, axis=None)
@@ -606,7 +606,7 @@ class GraphThicknessImageFilter (object):
       coords = tuple(map(int, coords))
 
       # get the 3x3[x3] voi of the -1 voxel
-      dst_voi = self._get_3x3x3_voi(edge_map, coords=coords)
+      dst_voi = self._get_neighborhood(edge_map, coords=coords)
 
       # get the unique set of labels found in the voi
       edge_lbl = np.unique(dst_voi, axis=None)
