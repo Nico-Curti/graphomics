@@ -27,10 +27,169 @@ Further improvements will occur in the next versions.
 - :computer: [Python] Wrap of the skeletonization algorithm for an easier interface of the package
 - :computer: [Python] New technique of semantic segmnetation via Watershed algorithm, based on graphomics extraction
 
-- :construction: [Features] Add first list of `Centrality` Graphomics features: *Node degree centrality statistics*, *Node betweenness centrality statistics*, *Node clustering coefficients statistics*, *Node closeness centrality statistics*, *Node page-rank centrality statistics*, *Node harmonic centrality statistics*
-- :construction: [Features] Add first list of `Topological` Graphomics features: *Number of nodes*, *Number of edges*, *Edge weight statistics*, *Euler number*, *Number of pendant nodes*, *Number of connected components*, *Modularity*, *Number of maximal cliques*
-- :construction: [Features] Adding first list of `Spatial` Graphomics features: *Node density statistics*, *Fractal dimension*, *Average shortest path*, *Statistics of Eccentricity distribution*, *Center of Mass*, *Statistics of Distances of the most central nodes*, *Statistics of Distances of No-pendant nodes*, *Statistics of pendant nodes*
-- :construction: [Features] Add first list of `Network weighting` techniques: *NodePairwiseDistanceFilter*, *EdgeLengthPathsFilter*, *EdgeLabelWeightFilter*
+- :construction: [Features] Add first list of `Centrality` Graphomics features:
+  * **Node degree centrality statistics**:
+    The node degree is the number of edges adjacent to the node.
+    The weighted node degree is the sum of the edge weights for
+    edges incident to that node.
+    The node degree centrality quantifies the importance of a
+    node in the graph in terms of the number of links connected
+    to it.
+    This metric could be informative about the presence of hubs
+    and ramifications in the skeleton structure.
+  * **Node betweenness centrality statistics**:
+    Betweenness centrality of a node `v` is the sum of the fraction of all-pairs shortest paths that pass through `v`.
+    The betweenness centrality quantifies the importance of a
+    node in the graph in terms of the number of paths that must pass
+    through it.
+    This metric could be informative about the presence of hubs
+    and ramifications in the skeleton structure.
+  * **Node clustering coefficients statistics**:
+    The local clustering coefficient of a node in a graph
+    quantifies how close its neighbours are to being a clique
+    (complete graph).
+  * **Node closeness centrality statistics**:
+    Closeness centrality of a node `u` is the reciprocal of the
+    average shortest path distance to `u` over all `n-1` reachable
+    nodes.
+  * **Node page-rank centrality statistics**:
+    PageRank computes a ranking of the nodes in the graph `G` based
+    on the structure of the incoming links.
+    It was originally designed as an algorithm to rank web pages.
+  * **Node harmonic centrality statistics**:
+    Harmonic centrality of a node `u` is the sum of the reciprocal
+    of the shortest path distances from all other nodes to `u`.
+    The harmonic centrality quantifies the importance of a node
+    in the graph in terms of its distance to the other nodes.
+    This metric could be informative about the presence of hubs
+    and ramifications in the skeleton structure.
+
+- :construction: [Features] Add first list of `Topological` Graphomics features:
+  * **Number of nodes**:
+    The number of nodes of the skeleton
+    graph could provides a fast information about the complexity
+    of the network architecture and its fractality.
+  * **Number of edges**:
+    The number of edges of the skeleton
+    graph could provides a fast information about the ramification
+    of the network and the presence of holes in the original shape.
+  * **Edge weight statistics**:
+    The edges could be weighted according to a predefined
+    score metrics, highlighting the significance of that link
+    in the skeleton graph.
+    The distribution of the weight scores could be used as feature
+    for the quantification of that metric.
+  * **Euler number**:
+    The Euler number is a topological invariant
+    which resume in a unique number the topological space's shape
+    or structure regardless of the way it is bent.
+  * **Number of pendant nodes**:
+    A pendant node is defined as a node of the graph connected with
+    only 1 link, i.e. a node with degree equal to 1 in an undirect graph.
+    The number of pendant nodes could be informative about the
+    presence of shape's holes and invaginations.
+  * **Number of connected components**:
+    The number of connected components of the skeleton graph
+    could provides a fast information about the number of distinct
+    objects included in the mask.
+  * **Modularity**:
+    Modularity is a measure of the structure of networks or graphs which
+    measures the strength of division of a network into modules
+    (also called groups, clusters or communities).
+    Networks with high modularity have dense connections between the nodes
+    within modules but sparse connections between nodes in different modules.
+    This feature could provide a fast information about the complexity
+    of the skeleton graph.
+  * **Number of maximal cliques**:
+    A clique is a subset of vertices of an undirected graph such that every
+    two distinct vertices in the clique are adjacent.
+    The number of maximal cliques as feature could provide information
+    about the complexity of the skeleton graph.
+
+- :construction: [Features] Adding first list of `Spatial` Graphomics features:
+  * **Node density statistics**:
+    The local spatial density of the nodes is evaluated
+    using a Gaussian kernel density estimator. This
+    metric could provide information about the sparsity
+    of the nodes in the graph and the presence of possible
+    clusters of points.
+    As resulting features the filter provides the main
+    statistics of the density distribution of values.
+  * **Fractal dimension**:
+    The fractal dimension is a term invoked in the science of
+    geometry to provide a rational statistical index of
+    complexity detail in a pattern.
+    The fractal dimension is a feature strictly related to the
+    complexity of the skeleton graph and it can be evaluated
+    directly from the binarized mapper of the skeleton.
+  * **Average shortest path**:
+    The average shortest path length is the sum of path lengths `d(u,v)`
+    between all pairs of nodes.
+    This metric could be useful for the quantification of the complexity
+    of the skeleton graph, especially when we consider a weighted graph.
+  * **Statistics of Eccentricity distribution**:
+    The eccentricity of a node v is the maximum distance from v to all
+    other nodes in G.
+    In diffusion processes, this is an indicator of the effort to
+    reach the periphery of a network from a source node.
+    The reciprocal of the eccentricity is called the eccentricity
+    centrality.
+    This is used to make sure that more central nodes have a higher
+    value because such central nodes are the ones with the smallest
+    eccentricity score.
+    Like other centralities, the node with the highest score is now
+    the most central node and these values are comparable.
+  * **Center of Mass**:
+    The center of mass of the skeleton graph is defined as the
+    point equally distanced by all the other
+    points.
+    The center of mass of the skeleton graph could not belong to
+    the skeleton and it could be different by the center of
+    mass of the 2D/3D shape.
+    The value could be significant of asymmetries in the shape
+    and it could be used for the evaluation of relative
+    distances of the other nodes (ref. Distance features
+    of the Spatial class).
+  * **Statistics of Distances of the most central nodes**
+    The distance of the nodes with higher degree centrality in
+    relation to the center of mass of the 2D/3D shape could be
+    informative about the distribution of the "bridges" in
+    the shape.
+  * **Statistics of Distances of No-pendant nodes**:
+    The distance of the no-pendant nodes, i.e. the nodes a degree
+    centrality != 1, in relation to the center of mass of the
+    2D/3D shape could be informative about the distribution of
+    the ramification points in the shape.
+  * **Statistics of pendant nodes**:
+    The distance of the pendant nodes, i.e. the nodes with lowest
+    degree centrality, in relation to the center of mass of the
+    2D/3D shape could be informative about the distribution of
+    the tails in the shape.
+
+- :construction: [Features] Add first list of `Network weighting` techniques:
+  * **NodePairwiseDistanceFilter**:
+    Evaluate the weights of the graph as the pairwise distance
+    between the node positions according to the given metric.
+  * **EdgeLengthPathsFilter**:
+    Evaluate the weights of the graph as the lenght of the original
+    path between two node positions as the number of items in the
+    mapper.
+  * **EdgeLabelWeightFilter**:
+    Evaluate the weights of the graph keeping information from
+    a label image/volume.
+
+    An example of application of this filter is given by the
+    possibility to weigh the topological network determined
+    by a CT/MRI scan according to the signal of the corresponding
+    and co-registered PET scan.
+
+    The filter apply a Watershed segmentation algorithm on the
+    provided label map, considering as marker for the segmentation
+    the topological edge curves contained in the mapper.
+    Considering each region identified by the Watershed algorithm,
+    the required metric signal is computed masking the segmentation
+    with the original mask and the score is associated as weight
+    of the corresponding edge.
 
 - :closed_book: [Docs] Add first version of the README instructions
 - :closed_book: [Docs] Add first version of the Sphinx documentation

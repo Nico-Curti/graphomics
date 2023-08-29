@@ -351,7 +351,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
-    ecc = eccentricity(G, v=None, sp=None, weight=weight)
+    ecc = nx.eccentricity(G, v=None, sp=None, weight=weight)
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
       x=ecc,
