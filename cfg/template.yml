@@ -8,6 +8,10 @@ pipeline_version: 0.0.1
 
 mask_filepath: /path/to/the/binary_mask/dcm_or_nii_scan
 # [Optional]
+# The skeleton file can be pre-computed and pass to the
+# feature extraction step
+skeleton_filepath: /path/to/the/skeleton_mask/dcm_or_nii_scan
+# [Optional]
 # The label map can be used for the evaluation of the
 # weights in the skeleton graph
 label_filepath: /path/to/the/possible/labelmap/dcm_or_nii_scan
@@ -16,6 +20,25 @@ label_filepath: /path/to/the/possible/labelmap/dcm_or_nii_scan
 # of metadata (sizing and spacing)
 # This is just a safety check
 check_consistency: True
+# [Optional]
+# set the number of threads to use during the evaluation
+# if the SimpleITK filter support the feature
+nth: 1
+# [Optional]
+# force the binarization of the input mask/skeleton
+# considering all the no-null values as signal
+binarize_input: True
+# [Optional]
+# Minimum number of points for the identification of a surface in
+# the binary skeleton. This is an internal parameter of the
+# skeleton graph extractor filter
+surface_min_points: 8
+# [Optional]
+# In case of "surface edges" found in the 3D skeleton, turning on this
+# parameter, the related connected component can be discarded by the
+# skeleton and by the graph extraction procedure.
+# This is an internal parameter of the skeleton graph extractor filter
+remove_surface: False
 
 ## Graphomics Weight estimation
 
@@ -26,9 +49,15 @@ check_consistency: True
 # defined in the `graphomics/_graph.py` file.
 # In this template we will set only the pre-defined implementations
 
-graph_weights: NodePairwiseDistanceFilter
-#graph_weights: EdgeLengthPathsFilter
+#graph_weights: NodePairwiseDistanceFilter
+graph_weights: EdgeLengthPathsFilter
 #graph_weights: EdgeLabelWeightFilter
+
+# [Optional]
+# set the internal parameters of the weight extractor filter
+# to use during the evaluation
+EdgeLabelWeightFilterParameters:
+  metric: average
 
 # enable network weights during feature evaluation
 enable_weighted_features: True
@@ -64,6 +93,11 @@ topology:
   ModularityScore: True
   NumberOfMaximalCliques: True
 
+# [Optional]
+# nested parameters of each filter
+EulerNumberParameters:
+  connectivity: null
+
 ## Graphomics Spatial features
 
 enable_spatial_features: True # enable spatial features
@@ -83,6 +117,7 @@ spatial:
   DistanceNoPendantNodes: True
   DistancePendantNodes: True
 
+# [Optional]
 # nested parameters of each filter
 FractalDimensionParameters:
   max_box_size : null
@@ -90,6 +125,8 @@ FractalDimensionParameters:
   n_samples : 10
   n_offsets : 0
 
+# [Optional]
+# nested parameters of each filter
 DistanceMostCentralNodesParameters:
   topk: 10
 

@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from .__version__ import __version__
+# import the functions required for the input loading
+from ._loader import LoadImageFileInAnyFormat
 # import filter for skeletonize image/volume
 from ._skeletonizer import SkeletonizeImageFilter
 # import filter for graph extraction

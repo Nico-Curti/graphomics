@@ -16,6 +16,7 @@ __email__ = ['nico.curti2@unibo.it',
 
 __all__ = ['GraphThicknessImageFilter']
 
+
 class GraphThicknessImageFilter (object):
   '''
   Extraction of graph attributes from skeletonized images.
@@ -210,11 +211,12 @@ class GraphThicknessImageFilter (object):
     # compute the node coordinates
     hypernodes, src, true_vertex, cc_vertices = self._ComputeNodes(src=src)
     # compute the edgelist of the graph
-    edge_map, lut_edges = self._ComputeEdges(src=src,
-                                             true_vertex=true_vertex,
-                                             cc_vertices=cc_vertices,
-                                             hypernodes=hypernodes
-                                            )
+    edge_map, lut_edges = self._ComputeEdges(
+      src=src,
+      true_vertex=true_vertex,
+      cc_vertices=cc_vertices,
+      hypernodes=hypernodes
+    )
 
     self.lut = lut_edges
 
@@ -268,10 +270,18 @@ class GraphThicknessImageFilter (object):
     # the provided input
     tmp = src != 0
     # cast the binarized image to a minimal dtype
-    tmp = sitk.Cast(tmp, sitk.sitkInt32)
+    tmp = sitk.Cast(
+      image=tmp,
+      pixelID=sitk.sitkInt32
+    )
 
     # pad the input image pre-convolution
-    padded = sitk.ConstantPad(src, (1, 1, 1), (1, 1, 1), 0)
+    padded = sitk.ConstantPad(
+      image1=src,
+      padLowerBound=(1, 1, 1),
+      padUpperBound=(1, 1, 1),
+      constant=0
+    )
 
     # apply the convolutional operator
     # Note: the central value is set to 26 since it is the 3D
@@ -281,7 +291,13 @@ class GraphThicknessImageFilter (object):
     # https://gist.github.com/Nico-Curti/a586e6f58d4a2c758b77a3f4492e6d3f
 
     # apply the kernel via convolution
-    conv = sitk.Convolution(padded, self._kernel, False, 0, 1)
+    conv = sitk.Convolution(
+      image=padded,
+      kernelImage=self._kernel,
+      normalize=False,
+      boundaryCondition=0,
+      outputRegionMode=1
+    )
 
     # threshold only the valid values
 
@@ -298,13 +314,22 @@ class GraphThicknessImageFilter (object):
 
     true_vertex = ((conv < ramification_score) & (conv > 0)) | (conv == pendant_score)
     # cast to integer for next computation
-    true_vertex = sitk.Cast(true_vertex, sitk.sitkInt32)
+    true_vertex = sitk.Cast(
+      image=true_vertex,
+      pixelID=sitk.sitkInt32
+    )
 
     # detect the connected components of the vertices image, i.e. each
     # connected component provides a vertex.
-    cc_vertices = sitk.ConnectedComponent(true_vertex, True)
+    cc_vertices = sitk.ConnectedComponent(
+      image=true_vertex,
+      fullyConnected=True
+    )
     # cast to integer for next computation
-    cc_vertices = sitk.Cast(cc_vertices, sitk.sitkInt32)
+    cc_vertices = sitk.Cast(
+      image=cc_vertices,
+      pixelID=sitk.sitkInt32
+    )
 
     # monitor the shape of the cc_vertices
     self._stats_shape.Execute(cc_vertices)
@@ -419,10 +444,14 @@ class GraphThicknessImageFilter (object):
     '''
 
     # perform a 3x3[x3] dilation of the vertices map
-    dilated_vertex = sitk.BinaryDilate(true_vertex,
-                                       (1, ) * self._ndim,
-                                       sitk.sitkBox,
-                                       0, 1, False)
+    dilated_vertex = sitk.BinaryDilate(
+      image1=true_vertex,
+      kernelRadius=(1, ) * self._ndim,
+      kernelType=sitk.sitkBox,
+      backgroundValue=0,
+      foregroundValue=1,
+      boundaryToForeground=False
+    )
     # 1. set all 3x3[x3] squares/cubes around the nodes to null in the edge_map
     # 2. set all vertices to null in the len2_map
     # NOTE: in this way we can compute the edge-paths as
@@ -434,9 +463,15 @@ class GraphThicknessImageFilter (object):
 
     # compute the connected components that in this case are
     # represented by only the edges
-    cc_edges = sitk.ConnectedComponent(edge_map, True)
+    cc_edges = sitk.ConnectedComponent(
+      image=edge_map,
+      fullyConnected=True
+    )
     # cast it to integer for next computation
-    cc_edges = sitk.Cast(cc_edges, sitk.sitkInt32)
+    cc_edges = sitk.Cast(
+      image=cc_edges,
+      pixelID=sitk.sitkInt32
+    )
 
     # get the number of edge components found
     _ = self._stats_shape.Execute(cc_edges)
@@ -542,12 +577,15 @@ class GraphThicknessImageFilter (object):
     # of the edge_map volume.
 
     # remove the true links from the len2 map
-    len2_map = src - true_vertex - sitk.Cast(edge_map > 0, sitk.sitkInt32)
+    len2_map = src - true_vertex - sitk.Cast(image=edge_map > 0, pixelID=sitk.sitkInt32)
 
     # get the connected components of the len2 edges
     # NOTE: after the subtraction of the already processed edges,
     # the remaining voxels are all related to these components
-    cc_len2 = sitk.ConnectedComponent(len2_map, True)
+    cc_len2 = sitk.ConnectedComponent(
+      image=len2_map,
+      fullyConnected=True
+    )
 
     # evalute it to get the positions of these objects
     self._stats_shape.Execute(cc_len2)
@@ -644,10 +682,10 @@ class GraphThicknessImageFilter (object):
     '''
     if not hasattr(self, 'nodes'):
       class_name = self.__class__.__name__
-      raise RuntimeError('Runtime Exception. ',
-        'The {0} object is not executed yet. '.format(class_name),
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
         'To get the node list you need to call the Execute function'
-        )
+      ))
 
     return self.nodes
 
@@ -658,10 +696,10 @@ class GraphThicknessImageFilter (object):
     '''
     if not hasattr(self, 'nodes'):
       class_name = self.__class__.__name__
-      raise RuntimeError('Runtime Exception. ',
-        'The {0} object is not executed yet. '.format(class_name),
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
         'To get the node list you need to call the Execute function'
-        )
+      ))
 
     # convert the node indexes into image physical space
     # (usually in millimeters)
@@ -673,10 +711,10 @@ class GraphThicknessImageFilter (object):
     '''
     if not hasattr(self, 'edges'):
       class_name = self.__class__.__name__
-      raise RuntimeError('Runtime Exception. ',
-        'The {0} object is not executed yet. '.format(class_name),
-        'To get the edge list you need to call the Execute function'
-        )
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
+        'To get the node list you need to call the Execute function'
+      ))
 
     return self.edges
 
@@ -687,10 +725,10 @@ class GraphThicknessImageFilter (object):
     '''
     if not hasattr(self, 'edges'):
       class_name = self.__class__.__name__
-      raise RuntimeError('Runtime Exception. ',
-        'The {0} object is not executed yet. '.format(class_name),
-        'To get the edge list you need to call the Execute function'
-        )
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
+        'To get the node list you need to call the Execute function'
+      ))
 
     return [(self._cooordinate_converter(src),
              self._cooordinate_converter(dst)
@@ -704,10 +742,10 @@ class GraphThicknessImageFilter (object):
     '''
     if not hasattr(self, 'lut'):
       class_name = self.__class__.__name__
-      raise RuntimeError('Runtime Exception. ',
-        'The {0} object is not executed yet. '.format(class_name),
-        'To get the edge lut you need to call the Execute function'
-        )
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
+        'To get the node list you need to call the Execute function'
+      ))
 
     return self.lut
 
@@ -717,10 +755,10 @@ class GraphThicknessImageFilter (object):
     '''
     if not hasattr(self, 'lut'):
       class_name = self.__class__.__name__
-      raise RuntimeError('Runtime Exception. ',
-        'The {0} object is not executed yet. '.format(class_name),
-        'To get the edge lut you need to call the Execute function'
-        )
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
+        'To get the node list you need to call the Execute function'
+      ))
 
     return {k: (self._cooordinate_converter(src),
                 self._cooordinate_converter(dst)
@@ -737,10 +775,10 @@ class GraphThicknessImageFilter (object):
     '''
     if not hasattr(self, 'edge_map'):
       class_name = self.__class__.__name__
-      raise RuntimeError('Runtime Exception. ',
-        'The {0} object is not executed yet. '.format(class_name),
-        'To get the edge_map you need to call the Execute function'
-        )
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
+        'To get the node list you need to call the Execute function'
+      ))
 
     return self.edge_map
 
@@ -754,7 +792,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='Graph Extraction from binary volumes')
   parser.add_argument('--filename', type=str, required=True, action='store',
     help='Path or Filename of the binary CT volume to analyze'
-    )
+  )
   args = parser.parse_args()
 
   # load the input CT volume

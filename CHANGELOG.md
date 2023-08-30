@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1] - 2023-08-09
+## [0.0.1] - 2023-08-30
 
 First version of the library.
 This is the starting point of the development of the *pyGraphomics* package.
@@ -25,7 +25,10 @@ Further improvements will occur in the next versions.
 - :computer: [Python] Definition of Graphomics Feature classes and Statistics
 - :computer: [Python] Generalization of the `GraphThicknessImageFilter` to support also 2D inputs
 - :computer: [Python] Wrap of the skeletonization algorithm for an easier interface of the package
-- :computer: [Python] New technique of semantic segmnetation via Watershed algorithm, based on graphomics extraction
+- :computer: [Python] Image loader for DCM and Nifti file formats
+- :computer: [Python] New technique of semantic segmentation via Watershed algorithm, based on graphomics extraction
+- :computer: [Python] First version of the entire feature extraction module
+- :computer: [Python] Loader of medical images supporting all the SimpleITK fmt + FreeSurfer .mgz
 
 - :construction: [Features] Add first list of `Centrality` Graphomics features:
   * **Node degree centrality statistics**:
@@ -177,12 +180,10 @@ Further improvements will occur in the next versions.
   * **EdgeLabelWeightFilter**:
     Evaluate the weights of the graph keeping information from
     a label image/volume.
-
     An example of application of this filter is given by the
     possibility to weigh the topological network determined
     by a CT/MRI scan according to the signal of the corresponding
     and co-registered PET scan.
-
     The filter apply a Watershed segmentation algorithm on the
     provided label map, considering as marker for the segmentation
     the topological edge curves contained in the mapper.

@@ -87,8 +87,7 @@ class SkeletonizeImageFilter (object):
     if ndim not in [2, 3]:
       raise ValueError(('Input mismatch shape. '
         f'Valid input shape must be 2 or 3. Given {ndim}.'
-        )
-      )
+      ))
 
     # convert the input to a numpy buffer
     src_np = sitk.GetArrayViewFromImage(src)
@@ -106,7 +105,7 @@ class SkeletonizeImageFilter (object):
     # and re-convert it to a sitk.Image data type
     skeleton = sitk.GetImageFromArray(np_skeleton)
     skeleton.CopyInformation(src)
-
+    # assign the resulting image
     self._skeleton = skeleton
 
     return self
@@ -123,9 +122,9 @@ class SkeletonizeImageFilter (object):
     '''
     if not hasattr(self, '_skeleton'):
       class_name = self.__class__.__name__
-      raise RuntimeError('Runtime Exception. ',
-        f'The {class_name} object is not executed yet. ',
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
         'To get the skeleton image you need to call the Execute function'
-        )
+      ))
 
     return self._skeleton

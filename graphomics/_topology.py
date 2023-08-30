@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import powerlaw
 import networkx as nx
 import SimpleITK as sitk
 from skimage.measure import euler_number
@@ -160,7 +159,10 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     '''
 
     # get the weight attribute from the graph
-    weights = nx.get_edge_attributes(G, name='weight')
+    weights = nx.get_edge_attributes(
+      G=G,
+      name='weight'
+    )
     # if it is an empty dict there are no weights
     if weights == {}:
       # set the weights to a uniform list of ones
@@ -212,7 +214,10 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     np_mask = sitk.GetArrayViewFromImage(mask)
 
     # compute the Euler number
-    E = euler_number(image=np_mask, connectivity=connectivity)
+    E = euler_number(
+      image=np_mask,
+      connectivity=connectivity
+    )
 
     return E
 
@@ -315,3 +320,8 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     '''
 
     return sum(1 for _ in nx.find_cliques(G=G, nodes=None))
+
+
+if __name__ == '__main__':
+
+  pass

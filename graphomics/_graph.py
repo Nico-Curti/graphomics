@@ -110,10 +110,10 @@ class GraphWeightsExtractorFilter (object):
     '''
     if not hasattr(self, '_weights'):
       class_name = self.__class__.__name__
-      raise RuntimeError('Runtime Exception. ',
-        f'The {class_name} object is not executed yet. ',
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
         'To get the weigts list you need to call the Execute function'
-        )
+      ))
 
     return self._weights
 
@@ -558,9 +558,9 @@ class GraphFilter (object):
 
       # check the consistency of the edgelist and weights
       if len(edgelist) != len(weights):
-        raise ValueError(
+        raise ValueError((
           'Lenght mismatch between edgelist and weights'
-        )
+        ))
 
       # associate the correct weight to each edge pair
       wedges = [(e1, e2, w)
@@ -589,10 +589,10 @@ class GraphFilter (object):
     '''
     if not hasattr(self, '_graph'):
       class_name = self.__class__.__name__
-      raise RuntimeError('Runtime Exception. ',
-        f'The {class_name} object is not executed yet. ',
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
         'To get the graph object you need to call the Execute function'
-        )
+      ))
 
     return self._graph
 

@@ -130,7 +130,9 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
-    degree = G.degree(weight=weight)
+    degree = G.degree(
+      weight=weight
+    )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
       x=degree,
@@ -166,7 +168,10 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
-    bc = nx.betweenness_centrality(G=G, weight=weight)
+    bc = nx.betweenness_centrality(
+      G=G,
+      weight=weight
+    )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
       x=bc,
@@ -202,7 +207,10 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
-    cc = nx.clustering(G=G, weight=weight)
+    cc = nx.clustering(
+      G=G,
+      weight=weight
+    )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
       x=cc,
@@ -238,7 +246,10 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
-    clo = nx.closeness_centrality(G=G, distance=weight)
+    clo = nx.closeness_centrality(
+      G=G,
+      distance=weight
+    )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
       x=clo,
@@ -274,7 +285,10 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
-    pagerank = nx.pagerank(G=G, weight=weight)
+    pagerank = nx.pagerank(
+      G=G,
+      weight=weight
+    )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
       x=pagerank,
@@ -310,7 +324,10 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
-    harmonic = nx.harmonic_centrality(G=G, distance=weight)
+    harmonic = nx.harmonic_centrality(
+      G=G,
+      distance=weight
+    )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
       x=harmonic,
@@ -318,3 +335,8 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     )
 
     return stats
+
+
+if __name__ == '__main__':
+
+  pass

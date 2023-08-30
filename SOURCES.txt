@@ -6,6 +6,7 @@ graphomics/_basefeature.py
 graphomics/_centrality.py
 graphomics/_graph.py
 graphomics/_graphfilter.py
+graphomics/_loader.py
 graphomics/_skeletonizer.py
 graphomics/_spatial.py
 graphomics/_statistics.py

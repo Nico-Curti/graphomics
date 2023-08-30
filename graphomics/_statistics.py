@@ -44,3 +44,8 @@ def _get_distribution_main_stats (x : list, prefix : str = '') -> dict :
   }
 
   return stats
+
+
+if __name__ == '__main__':
+
+  pass

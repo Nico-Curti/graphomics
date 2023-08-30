@@ -16,6 +16,7 @@ __email__ = ['nico.curti2@unibo.it',
 
 __all__ = ['_BaseGraphomicsFeatures']
 
+
 class _BaseGraphomicsFeatures (object):
   '''
   Base class for the feature extraction types.
@@ -59,9 +60,25 @@ class _BaseGraphomicsFeatures (object):
     return features
 
   def Execute (self, todo : list,
-                     params : dict
-              ):
+                     params : dict,
+                     inputs : dict
+              ) :
     '''
+    Execute the filter running only the features
+    stored in the todo-list.
+
+    Parameters
+    ----------
+      todo : list
+        List of graphomic feature names to compute.
+
+      params : dict
+        Dictionary of extra-parameters to pass to the
+        corresponding graphomic feature evaluation.
+
+      inputs : dict
+        Dictionary of inputs required for the function
+        call.
     '''
     feature_names, feature_funcs = zip(*self._GetAvailableMembers())
     # filter the full list of features keeping only
@@ -73,20 +90,20 @@ class _BaseGraphomicsFeatures (object):
       if name not in todo:
         continue
 
-      # get the position of the element in the todo-list
-      idx = todo.index(name)
       # bind the member function with the provided parameters
       try:
         # check the validity of the provided parameters
-        caller = partial(func, **params[idx])
+        caller = partial(func, **params[name])
       except TypeError:
         # something goes wrong with the given inputs...
         # get the list of available parameters
         sign = signature(func)
         # raise the error with a complete message of help
-        raise ValueError(
-          'Message'
-        )
+        raise ValueError((
+          'Invalid function parameters. '
+          f'The expected signature for {func} is {sign} '
+          f'Given {params[name]}'
+        ))
       # set the partial function in the feature-list
       feature_todo[name] = caller
       # remove the item from the todo-list to be
@@ -98,9 +115,46 @@ class _BaseGraphomicsFeatures (object):
     # information read by the configuration file or
     # by the user
     if todo:
-      raise ValueError(
-        'Message'
-      )
+      raise ValueError((
+        'Invalid list of required graphomic features. '
+        f'The following features were not found in the package: {todo}'
+      ))
 
     # now we can run the evaluation
     # TODO: think about the possibility to run it in parallel
+    features = {}
+    for name, func in feature_todo.items():
+      # get the list of the required parameters
+      sign = signature(func)
+      # select the appropriated inputs to feed
+      inpts = {k : inputs[k] for k in sign}
+      # call the function and get the results
+      features[name] = func(**inpts)
+
+    self._features = features
+
+    return self
+
+  def GetFeatures (self) -> dict :
+    '''
+    Get the graphomic features computed.
+
+    Returns
+    -------
+      features : dict
+        Dictionary of graphomic features evaluated by the filter.
+        The features are indexed according to their name.
+    '''
+    if not hasattr(self, '_features'):
+      class_name = self.__class__.__name__
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
+        'To get the weigts list you need to call the Execute function'
+      ))
+
+    return self._features
+
+
+if __name__ == '__main__':
+
+  pass

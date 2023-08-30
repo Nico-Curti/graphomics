@@ -307,7 +307,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     # if the network is a single connected component
     if nx.is_connected(G):
       shortest = nx.average_shortest_path_length(
-        G,
+        G=G,
         weight=weight
       )
     # otherwise evaluate the metric on the largest connected
@@ -321,7 +321,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       G0 = G.subgraph(cc)
       # evaluate the shortest path on it
       shortest = nx.average_shortest_path_length(
-        G0,
+        G=G0,
         weight=weight
       )
 
@@ -351,7 +351,12 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
-    ecc = nx.eccentricity(G, v=None, sp=None, weight=weight)
+    ecc = nx.eccentricity(
+      G=G,
+      v=None,
+      sp=None,
+      weight=weight
+    )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
       x=ecc,
@@ -536,3 +541,8 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     )
 
     return stats
+
+
+if __name__ == '__main__':
+
+  pass
