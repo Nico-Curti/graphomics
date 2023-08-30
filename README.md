@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://github.com/Nico-Curti/graphomics/blob/main/img/logo.png" width="90" height="90">
+</p>
+
 | **Authors**  | **Project** |  **Documentation** | **Build Status** | **Code Quality** |
 |:------------:|:-----------:|:------------------:|:----------------:|:----------------:|
 | [**N. Curti**](https://github.com/Nico-Curti) <br/> [**G. Carlini**](https://github.com/GianlucaCarlini) <br/> [**R.Biondi**](https://github.com/RiccardoBiondi) | **graphomics** | [![Doxygen Sphinx](https://github.com/Nico-Curti/graphomics/actions/workflows/docs.yml/badge.svg)](https://github.com/Nico-Curti/graphomics/actions/workflows/docs.yml) <br/> [![ReadTheDocs](https://readthedocs.org/projects/graphomics/badge/?version=latest)](https://graphomics.readthedocs.io/en/latest/?badge=latest) | [![Python](https://github.com/Nico-Curti/graphomics/actions/workflows/python.yml/badge.svg)](https://github.com/Nico-Curti/graphomics/actions/workflows/python.yml) | **TODO** |

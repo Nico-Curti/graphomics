@@ -77,3 +77,6 @@ html*
 
 # Auto-generated files
 __version__.py
+
+# img files
+img/logo_hr.png
