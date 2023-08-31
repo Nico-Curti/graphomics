@@ -4,6 +4,7 @@
 import json
 import numpy as np
 import pylab as plt
+import SimpleITK as sitk
 
 from graphomics import __version__
 # import the function required for the input loading
@@ -63,7 +64,7 @@ if __name__ == '__main__':
   # all the metadata of the image!
 
   # declare a filename of the image that you want to load
-	filename = 'path/to/data/image.nii.gz'
+  filename = 'path/to/data/image.nii.gz'
   # load the image volume
   # NOTE: to ensure the correct behavior of the graphomic features
   # extraction, the input image **must** be a binary mask with values
