@@ -26,7 +26,7 @@ def parse_args ():
 
   # global sofware information
   parser = argparse.ArgumentParser(
-    prof='pyGraphomics',
+    prog='graphomics',
     argument_default=None,
     add_help=True,
     prefix_chars='-',
@@ -140,7 +140,7 @@ def parse_args ():
 
   # enable topological graphomic features
   parser.add_argument(
-    '--topology', '-t',
+    '--topology', '-T',
     dest='enable_topology',
     required=False,
     action='store_true',
@@ -150,7 +150,7 @@ def parse_args ():
 
   # enable spatial graphomic features
   parser.add_argument(
-    '--spatial', '-s',
+    '--spatial', '-S',
     dest='enable_spatial',
     required=False,
     action='store_true',
@@ -160,7 +160,7 @@ def parse_args ():
 
   # enable centrality graphomic features
   parser.add_argument(
-    '--centrality', '-c',
+    '--centrality', '-C',
     dest='enable_centrality',
     required=False,
     action='store_true',

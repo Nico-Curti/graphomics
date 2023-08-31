@@ -112,11 +112,6 @@ def LoadImageFileInAnyFormat (self, filepath : str,
   # if the binarization is required
   if binarize:
     # performed a thresholding in [0, 1] of all the values
-    image = sitk.Threshold(
-      image1=image,
-      lower=0,
-      upper=1,
-      outsideValue=0
-    )
+    image = (image != 0)
 
   return image

@@ -314,6 +314,9 @@ class EdgeLengthPathsFilter (GraphWeightsExtractorFilter):
       # found in the index list (corrected by the dimensionality
       # of the mapper, aka 2D or 3D)
       w = len(idx) // ndim
+      # TODO: check if it is necessary a correction related
+      # to the physical space of the mapper image...
+
       # associate the weight to the corresponding edge
       # TODO: check the consistency between the index and edge lbl
       weights[l - 1] = w

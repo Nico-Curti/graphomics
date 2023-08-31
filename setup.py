@@ -47,15 +47,15 @@ REQUIRES_PYTHON = '>=3.5'
 PACKAGE_VERSION = '0.0.1'
 DESCRIPTION = 'Open-source python package for the extraction of Graphomics features from 2D and 3D binary masks.'
 URL = 'https://github.com/Nico-Curti/graphomics'
-KEYWORDS = ('python medical-imaging '
-  'feature-extraction computational-imaging '
-  'radiomics radiomics-features '
-  'radiomics-features-extraction network graph-theory'
-)
+#KEYWORDS = ('python medical-imaging '
+#  'feature-extraction computational-imaging '
+#  'radiomics radiomics-features '
+#  'radiomics-features-extraction network graph-theory'
+#)
 MAINTAINER = AUTHOR
 MAINTAINER_EMAIL = EMAIL
 DOWNLOAD_URL = URL
-LICENSE = 'BSD'
+#LICENSE = 'BSD'
 
 # dump the version file
 dump_version_file(
@@ -70,13 +70,14 @@ setup(
   description=DESCRIPTION,
   author=AUTHOR,
   author_email=EMAIL,
-  maintainer=MAINTAINER,
-  maintainer_email=MAINTAINER_EMAIL,
+  #maintainer=MAINTAINER,
+  #maintainer_email=MAINTAINER_EMAIL,
+  #license=LICENSE,
+  #keywords=KEYWORDS,
   python_requires=REQUIRES_PYTHON,
   install_requires=[],
   url=URL,
   download_url=DOWNLOAD_URL,
-  keywords=KEYWORDS,
   setup_requires=[],
   packages=[
     PACKAGE_NAME,
@@ -108,5 +109,4 @@ setup(
     'graphomics = graphomics.__main__:main',
     ],
   },
-  license=LICENSE,
 )

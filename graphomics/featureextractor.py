@@ -193,6 +193,38 @@ class GraphomicsFeatureExtractor (object):
 
     return self
 
+  def GetSelectedFeatures (self) -> dict :
+    '''
+    Get the list of graphomic features currently enabled
+    in the filter.
+
+    Returns
+    -------
+      features : dict
+        Dictionary of features enabled
+    '''
+    enabled = {}
+    # loop along the stored configuration
+    for name in self._feature_classes.keys():
+      # if the name is enabled in the global dict
+      if name in self._features:
+        # add it to the new dictionary
+        enabled[name] = self._features[name]
+
+    return enabled
+
+  def GetAvailableFeatureClasses (self) -> list :
+    '''
+    Get the list of names of the available
+    graphomic features in the filter.
+
+    Returns
+    -------
+      classes : list
+        List of feature class names
+    '''
+    return list(self._feature_classes.keys())
+
   def _CheckInputs (self, image1 : sitk.Image,
                           image2 : sitk.Image
                     ) -> bool :
@@ -696,19 +728,21 @@ class GraphomicsFeatureExtractor (object):
 
     # create the graph filter
     graph_filter = GraphThicknessImageFilter(
-      ndim=ndim,
       surface_min_points=self._features.get('surface_min_points', 8),
       remove_surface=self._features.get('remove_surface', False)
     )
+    # set the dimensionality of the input in the filter
+    # for the evaluation of the internal kernels
+    graph_filter.SetInputDimensionality(ndim=ndim)
     # set the number of threads to use
     graph_filter.SetGlobalDefaultNumberOfThreads(nth=nth)
     # execute the filter
     graph_filter.Execute(src=skeleton)
 
     # get the returning values
-    nodes = graph_filter.GetNodeIndexes()
-    edges = graph_filter.GetEdgeIndexes()
-    lut = graph_filter.GetEdgeLUTIndexes()
+    nodes = graph_filter.GetNodePhysicalPoints()
+    edges = graph_filter.GetEdgePhysicalPoints()
+    lut = graph_filter.GetEdgeLUTPhysicalPoints()
     mapper = graph_filter.GetEdgeMap()
     weights = None # set to None as default
 

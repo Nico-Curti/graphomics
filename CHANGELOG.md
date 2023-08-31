@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1] - 2023-08-30
+## [0.0.1] - 2023-08-31
 
 First version of the library.
 This is the starting point of the development of the *pyGraphomics* package.
@@ -192,10 +192,12 @@ Further improvements will occur in the next versions.
     with the original mask and the score is associated as weight
     of the corresponding edge.
 
-- :closed_book: [Docs] Add first version of the README instructions
-- :closed_book: [Docs] Add first version of the Sphinx documentation
-- :closed_book: [Docs] Add first version of the Read-the-Docs documentation
-- :closed_book: [Docs] Add notebook example for geometrical meaning of the Graphomics analysis
-- :closed_book: [Docs] Add notebook example for the graph extraction processing in 3D
-- :closed_book: [Docs] Add notebook example for the medical imaging application in 3D
-- :closed_book: [Docs] Add notebook example for the graphomics semantic segmentation in 2D
+- :closed_book: [Docs] First version of the README instructions
+- :closed_book: [Docs] First version of the Sphinx documentation
+- :closed_book: [Docs] First version of the Read-the-Docs documentation
+- :closed_book: [Docs] "HelloWorld" example of a graphomic pipeline (ref. [here](https://github.com/Nico-Curti/graphomics/blob/main/examples/GraphomicsHelloWorld.py))
+- :closed_book: [Docs] Example of graphomic filter management in terms of features and classes (ref. [here](https://github.com/Nico-Curti/graphomics/blob/main/examples/GraphomicsFeatureClass.py))
+- :closed_book: [Docs] Notebook example for geometrical meaning of the Graphomics analysis
+- :closed_book: [Docs] Notebook example for the graph extraction processing in 3D
+- :closed_book: [Docs] Notebook example for the medical imaging application in 3D
+- :closed_book: [Docs] Notebook example for the graphomics semantic segmentation in 2D

@@ -37,9 +37,6 @@ class GraphThicknessImageFilter (object):
 
   Parameters
   ----------
-    ndim : int (default := 3)
-      Number of dimension of the input image (ndim:=2) or volume (ndim:=3)
-
     surface_min_points : int (default := 8)
       Minimum number of points for the identification of a surface in
       the binary skeleton. The presence of surface areas could be due
@@ -60,19 +57,51 @@ class GraphThicknessImageFilter (object):
   [1] https://gist.github.com/Nico-Curti/a586e6f58d4a2c758b77a3f4492e6d3f
   '''
 
-  def __init__ (self, ndim : int = 3,
-                      surface_min_points : int = 8,
+  def __init__ (self, surface_min_points : int = 8,
                       remove_surface : bool = False
                 ):
-
-    self._ndim = ndim
+    self._ndim = None
     self.surface_min_points = surface_min_points
     self.remove_surface = remove_surface
 
+    self._stats_shape = sitk.LabelShapeStatisticsImageFilter()
+    self._stats_shape.SetBackgroundValue(0)
+    self._stats_shape.SetGlobalDefaultNumberOfThreads(1)
+
+  def SetInputDimensionality (self, ndim : int = 3):
+    '''
+    Set the dimensionality of the skeleton input and
+    compute the internal parameters accordingly.
+
+    Parameters
+    ----------
+      ndim : int (default := 3)
+        Number of dimension of the input image (ndim:=2)
+        or volume (ndim:=3)
+    '''
+    # work-around to reduce code redundancy
+    self._SetInternalKernels(shape=(1, 1, 1))
+    return self
+
+
+  def _SetInternalKernels (self, shape : tuple):
+    '''
+    Set the internal parameters of the filter according
+    to the provided shape.
+
+    Parameters
+    ----------
+      shape : tuple
+        Dimension of the input image to analyze.
+    '''
+    # get the input dimensionality
+    self._ndim = len(shape)
+
+    # check if it is a valid shape
     if self._ndim not in [2, 3]:
       raise ValueError(('Invalid number of dimension for the filter. '
-        f'Given {self._ndim} but possible values are only [2, 3]')
-      )
+        f'Given {self._ndim} but possible values are only [2, 3]'
+      ))
 
     if self._ndim == 3:
       kernel = np.array([[[-1, -1, -1],
@@ -99,9 +128,7 @@ class GraphThicknessImageFilter (object):
     # (ref. `_ComputeNodes` for a deeper explanation of the coefficients)
     self._kernel = sitk.GetImageFromArray(kernel)
 
-    self._stats_shape = sitk.LabelShapeStatisticsImageFilter()
-    self._stats_shape.SetBackgroundValue(0)
-    self._stats_shape.SetGlobalDefaultNumberOfThreads(1)
+    return self
 
   def SetGlobalDefaultNumberOfThreads (self, nth : int):
     '''
@@ -114,6 +141,8 @@ class GraphThicknessImageFilter (object):
         Number of threads
     '''
     self._stats_shape.SetGlobalDefaultNumberOfThreads(max(nth, 1))
+
+    return self
 
   def _get_3x3_roi (self, img : sitk.Image, coords : tuple) -> sitk.Image:
     '''
@@ -191,7 +220,7 @@ class GraphThicknessImageFilter (object):
 
     # the input must contains only positive values
     # since the skeleton should be binary
-    pass
+    return self
 
   def Execute (self, src : sitk.Image):
     '''
@@ -205,8 +234,12 @@ class GraphThicknessImageFilter (object):
       src : sitk.Image
         Skeletonized input volume/image.
     '''
-
+    # set the internal kernels of the filters if not already set
+    if self._ndim is None:
+      self._SetInternalKernels(shape=src.GetSize())
+    # define the transformer for the coordinate systems
     self._cooordinate_converter = src.TransformIndexToPhysicalPoint
+    # check the input validity
     self._check_input(src=src)
     # compute the node coordinates
     hypernodes, src, true_vertex, cc_vertices = self._ComputeNodes(src=src)
