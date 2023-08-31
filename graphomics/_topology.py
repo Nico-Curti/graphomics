@@ -100,7 +100,8 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
 
   def _GetNumberOfNodes (self, G : nx.Graph) -> int :
     '''
-    Return the number of nodes of the input graph.
+    Return the number of nodes of the input graph
+    (ref. [networkx-nodes_]).
 
     Parameters
     ----------
@@ -112,15 +113,14 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
       nnodes : int
         Number of nodes in the graph.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.number_of_nodes.html
+    .. _networkx-nodes: https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.number_of_nodes.html
     '''
     return G.number_of_nodes()
 
   def _GetNumberOfEdges (self, G : nx.Graph) -> int :
     '''
-    Return the number of edges of the input graph.
+    Return the number of edges of the input graph
+    (ref. [networkx-edges_]).
 
     Parameters
     ----------
@@ -132,16 +132,14 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
       nedges : int
         Number of edges in the graph.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.number_of_edges.html
+    .. _networkx-edges: https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.number_of_edges.html
     '''
     return G.number_of_edges()
 
   def _GetEdgeWeights (self, G : nx.Graph) -> dict :
     '''
     Compute the main statistics of the edge weights
-    distribution.
+    distribution (ref. [networkx-weights_]).
 
     Parameters
     ----------
@@ -153,9 +151,7 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
       stats : dict
         Dictionary with the computed statistics.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.get_edge_data.html
+    .. _networkx-weights: https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.get_edge_data.html
     '''
 
     # get the weight attribute from the graph
@@ -182,7 +178,8 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
                              connectivity : int = None
                       ) -> int :
     '''
-    Compute the Euler number of the input image/volume.
+    Compute the Euler number of the input image/volume
+    (ref. [skimage-euler_]).
 
     Parameters
     ----------
@@ -206,9 +203,7 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
         Euler characteristic of the set of all objects in
         the image.
 
-    References
-    ----------
-    [1] https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.euler_number
+    .. _skimage-euler: https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.euler_number
     '''
     # convert the input sitk.Image to numpy
     np_mask = sitk.GetArrayViewFromImage(mask)
@@ -223,7 +218,8 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
 
   def _GetNumberOfPendantNodes (self, G : nx.Graph) -> int :
     '''
-    Return the number of pendant nodes of the input graph.
+    Return the number of pendant nodes of the input graph
+    (ref. [networkx-degree_]).
 
     Parameters
     ----------
@@ -235,16 +231,15 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
       npendant : int
         Number of pendant nodes in the graph.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.degree.html
+    .. _networkx-degree: https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.degree.html
     '''
 
     return len((n for n, d in G.degree() if d == 1))
 
   def _GetNumberOfConnectedComponents (self, G : nx.Graph) -> int :
     '''
-    Return the number of connected components of the input graph.
+    Return the number of connected components of the input graph
+    (ref. [networkx-components_]).
 
     Parameters
     ----------
@@ -256,9 +251,7 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
       ncomponent : int
         Number of connected components in the graph.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.components.connected_components.html
+    .. _networkx-components: https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.components.connected_components.html
     '''
 
     return nx.number_connected_components(G=G)
@@ -267,7 +260,8 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
                                  weight : str = None
                           ) -> float :
     '''
-    Return the modularity score of the input graph.
+    Return the modularity score of the input graph
+    (ref. [networkx-modularity_]).
 
     Parameters
     ----------
@@ -283,9 +277,7 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
         Modularity score of the partion of the graph
         obtained by the label propagation algorithm.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.quality.modularity.html
+    .. _networkx-modularity: https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.quality.modularity.html
     '''
 
     # evaluate the graph communities for the partition
@@ -302,7 +294,8 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
 
   def _GetNumberOfMaximalCliques (self, G : nx.Graph) -> int :
     '''
-    Get the number of maximal cliques in the graph.
+    Get the number of maximal cliques in the graph
+    (ref. [networkx-cliques_]).
 
     Parameters
     ----------
@@ -314,9 +307,7 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
       ncliques : int
         The number of maximal cliques in the graph.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.clique.find_cliques.html
+    .. _networkx-cliques: https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.clique.find_cliques.html
     '''
 
     return sum(1 for _ in nx.find_cliques(G=G, nodes=None))

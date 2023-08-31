@@ -5,3 +5,4 @@ Loader
    :members:
    :show-inheritance:
    :inherited-members:
+   :private-members:

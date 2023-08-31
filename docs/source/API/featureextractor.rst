@@ -5,3 +5,4 @@ Graphomic Features Extractor
    :members:
    :show-inheritance:
    :inherited-members:
+   :private-members:

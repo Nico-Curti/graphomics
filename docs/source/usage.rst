@@ -12,7 +12,7 @@ The `graphomics` package could be easily used via command line by simply calling
 
 The full list of available flags for the customization of the command line could be obtained by calling:
 
-.. code-block:
+.. code-block:: bash
 
   $ graphomics --help
 
@@ -30,13 +30,13 @@ The full list of available flags for the customization of the command line could
     --config CONFIG, -c CONFIG
                           Configuration file in Yaml format for the pipeline execution
     --input MASK_FILEPATH, -i MASK_FILEPATH
-                          Input filename or path on which load the binary mask of the shape.Ref
+                          Input filename or path on which load the binary mask of the shape. Ref
                           https://simpleitk.readthedocs.io/en/master/IO.html for the list of supported format.
     --skeleton SKELETON_FILEPATH, -k SKELETON_FILEPATH
-                          Input filename or path on which load the binary skeleton of the shape.Ref
+                          Input filename or path on which load the binary skeleton of the shape. Ref
                           https://simpleitk.readthedocs.io/en/master/IO.html for the list of supported format.
     --label LABEL_FILEPATH, -l LABEL_FILEPATH
-                          Input filename or path on which load the labelmap to use for the network weighting.Ref
+                          Input filename or path on which load the labelmap to use for the network weighing. Ref
                           https://simpleitk.readthedocs.io/en/master/IO.html for the list of supported format.
     --weight, -w          Enable network weights during the features extraction
     --wextractor {NodePairwiseDistanceFilter,EdgeLengthPathsFilter,EdgeLabelWeightFilter}, -e {NodePairwiseDistanceFilter,EdgeLengthPathsFilter,EdgeLabelWeightFilter}
@@ -59,7 +59,7 @@ For more advanced users, we suggest to take a look at the example notebooks_, in
 
 For sake of completeness, a simple `graphomic` pipeline could be obtained by the following snippet:
 
-.. code-block: Python
+.. code-block:: python
 
   from graphomics import LoadImageFileInAnyFormat
   from graphomics import GraphomicsFeatureExtractor

@@ -30,7 +30,7 @@ Further improvements will occur in the next versions.
 - :computer: [Python] First version of the entire feature extraction module
 - :computer: [Python] Loader of medical images supporting all the SimpleITK fmt + FreeSurfer .mgz
 
-- :construction: [Features] Add first list of `Centrality` Graphomics features:
+- :construction: [Features] First list of `Centrality` Graphomics features:
   * **Node degree centrality statistics**:
     The node degree is the number of edges adjacent to the node.
     The weighted node degree is the sum of the edge weights for
@@ -41,7 +41,8 @@ Further improvements will occur in the next versions.
     This metric could be informative about the presence of hubs
     and ramifications in the skeleton structure.
   * **Node betweenness centrality statistics**:
-    Betweenness centrality of a node `v` is the sum of the fraction of all-pairs shortest paths that pass through `v`.
+    Betweenness centrality of a node `v` is the sum of the fraction
+    of all-pairs shortest paths that pass through `v`.
     The betweenness centrality quantifies the importance of a
     node in the graph in terms of the number of paths that must pass
     through it.
@@ -67,7 +68,7 @@ Further improvements will occur in the next versions.
     This metric could be informative about the presence of hubs
     and ramifications in the skeleton structure.
 
-- :construction: [Features] Add first list of `Topological` Graphomics features:
+- :construction: [Features] First list of `Topological` Graphomics features:
   * **Number of nodes**:
     The number of nodes of the skeleton
     graph could provides a fast information about the complexity
@@ -109,7 +110,7 @@ Further improvements will occur in the next versions.
     The number of maximal cliques as feature could provide information
     about the complexity of the skeleton graph.
 
-- :construction: [Features] Adding first list of `Spatial` Graphomics features:
+- :construction: [Features] First list of `Spatial` Graphomics features:
   * **Node density statistics**:
     The local spatial density of the nodes is evaluated
     using a Gaussian kernel density estimator. This
@@ -169,7 +170,7 @@ Further improvements will occur in the next versions.
     2D/3D shape could be informative about the distribution of
     the tails in the shape.
 
-- :construction: [Features] Add first list of `Network weighting` techniques:
+- :construction: [Features] First list of `Network weighing` techniques:
   * **NodePairwiseDistanceFilter**:
     Evaluate the weights of the graph as the pairwise distance
     between the node positions according to the given metric.
@@ -195,8 +196,10 @@ Further improvements will occur in the next versions.
 - :closed_book: [Docs] First version of the README instructions
 - :closed_book: [Docs] First version of the Sphinx documentation
 - :closed_book: [Docs] First version of the Read-the-Docs documentation
-- :closed_book: [Docs] "HelloWorld" example of a graphomic pipeline (ref. [here](https://github.com/Nico-Curti/graphomics/blob/main/examples/GraphomicsHelloWorld.py))
-- :closed_book: [Docs] Example of graphomic filter management in terms of features and classes (ref. [here](https://github.com/Nico-Curti/graphomics/blob/main/examples/GraphomicsFeatureClass.py))
+- :closed_book: [Docs] "HelloWorld" example of a graphomic pipeline
+  (ref. [here](https://github.com/Nico-Curti/graphomics/blob/main/examples/GraphomicsHelloWorld.py))
+- :closed_book: [Docs] Example of graphomic filter management in terms of features and classes
+  (ref. [here](https://github.com/Nico-Curti/graphomics/blob/main/examples/GraphomicsFeatureClass.py))
 - :closed_book: [Docs] Notebook example for geometrical meaning of the Graphomics analysis
 - :closed_book: [Docs] Notebook example for the graph extraction processing in 3D
 - :closed_book: [Docs] Notebook example for the medical imaging application in 3D

@@ -1,7 +1,7 @@
 .. _cite:
 
-Cite pyGraphomics
-=================
+Cite
+====
 
 If `pyGraphomics` has been significant in your research, and you would like to acknowledge the project in your academic publication, we suggest citing the following papers:
 

@@ -116,7 +116,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
   def _GetNodeDensityStatistics (self, G : nx.Graph) -> dict :
     '''
     Get the main statistics of the node density distribution
-    of values.
+    of values (ref. [scipy-kde_]).
 
     Parameters
     ----------
@@ -128,9 +128,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       stats : dict
         Dictionary with the computed statistics
 
-    References
-    ----------
-    [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html
+    .. _scipy-kde: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html
     '''
     # extract the list of node coordinates from the graph
     nodes = G.nodes(data=False, default=None)
@@ -163,7 +161,10 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     performing the polynomial fit according to the equation:
 
     .. math::
-      dim(S) = \lim_{\epsil\rightarrow0}\frac{\log{N(\epsil)}}{\log{\frac{1}{\epsil}}}
+      dim(S) = \lim_{\varepsilon\rightarrow0}\frac{\log{N(\varepsilon)}}{\log{\frac{1}{\varepsilon}}}
+
+    This is a wrap of the original function proposed by
+    [ChatzigeorgiouGroup_]
 
     Parameters
     ----------
@@ -190,9 +191,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       fractal_dim : float
         Fractal dimension score
 
-    References
-    ----------
-    [1] https://github.com/ChatzigeorgiouGroup/FractalDimension
+    .. _ChatzigeorgiouGroup: https://github.com/ChatzigeorgiouGroup/FractalDimension
     '''
 
     # convert the input skeleton to a binary mask
@@ -279,7 +278,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     '''
     Get the average shortest path length in the graph.
     If the graph is made by a single connected component, the
-    metric is evaluated on the entire graph.
+    metric is evaluated on the entire graph (ref [networkx-shortestpath_]).
     If the graph is made by multiple connected components, the
     metric is evaluated considering only the largest connected
     component sub-graph.
@@ -299,9 +298,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       shortest : float
         The average shortest path length in the graph.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.average_shortest_path_length.html
+    .. _networkx-shortestpath: https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.shortest_paths.generic.average_shortest_path_length.html
     '''
 
     # if the network is a single connected component
@@ -332,7 +329,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
                        ) -> dict :
     '''
     Get the main statistics of the node eccentricity
-    distribution of values.
+    distribution of values (ref. [networkx-eccentricity_]).
 
     Parameters
     ----------
@@ -344,9 +341,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       stats : dict
         Dictionary with the computed statistics
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.distance_measures.eccentricity.html
+    .. _networkx-eccentricity: https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.distance_measures.eccentricity.html
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
@@ -368,7 +363,8 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
   @lru_cache(maxsize=1)
   def _GetCenterOfMass (self, G : nx.Graph) -> np.ndarray :
     '''
-    Get the center of mass of the input graph nodes.
+    Get the center of mass of the input graph nodes
+    (ref. [wiki_]).
 
     Parameters
     ----------
@@ -381,9 +377,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
         2D or 3D array of the coordinates of the center
         of mass of the input graph nodes.
 
-    References
-    ----------
-    [1] https://en.wikipedia.org/wiki/Center_of_mass
+    .. _wiki: https://en.wikipedia.org/wiki/Center_of_mass
     '''
     # get the node coordinates from the graph
     nodes = np.asarray(G.nodes())

@@ -43,7 +43,7 @@ remove_surface: False
 ## Graphomics Weight estimation
 
 # The skeleton graph could be processed considering the topological
-# structure (i.e. all edge-weights set as 1), or weighting the edges
+# structure (i.e. all edge-weights set as 1), or weighing the edges
 # according to pre-defined or custom metrics.
 # All the custom metrics must be defined according to the structure
 # defined in the `graphomics/_graph.py` file.

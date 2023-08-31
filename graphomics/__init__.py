@@ -8,7 +8,7 @@ from ._loader import LoadImageFileInAnyFormat
 from ._skeletonizer import SkeletonizeImageFilter
 # import filter for graph extraction
 from ._graphfilter import GraphThicknessImageFilter
-# import filters for graph weighting
+# import filters for graph weighing
 from ._graph import (
   NodePairwiseDistanceFilter,
   EdgeLengthPathsFilter,

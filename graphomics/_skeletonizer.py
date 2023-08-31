@@ -41,18 +41,18 @@ class SkeletonizeImageFilter (object):
     Skeletonization reduces binary objects to 1 pixel
     wide representations.
 
-    Skeletonization 2D: Zhang's method [1].
+    Skeletonization 2D: Zhang's method [1]_.
     Zhang's method works by making successive passes of
     the image, removing pixels on object borders.
     This continues until no more pixels can be removed.
     The image is correlated with a mask that assigns each
-    pixel a number in the range [0…255] corresponding to
+    pixel a number in the range [0...255] corresponding to
     each possible pattern of its 8 neighboring pixels.
     A look up table is then used to assign the pixels a
     value of 0, 1, 2 or 3, which are selectively removed
     during the iterations.
 
-    Skeletonization 3D: Lee's method [2].
+    Skeletonization 3D: Lee's method [2]_.
     Lee's method uses an octree data structure to examine a
     3x3x3 neighborhood of a pixel. The algorithm proceeds by
     iteratively sweeping over the image, and removing pixels
@@ -62,6 +62,8 @@ class SkeletonizeImageFilter (object):
     list are rechecked sequentially, to better preserve
     connectivity of the image.
 
+    This is just a wrap of the scikit-image_ functions.
+
     Parameters
     ----------
       src : sitk.Image
@@ -69,16 +71,16 @@ class SkeletonizeImageFilter (object):
 
     References
     ----------
-    [1] A fast parallel algorithm for thinning digital patterns,
+    .. [1] A fast parallel algorithm for thinning digital patterns,
         T. Y. Zhang and C. Y. Suen, Communications of the ACM,
         March 1984, Volume 27, Number 3.
 
-    [2] T.-C. Lee, R.L. Kashyap and C.-N. Chu, Building skeleton
+    .. [2] T.-C. Lee, R.L. Kashyap and C.-N. Chu, Building skeleton
         models via 3-D medial surface/axis thinning algorithms.
         Computer Vision, Graphics, and Image Processing,
         56(6):462-478, 1994.
 
-    [3] https://scikit-image.org/docs/stable/auto_examples/edges/plot_skeleton.html
+    .. _scikit-image: https://scikit-image.org/docs/stable/auto_examples/edges/plot_skeleton.html
     '''
 
     # get the dimensionality of the input

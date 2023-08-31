@@ -15,7 +15,7 @@ from ._loader import LoadImageFileInAnyFormat
 from ._skeletonizer import SkeletonizeImageFilter
 # import filter for graph extraction
 from ._graphfilter import GraphThicknessImageFilter
-# import filters for graph weighting
+# import filters for graph weighing
 from ._graph import (
   GraphWeightsExtractorFilter,
   NodePairwiseDistanceFilter,
@@ -601,7 +601,7 @@ class GraphomicsFeatureExtractor (object):
 
       labelmap : sitk.Image (default := None)
         Input 2D/3D image with the same shape of the mask one.
-        If provided, the labelmap is used internally for the weighting
+        If provided, the labelmap is used internally for the weighing
         of the skeleton graph and the correction of the graphomic
         features.
 

@@ -77,7 +77,7 @@ def parse_args ():
     default=None,
     type=str,
     help=(
-      'Input filename or path on which load the binary mask of the shape.'
+      'Input filename or path on which load the binary mask of the shape. '
       'Ref https://simpleitk.readthedocs.io/en/master/IO.html for the list of '
       'supported format. '
     )
@@ -92,7 +92,7 @@ def parse_args ():
     default=None,
     type=str,
     help=(
-      'Input filename or path on which load the binary skeleton of the shape.'
+      'Input filename or path on which load the binary skeleton of the shape. '
       'Ref https://simpleitk.readthedocs.io/en/master/IO.html for the list of '
       'supported format. '
     )
@@ -107,13 +107,13 @@ def parse_args ():
     default=None,
     type=str,
     help=(
-      'Input filename or path on which load the labelmap to use for the network weighting.'
+      'Input filename or path on which load the labelmap to use for the network weighing. '
       'Ref https://simpleitk.readthedocs.io/en/master/IO.html for the list of '
       'supported format. '
     )
   )
 
-  # enable network weighting
+  # enable network weighing
   parser.add_argument(
     '--weight', '-w',
     dest='enable_weighted_features',

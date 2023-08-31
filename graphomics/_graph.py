@@ -122,6 +122,8 @@ class NodePairwiseDistanceFilter (GraphWeightsExtractorFilter):
   '''
   Evaluate the weights of the graph as the pairwise distance
   between the node positions according to the given metric.
+  The object wraps the scipy implementation of the function
+  (ref. [scipy_])
 
   Parameters
   ----------
@@ -167,9 +169,7 @@ class NodePairwiseDistanceFilter (GraphWeightsExtractorFilter):
       Arguments to pass on to the metric, such as the ``p`` value for
       Minkowski distance.
 
-  References
-  ----------
-  [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html
+  .. _scipy: https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html
   '''
 
   def __init__ (self, metric : str = 'euclidean',
@@ -344,9 +344,10 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
   with the original mask and the score is associated as weight
   of the corresponding edge.
 
-  References
-  ----------
-  [1] https://github.com/Nico-Curti/graphomics/blob/main/notebooks/graphomics_semantic_segmentation.ipynb
+  A step-by-step procedure for this filter is detailed in the
+  notebooks_.
+
+  .. _notebooks: https://github.com/Nico-Curti/graphomics/blob/main/notebooks/graphomics_semantic_segmentation.ipynb
   '''
 
   def __init__ (self):
@@ -513,7 +514,7 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
 
 class GraphFilter (object):
   '''
-  Create a graph object from attributes
+  Create a graph object from attributes (ref. [networkx_]).
 
   This is an utility class to wrap the outputs of
   the GraphThicknessImageFilter, providing a ready-to-use
@@ -523,9 +524,7 @@ class GraphFilter (object):
   any other SimpleITK filter to facilitate the readability of
   the final pipeline.
 
-  References
-  ----------
-  [1] https://networkx.org/documentation/stable/tutorial.html
+  .. _networkx: https://networkx.org/documentation/stable/tutorial.html
   '''
 
   def __init__ (self):

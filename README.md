@@ -33,7 +33,7 @@ This is an open-source python package for the extraction of Graphomics features 
 With this package we aim to propose a new reference for Medical Image Analysis given by the Graphomics approach, i.e. the analysis of the topological graph described by any 2D or 3D object.
 By doing so, we hope to increase awareness of graphomics capabilities and expand the community.
 
-The platform supports both the feature extraction in 2D and 3D and can be used to calculate features according to different label maps and network weighting.
+The platform supports both the feature extraction in 2D and 3D and can be used to calculate features according to different label maps and network weighing.
 
 **Not intended for clinical use.**
 
@@ -115,13 +115,13 @@ optional arguments:
   --config CONFIG, -c CONFIG
                         Configuration file in Yaml format for the pipeline execution
   --input MASK_FILEPATH, -i MASK_FILEPATH
-                        Input filename or path on which load the binary mask of the shape.Ref
+                        Input filename or path on which load the binary mask of the shape. Ref
                         https://simpleitk.readthedocs.io/en/master/IO.html for the list of supported format.
   --skeleton SKELETON_FILEPATH, -k SKELETON_FILEPATH
-                        Input filename or path on which load the binary skeleton of the shape.Ref
+                        Input filename or path on which load the binary skeleton of the shape. Ref
                         https://simpleitk.readthedocs.io/en/master/IO.html for the list of supported format.
   --label LABEL_FILEPATH, -l LABEL_FILEPATH
-                        Input filename or path on which load the labelmap to use for the network weighting.Ref
+                        Input filename or path on which load the labelmap to use for the network weighing. Ref
                         https://simpleitk.readthedocs.io/en/master/IO.html for the list of supported format.
   --weight, -w          Enable network weights during the features extraction
   --wextractor {NodePairwiseDistanceFilter,EdgeLengthPathsFilter,EdgeLabelWeightFilter}, -e {NodePairwiseDistanceFilter,EdgeLengthPathsFilter,EdgeLabelWeightFilter}

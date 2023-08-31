@@ -24,8 +24,8 @@ def LoadImageFileInAnyFormat (self, filepath : str,
   '''
   Medical Image data loader.
   The function supports the loading of both 2D and 3D images,
-  involving all the data formats already supported by SimpleITK
-  package [1] and adding the .mgz (freeSurfer) format.
+  involving all the data formats already supported by SimpleITK_
+  package and adding the .mgz (freeSurfer) format.
 
   Parameters
   ----------
@@ -41,9 +41,7 @@ def LoadImageFileInAnyFormat (self, filepath : str,
     img : sitk.Image
       Loaded 2D/3D image as SimpleITK format.
 
-  References
-  ----------
-  [1] https://simpleitk.readthedocs.io/en/master/IO.html
+  .. _SimpleITK: https://simpleitk.readthedocs.io/en/master/IO.html
   '''
 
   # check if the filepath exists

@@ -5,3 +5,4 @@ Topological Graphomic Features
    :members:
    :show-inheritance:
    :inherited-members:
+   :private-members:

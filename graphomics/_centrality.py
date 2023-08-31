@@ -108,7 +108,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
                                ) -> dict :
     '''
     Compute the main statistics of the node degree centrality
-    distribution.
+    distribution (ref. [networkx-degree_]).
 
     Parameters
     ----------
@@ -123,9 +123,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
       stats : dict
         Dictionary with the computed statistics.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.degree.html
+    .. _networkx-degree: https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.degree.html
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
@@ -146,7 +144,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
                                     ) -> dict :
     '''
     Compute the main statistics of the node betweenness centrality
-    distribution.
+    distribution (ref. [networkx-betweenness_]).
 
     Parameters
     ----------
@@ -161,9 +159,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
       stats : dict
         Dictionary with the computed statistics.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/networkx-1.10/reference/generated/networkx.algorithms.centrality.betweenness_centrality.html
+    .. _networkx-betweenness: https://networkx.org/documentation/networkx-1.10/reference/generated/networkx.algorithms.centrality.betweenness_centrality.html
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
@@ -185,7 +181,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
                                     ) -> dict :
     '''
     Compute the main statistics of the node clustering coefficient
-    distribution.
+    distribution (ref. [networkx-clustering_]).
 
     Parameters
     ----------
@@ -200,9 +196,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
       stats : dict
         Dictionary with the computed statistics.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.cluster.clustering.html#networkx.algorithms.cluster.clustering
+    .. _networkx-clustering: https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.cluster.clustering.html#networkx.algorithms.cluster.clustering
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
@@ -224,7 +218,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
                                   ) -> dict :
     '''
     Compute the main statistics of the node closeness centrality
-    distribution.
+    distribution (ref. [networkx-closeness_]).
 
     Parameters
     ----------
@@ -239,9 +233,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
       stats : dict
         Dictionary with the computed statistics.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.centrality.closeness_centrality.html
+    .. _networkx-closeness: https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.centrality.closeness_centrality.html
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
@@ -263,7 +255,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
                                  ) -> dict :
     '''
     Compute the main statistics of the node page-rank centrality
-    distribution.
+    distribution (ref. [networkx-pagerank_]).
 
     Parameters
     ----------
@@ -278,9 +270,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
       stats : dict
         Dictionary with the computed statistics.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.link_analysis.pagerank_alg.pagerank.html
+    .. _networkx-pagerank: https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.link_analysis.pagerank_alg.pagerank.html
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
@@ -302,7 +292,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
                                  ) -> dict :
     '''
     Compute the main statistics of the node harmonic centrality
-    distribution.
+    distribution (ref. [networkx-harmonic_]).
 
     Parameters
     ----------
@@ -317,9 +307,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
       stats : dict
         Dictionary with the computed statistics.
 
-    References
-    ----------
-    [1] https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.centrality.harmonic_centrality.html
+    .. _networkx-harmonic: https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.centrality.harmonic_centrality.html
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'

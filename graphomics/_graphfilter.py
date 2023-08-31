@@ -33,7 +33,7 @@ class GraphThicknessImageFilter (object):
   association map between node coordinates.
 
   The code implements the 2D/3D translation of the original
-  2D algorithm provided in [1].
+  2D algorithm provided in the online gist_.
 
   Parameters
   ----------
@@ -52,9 +52,7 @@ class GraphThicknessImageFilter (object):
       components can lead to broken graphs (i.e. multiple connected components)
       and therefore it should be used with caution, according to your needs.
 
-  References
-  ----------
-  [1] https://gist.github.com/Nico-Curti/a586e6f58d4a2c758b77a3f4492e6d3f
+  .. _gist: https://gist.github.com/Nico-Curti/a586e6f58d4a2c758b77a3f4492e6d3f
   '''
 
   def __init__ (self, surface_min_points : int = 8,
@@ -162,11 +160,10 @@ class GraphThicknessImageFilter (object):
       roi : sitk.Image
         Extracted 3x3 ROI around the coordinates
 
-    Notes
-    -----
-    If the coordinates do not allow the extraction of a 3x3 ROI,
-    i.e. the coordinates are <= 1 or >= D, the extracted ROI is
-    the maximum possible ROI.
+    .. note::
+      If the coordinates do not allow the extraction of a 3x3 ROI,
+      i.e. the coordinates are <= 1 or >= D, the extracted ROI is
+      the maximum possible ROI.
     '''
     h, w = img.GetSize()
     x, y = coords
@@ -193,11 +190,10 @@ class GraphThicknessImageFilter (object):
       voi : sitk.Image
         Extracted 3x3x3 VOI around the coordinates
 
-    Notes
-    -----
-    If the coordinates do not allow the extraction of a 3x3x3 VOI,
-    i.e. the coordinates are <= 1 or >= D, the extracted VOI is
-    the maximum possible VOI.
+    .. note::
+      If the coordinates do not allow the extraction of a 3x3x3 VOI,
+      i.e. the coordinates are <= 1 or >= D, the extracted VOI is
+      the maximum possible VOI.
     '''
     h, w, c = vol.GetSize()
     x, y, z = coords
@@ -294,10 +290,6 @@ class GraphThicknessImageFilter (object):
         Volume of vertices labeled according to each connected component.
         The volume has the same dimension of the true_vertex one and it
         represents the labeling of each vertex.
-
-    References
-    ----------
-    [1] https://gist.github.com/Nico-Curti/a586e6f58d4a2c758b77a3f4492e6d3f
     '''
     # binarize the input image to avoid possible issues with
     # the provided input
@@ -470,10 +462,6 @@ class GraphThicknessImageFilter (object):
         nodes. This object is mandatory for the correct association
         between the value in the edge_map, the nodes, and the possible
         weighted graph.
-
-    References
-    ----------
-    [1] https://gist.github.com/Nico-Curti/a586e6f58d4a2c758b77a3f4492e6d3f
     '''
 
     # perform a 3x3[x3] dilation of the vertices map
