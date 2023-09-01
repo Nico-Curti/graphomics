@@ -37,7 +37,7 @@ if __name__ == '__main__':
   # This is just an 'HelloWorld' example and further
   # documentations and real-case applications could be found
   # in the notebooks folder
-  # (ref. https://github.com/Nico-Curti/graphomics/blob/main/notebooks)
+  # (ref. https://github.com/Nico-Curti/graphomics/blob/main/docs/source/notebooks)
 
   # ####################################################### #
   # NOTE: this code is not a ready-to-use code since it     #

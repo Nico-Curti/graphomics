@@ -347,7 +347,7 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
   A step-by-step procedure for this filter is detailed in the
   notebooks_.
 
-  .. _notebooks: https://github.com/Nico-Curti/graphomics/blob/main/notebooks/graphomics_semantic_segmentation.ipynb
+  .. _notebooks: https://github.com/Nico-Curti/graphomics/blob/main/docs/source/notebooks/graphomics_semantic_segmentation.ipynb
   '''
 
   def __init__ (self):

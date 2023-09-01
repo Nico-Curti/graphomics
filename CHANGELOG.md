@@ -204,3 +204,6 @@ Further improvements will occur in the next versions.
 - :closed_book: [Docs] Notebook example for the graph extraction processing in 3D
 - :closed_book: [Docs] Notebook example for the medical imaging application in 3D
 - :closed_book: [Docs] Notebook example for the graphomics semantic segmentation in 2D
+- :closed_book: [Docs] Notebook example for the graphomics semantic segmentation in 3D
+  with real-case application to femour, brain, and liver volumes
+- :closed_book: [Docs] List of notebook examples in the sphinx documentation

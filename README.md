@@ -140,7 +140,7 @@ pyGraphomics Python package v0.0.1
 
 A complete list of beginner-examples for the build of a custom `graphomic` pipeline could be found [here](https://github.com/Nico-Curti/graphomics/blob/main/examples).
 
-For more advanced users, we suggest to take a look at the example [notebooks](https://github.com/Nico-Curti/graphomics/blob/main/notebooks), in which are reported more sophisticated applications and real-world examples.
+For more advanced users, we suggest to take a look at the example [notebooks](https://github.com/Nico-Curti/graphomics/blob/main/docs/source/notebooks), in which are reported more sophisticated applications and real-world examples.
 
 For sake of completeness, a simple `graphomic` pipeline could be obtained by the following snippet:
 
@@ -176,12 +176,12 @@ print(graphomic_features)
 
 Description of the folders related to the `Python` version.
 
-| **Directory**                                                               |  **Description**                                                             |
-|:----------------------------------------------------------------------------|:-----------------------------------------------------------------------------|
-| [example](https://github.com/Nico-Curti/graphomics/blob/main/examples)      | Example codes for introducing new users to pyGraphomics library.             |
-| [notebook](https://github.com/Nico-Curti/graphomics/blob/main/notebooks)    | `Jupyter` notebook with some examples of image processing tasks.             |
-| [cfg](https://github.com/Nico-Curti/graphomics/blob/main/cfg)               | Examples and templates of configuration files for pyGraphomics pipelines.    |
-| [graphomics](https://github.com/Nico-Curti/graphomics/blob/main/graphomics) | List of `Python` scripts for `graphomic` features extraction and processing. |
+| **Directory**                                                                        |  **Description**                                                             |
+|:-------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------|
+| [example](https://github.com/Nico-Curti/graphomics/blob/main/examples)               | Example codes for introducing new users to pyGraphomics library.             |
+| [notebook](https://github.com/Nico-Curti/graphomics/blob/main/docs/source/notebooks) | `Jupyter` notebook with some examples of image processing tasks.             |
+| [cfg](https://github.com/Nico-Curti/graphomics/blob/main/cfg)                        | Examples and templates of configuration files for pyGraphomics pipelines.    |
+| [graphomics](https://github.com/Nico-Curti/graphomics/blob/main/graphomics)          | List of `Python` scripts for `graphomic` features extraction and processing. |
 
 ## Contribution
 

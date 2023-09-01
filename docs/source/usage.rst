@@ -84,4 +84,4 @@ For sake of completeness, a simple `graphomic` pipeline could be obtained by the
   print(graphomic_features)
 
 .. _here: https://github.com/Nico-Curti/graphomics/blob/main/examples
-.. _notebooks: https://github.com/Nico-Curti/graphomics/blob/main/notebooks
+.. _notebooks: https://github.com/Nico-Curti/graphomics/blob/main/docs/source/notebooks

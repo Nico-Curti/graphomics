@@ -347,8 +347,8 @@ class GraphThicknessImageFilter (object):
     # detect the connected components of the vertices image, i.e. each
     # connected component provides a vertex.
     cc_vertices = sitk.ConnectedComponent(
-      image=true_vertex,
-      fullyConnected=True
+      true_vertex, # image
+      True # fullyConnected
     )
     # cast to integer for next computation
     cc_vertices = sitk.Cast(
@@ -485,8 +485,8 @@ class GraphThicknessImageFilter (object):
     # compute the connected components that in this case are
     # represented by only the edges
     cc_edges = sitk.ConnectedComponent(
-      image=edge_map,
-      fullyConnected=True
+      edge_map, # image
+      True # fullyConnected
     )
     # cast it to integer for next computation
     cc_edges = sitk.Cast(
@@ -604,8 +604,8 @@ class GraphThicknessImageFilter (object):
     # NOTE: after the subtraction of the already processed edges,
     # the remaining voxels are all related to these components
     cc_len2 = sitk.ConnectedComponent(
-      image=len2_map,
-      fullyConnected=True
+      len2_map, # image
+      True # fullyConnected
     )
 
     # evalute it to get the positions of these objects

@@ -18,8 +18,8 @@ __email__ = ['nico.curti2@unibo.it',
 __all__ = ['LoadImageFileInAnyFormat']
 
 
-def LoadImageFileInAnyFormat (self, filepath : str,
-                                    binarize : bool = True
+def LoadImageFileInAnyFormat (filepath : str,
+                              binarize : bool = True
                              ) -> sitk.Image :
   '''
   Medical Image data loader.
@@ -95,7 +95,7 @@ def LoadImageFileInAnyFormat (self, filepath : str,
       # omit the imageIO parameter to leave the task to SimpleITK
       try:
         image = sitk.ReadImage(
-          filename=filepath,
+          fileName=filepath,
           outputPixelType=sitk.sitkUnknown,
           imageIO=''
         )

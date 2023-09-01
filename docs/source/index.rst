@@ -37,6 +37,7 @@ Overview
    usage
    features
    API/modules
+   examples
    references
    contributing
    credits
