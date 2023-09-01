@@ -30,7 +30,7 @@ class _BaseGraphomicsFeatures (object):
   def __init__ (self, *args, **kwargs):
     pass
 
-  def _GetAvailableMembers (self) -> list:
+  def GetAvailableMembers (self) -> list:
     '''
     Inspect the class members and get the
     available ones, considering as valid features
@@ -80,7 +80,7 @@ class _BaseGraphomicsFeatures (object):
         Dictionary of inputs required for the function
         call.
     '''
-    feature_names, feature_funcs = zip(*self._GetAvailableMembers())
+    feature_names, feature_funcs = zip(*self.GetAvailableMembers())
     # filter the full list of features keeping only
     # the "todo-ones"
     feature_todo = {}

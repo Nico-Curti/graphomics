@@ -170,7 +170,21 @@ print(graphomic_features)
 
 ## Testing
 
-**TODO**
+A full set of testing functions is provided in the [test](https://github.com/Nico-Curti/graphomics/blob/main/test) directory.
+The tests aim to cover the full set of APIs proposed in the `graphomics` package.
+If you want to contribute in the development of the library, please ensure that your new features will not affect the test results.
+If you want to add new graphomic features, please add a new test branch which cover as much as possible your codes.
+
+The tests are performed using the [`pytest`](https://github.com/pytest-dev/pytest/) Python package.
+You can run the full list of tests with:
+
+```bash
+pytest
+```
+
+in the project root directory.
+
+The continuous integration using `github-actions` and `Appveyor` tests each function in every commit, thus pay attention to the status badges before use this package or use the latest stable version available.
 
 ## Table of contents
 

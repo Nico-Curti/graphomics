@@ -110,9 +110,9 @@ class GraphomicsFeatureExtractor (object):
       self._features[name] = {}
       # get all the possible inner-features related
       # to that class
-      members = self._feature_classes[name]._GetAvailableMembers()
+      members = self._feature_classes[name].GetAvailableMembers()
       # enable all
-      for mem in members:
+      for mem, _ in members:
         self._features[name][mem] = True
 
     return self
@@ -144,9 +144,9 @@ class GraphomicsFeatureExtractor (object):
     self._features[name] = {}
     # get all the possible inner-features related
     # to that class
-    members = self._feature_classes[name]._GetAvailableMembers()
+    members = self._feature_classes[name].GetAvailableMembers()
     # enable all
-    for mem in members:
+    for mem, _ in members:
       # set the feature name to True
       self._features[name][mem] = True
 
@@ -178,7 +178,9 @@ class GraphomicsFeatureExtractor (object):
       else:
         # get all the possible inner-features related
         # to that class
-        members = self._feature_classes[key]._GetAvailableMembers()
+        members = self._feature_classes[key].GetAvailableMembers()
+        # get only the member name without the caller
+        members = [x[0] for x in members]
         # loop along the provided feature names and check them one-by-one
         for v in val:
           # if it is an invalid member
@@ -209,7 +211,7 @@ class GraphomicsFeatureExtractor (object):
       # if the name is enabled in the global dict
       if name in self._features:
         # add it to the new dictionary
-        enabled[name] = self._features[name]
+        enabled[name] = list(self._features[name])
 
     return enabled
 
@@ -223,7 +225,7 @@ class GraphomicsFeatureExtractor (object):
       classes : list
         List of feature class names
     '''
-    return list(self._feature_classes.keys())
+    return list(self._feature_classes)
 
   def _CheckInputs (self, image1 : sitk.Image,
                           image2 : sitk.Image
@@ -443,6 +445,15 @@ class GraphomicsFeatureExtractor (object):
       nth : int
         Number of threads
     '''
+    # check input validity
+    if nth < 1 or not isinstance(nth, int):
+      raise ValueError((
+        'Invalid number of threads. '
+        'It must be a positive integer number >= 1 '
+        'and <= maximum number of available threads. '
+        f'Given {nth}'
+      ))
+
     self._features['nth'] = nth
 
     return self
@@ -505,7 +516,7 @@ class GraphomicsFeatureExtractor (object):
 
     # the mask_filepath is mandatory for the correct usage of this
     # filter object
-    if self._features.get('mask_filepath', False):
+    if not self._features.get('mask_filepath', False):
       raise ValueError((
         'Invalid input mask. '
         'Before the execution of the filter a valid input mask image must be provided.'
@@ -528,7 +539,7 @@ class GraphomicsFeatureExtractor (object):
 
     # if the skeleton file was not provided, we can compute using
     # the package filter
-    if self._features.get('skeleton_filepath', False):
+    if not self._features.get('skeleton_filepath', False):
       # initialize the skeleton filter
       sk_filter = SkeletonizeImageFilter()
       # execute it on the give input mask
@@ -553,7 +564,7 @@ class GraphomicsFeatureExtractor (object):
 
     # if the label file was not provided, we can set the
     # value to None
-    if self._features.get('label_filepath', False):
+    if not self._features.get('label_filepath', False):
       labelmap = None
     # otherwise we need to load it from file
     else:

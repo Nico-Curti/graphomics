@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1] - 2023-08-31
+## [0.0.1] - 2023-09-01
 
 First version of the library.
 This is the starting point of the development of the *pyGraphomics* package.
@@ -29,6 +29,8 @@ Further improvements will occur in the next versions.
 - :computer: [Python] New technique of semantic segmentation via Watershed algorithm, based on graphomics extraction
 - :computer: [Python] First version of the entire feature extraction module
 - :computer: [Python] Loader of medical images supporting all the SimpleITK fmt + FreeSurfer .mgz
+- :computer: [Python] Test for feature extractor management
+- :computer: [Python] Test for feature extractor configuration file
 
 - :construction: [Features] First list of `Centrality` Graphomics features:
   * **Node degree centrality statistics**:

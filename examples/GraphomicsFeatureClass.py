@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import json
+
 from graphomics import __version__
 # import filter for the graphomic feature extraction
 from graphomics import GraphomicsFeatureExtractor
@@ -32,7 +34,10 @@ if __name__ == '__main__':
   # ####################################################### #
 
   # check the version of the installed pyGraphomics library
-  print(f'Working with pyGraphomics v{__version__}')
+  print(f'Working with pyGraphomics v{__version__}',
+    end='\n\n',
+    flush=True
+  )
 
   # define the graphomic features extraction filter
   extractor = GraphomicsFeatureExtractor()
@@ -50,7 +55,10 @@ if __name__ == '__main__':
   # including all the currently enabled features in the
   # filter
   selected_features = extractor.GetSelectedFeatures()
-  print(f'Currently enabled graphomic features: {selected_features}')
+  print(f'Currently enabled graphomic features: {json.dumps(selected_features, indent=2)}',
+    end='\n\n',
+    flush=True
+  )
 
   # Let's start from a complete set of turned-off features
   extractor.DisableAllFeatures()
@@ -60,23 +68,32 @@ if __name__ == '__main__':
   # First of all, you can check the list of available feature
   # classes, inspecting the filter
   feature_classes = extractor.GetAvailableFeatureClasses()
-  print(f'Available graphomic feature classes: {feature_classes}')
+  print(f'Available graphomic feature classes: {json.dumps(feature_classes, indent=2)}',
+    end='\n\n',
+    flush=True
+  )
   # and then you can enable a single class of features
   # by calling the member function
-  first_class = feature_classes[0]
-  print(f'Enabling only {first_class} graphomic feature class')
+  first_class = feature_classes[-1]
+  print(f'Enabling only {first_class} graphomic feature class',
+    end='\n\n',
+    flush=True
+  )
   extractor.EnableFeatureClassByName(name=first_class)
   # and check the change
   selected_features = extractor.GetSelectedFeatures()
-  print(f'Currently enabled graphomic features: {selected_features}')
+  print(f'Currently enabled graphomic features: {json.dumps(selected_features, indent=2)}')
 
   # OR you can also enable a single feature using its name,
   # associated to the belonging class name as in the following
-  feature_to_enable = {'spatial' : 'NumberOfEdges'}
+  feature_to_enable = {'topology' : ['NumberOfEdges']}
   extractor.EnableFeaturesByName(features=feature_to_enable)
   # and check the change
   selected_features = extractor.GetSelectedFeatures()
-  print(f'Currently enabled graphomic features: {selected_features}')
+  print(f'Currently enabled graphomic features: {json.dumps(selected_features, indent=2)}',
+    end='\n\n',
+    flush=True
+  )
 
   # A complete management of the available features and their
   # internal parameters could be obtained using a configuration
@@ -89,4 +106,10 @@ if __name__ == '__main__':
   # (ref. https://github.com/Nico-Curti/graphomics/blob/main/cfg/template.yml)
   # with a detailed documentation of all its sections and components
   cfg = 'path/to/the/configuration/file.yml'
+  cfg = '../cfg/template.yml'
   extractor.LoadConfig(filename=cfg)
+  selected_features = extractor.GetSelectedFeatures()
+  print(f'Currently enabled graphomic features: {json.dumps(selected_features, indent=2)}',
+    end='\n\n',
+    flush=True
+  )

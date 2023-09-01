@@ -72,6 +72,7 @@ samples/
 .coverage.*
 coverage.*
 html*
+.pytest_cache
 
 # .hypothesis
 .hypothesis

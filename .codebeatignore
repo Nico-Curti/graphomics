@@ -1,0 +1,4 @@
+*.md
+*.bib
+test/*
+examples/*
