@@ -82,11 +82,13 @@ if __name__ == '__main__':
   extractor.EnableFeatureClassByName(name=first_class)
   # and check the change
   selected_features = extractor.GetSelectedFeatures()
-  print(f'Currently enabled graphomic features: {json.dumps(selected_features, indent=2)}')
-
+  print(f'Currently enabled graphomic features: {json.dumps(selected_features, indent=2)}',
+    end='\n\n',
+    flush=True
+  )
   # OR you can also enable a single feature using its name,
   # associated to the belonging class name as in the following
-  feature_to_enable = {'topology' : ['NumberOfEdges']}
+  feature_to_enable = {'topology' : ['NumberOfEdges', 'NumberOfNodes']}
   extractor.EnableFeaturesByName(features=feature_to_enable)
   # and check the change
   selected_features = extractor.GetSelectedFeatures()

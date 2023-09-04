@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import yaml
 import pytest
 
 # import filter for the graphomic feature extraction
@@ -29,6 +30,9 @@ class TestExtractorConfig:
     - if loading the template config the features are stored
     - if common properties are included in the template config
     - if the mask_filepath is a mandatory input for the execution
+    - if the manual configuration is the same of the loader one
+    - if a turned off feature is not available
+    - if a deleted class is not available
   '''
 
   def test_load_config_type (self):
@@ -93,3 +97,74 @@ class TestExtractorConfig:
 
     with pytest.raises(ValueError):
       extractor.Execute()
+
+  def test_manual_config_setting (self):
+
+    # construct the object
+    extractor = GraphomicsFeatureExtractor()
+
+    with open(template_file, 'r', encoding='utf-8') as fp:
+      cfg = yaml.safe_load(fp)
+
+    # set the config manually
+    extractor.SetConfig(config=cfg)
+
+    # assert the validity of the keys
+    assert 'name' in extractor._features
+    assert 'desc' in extractor._features
+    assert 'pipeline_version' in extractor._features
+    assert 'mask_filepath' in extractor._features
+    assert 'skeleton_filepath' in extractor._features
+    assert 'label_filepath' in extractor._features
+    assert 'check_consistency' in extractor._features
+    assert 'nth' in extractor._features
+    assert 'binarize_input' in extractor._features
+    assert 'surface_min_points' in extractor._features
+    assert 'remove_surface' in extractor._features
+    assert 'graph_weights' in extractor._features
+    assert 'enable_weighted_features' in extractor._features
+    assert 'enable_topology_features' in extractor._features
+    assert 'enable_centrality_features' in extractor._features
+    assert 'enable_spatial_features' in extractor._features
+
+  def test_manual_config_turned_off_feature_name (self):
+
+    # construct the object
+    extractor = GraphomicsFeatureExtractor()
+
+    with open(template_file, 'r', encoding='utf-8') as fp:
+      cfg = yaml.safe_load(fp)
+
+    # turn off feature name
+    cfg['topology']['NumberOfNodes'] = False
+
+    # set the config manually
+    extractor.SetConfig(config=cfg)
+
+    # check that the turned off feature is not available
+
+    # get the selected features
+    selected_features = extractor.GetSelectedFeatures()
+
+    assert 'NumberOfNodes' not in selected_features['topology']
+
+  def test_manual_config_turned_off_feature_class (self):
+
+    # construct the object
+    extractor = GraphomicsFeatureExtractor()
+
+    with open(template_file, 'r', encoding='utf-8') as fp:
+      cfg = yaml.safe_load(fp)
+
+    # turn off feature class
+    cfg.pop('topology', None)
+
+    # set the config manually
+    extractor.SetConfig(config=cfg)
+
+    # check that the turned off feature class is not available
+
+    # get the selected features
+    selected_features = extractor.GetSelectedFeatures()
+
+    assert 'topology' not in selected_features

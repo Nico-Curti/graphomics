@@ -90,6 +90,29 @@ class GraphomicsFeatureExtractor (object):
 
     return self
 
+  def SetConfig (self, config : dict):
+    '''
+    Set the configuration dictionary to use for the
+    feature extraction.
+    Pay attention to the name of the keys in the
+    dictionary, since only valid names will be used
+    during the extraction step.
+    No internal checks are performed on the validity
+    of the names, to leave the user to set further
+    parameters/metadata useful for its pipeline.
+
+    Parameters
+    ----------
+      config : dict
+        Configuration dictionary to use.
+    '''
+
+    # set the configuration dictionary as internal
+    # features config
+    self._features = config
+
+    return self
+
   def DisableAllFeatures (self):
     '''
     Disable all the possible graphomics features.
@@ -166,6 +189,8 @@ class GraphomicsFeatureExtractor (object):
         See at `cfg/template.yml` for a complete example
         of configuration file.
     '''
+    # temporary dictionary for the variable casting
+    new_features = {}
 
     for key, val in features.items():
       if key not in self._feature_classes.keys():
@@ -176,6 +201,8 @@ class GraphomicsFeatureExtractor (object):
         ))
       # otherwise proceed to analyze the inner-class names
       else:
+        # add the key as a valid name
+        new_features[key] = {}
         # get all the possible inner-features related
         # to that class
         members = self._feature_classes[key].GetAvailableMembers()
@@ -190,8 +217,11 @@ class GraphomicsFeatureExtractor (object):
               f'Given {v}.'
             ))
 
+          # add the new feature as value turned on
+          new_features[key][v] = True
+
     # update the feature list
-    self._features.update(features)
+    self._features.update(new_features)
 
     return self
 
@@ -210,8 +240,10 @@ class GraphomicsFeatureExtractor (object):
     for name in self._feature_classes.keys():
       # if the name is enabled in the global dict
       if name in self._features:
+        # filter the turned on feature names
+        features = [f for f, v in self._features[name].items() if v]
         # add it to the new dictionary
-        enabled[name] = list(self._features[name])
+        enabled[name] = features
 
     return enabled
 
