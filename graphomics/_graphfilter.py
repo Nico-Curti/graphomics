@@ -545,12 +545,15 @@ class GraphThicknessImageFilter (object):
       # the links are positive values > 0
       edges_id = edge_lbl[edge_lbl > 0]
 
+      # reduce the node list to a unique set of values
+      nodes_id = set(nodes_id)
+
       # if there is just 1 node without edges, can be treated
       # in a separated way since it is an artifact related to
       # our algorithm
       if len(nodes_id) > 1 and not len(edges_id):
         # store in the lut this new component with a new label
-        lut_edges[ne] = set(nodes_id)
+        lut_edges[ne] = nodes_id
         # set the value of the edge_map with the new edge label
         # NOTE: the int cast is mandatory due to a sitk issue with
         # np.int32 values for the volume indexing
@@ -678,6 +681,17 @@ class GraphThicknessImageFilter (object):
       assert len(nodes_id) == 1
       # get the associated hyper-node position
       dst_coords = hypernodes[nodes_id[0]]
+
+      # NOTE: in some particular cases the skeleton structure
+      # could preserve node components which could lead to edges
+      # with length equal to 2.
+      # To avoid the creation of misleading edges and/or self
+      # loops in the graph, we can easily skip these cases
+      # checking if the source node is different to the target
+      # one or not. If they are equal we can just skip that
+      # fake-edge
+      if src_coords == dst_coords:
+        continue
 
       # replace the value of the edge_map with the correct ne value
       edge_map[coords] = ne
