@@ -93,7 +93,7 @@ class _BaseGraphomicsFeatures (object):
       # bind the member function with the provided parameters
       try:
         # check the validity of the provided parameters
-        caller = partial(func, **params[name])
+        caller = partial(func, **params.get(name, {}))
       except TypeError:
         # something goes wrong with the given inputs...
         # get the list of available parameters
@@ -101,7 +101,7 @@ class _BaseGraphomicsFeatures (object):
         # raise the error with a complete message of help
         raise ValueError((
           'Invalid function parameters. '
-          f'The expected signature for {func} is {sign} '
+          f'The expected signature for {name} is {sign} '
           f'Given {params[name]}'
         ))
       # set the partial function in the feature-list
@@ -127,7 +127,20 @@ class _BaseGraphomicsFeatures (object):
       # get the list of the required parameters
       sign = signature(func)
       # select the appropriated inputs to feed
-      inpts = {k : inputs[k] for k in sign}
+      inpts = {}
+      # loop along the required parameters
+      for k in sign.parameters:
+        # if it is not a parameter already set
+        if k not in params.get(name, {}):
+          # add it to the dictionary if it exists
+          try:
+            inpts[k] = inputs[k]
+          except KeyError:
+            raise ValueError((
+              'Missing required input. '
+              f'Function {name} requires {k} as input. '
+              f'Given {inputs}'
+            ))
       # call the function and get the results
       features[name] = func(**inpts)
 

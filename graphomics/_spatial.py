@@ -354,7 +354,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
-      x=ecc,
+      x=list(ecc.values()),
       prefix=f'node_{weight_prefix}eccentricity_'
     )
 

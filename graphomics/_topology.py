@@ -165,7 +165,7 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
       weights = [1] * G.number_of_edges()
 
     # convert it to a list for safety evaluation
-    weight = list(weights)
+    weights = list(weights)
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
       x=weights,
@@ -234,7 +234,7 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     .. _networkx-degree: https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.degree.html
     '''
 
-    return len((n for n, d in G.degree() if d == 1))
+    return len([n for n, d in G.degree() if d == 1])
 
   def _GetNumberOfConnectedComponents (self, G : nx.Graph) -> int :
     '''

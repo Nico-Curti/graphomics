@@ -253,7 +253,7 @@ class GraphThicknessImageFilter (object):
     self.nodes = list(set(sum(list(map(list, self.lut.values())), [])))
 
     # get the edgelist from the lut for a faster output
-    self.edges = list(filter(lambda x : len(x) > 1, map(tuple, self.lut.values())))
+    self.edges = list(map(tuple, self.lut.values()))
 
     # get the edge map of the volume
     self.edge_map = edge_map
@@ -380,12 +380,14 @@ class GraphThicknessImageFilter (object):
       if len(idx) > self.surface_min_points * self._ndim and self.remove_surface:
 
         # turn off this component from both the
-        # binary map of vertices and labeled one
+        # binary map of vertices, on the vertices label
+        # and on the processed skeleton
         for i in range(0, len(idx), self._ndim):
           coord = idx[i : i + self._ndim]
           true_vertex[coord] = 0
           cc_vertices[coord] = 0
-
+          tmp[coord] = 0
+        # skip
         continue
 
       # reshape to numpy coords
@@ -452,8 +454,8 @@ class GraphThicknessImageFilter (object):
     -------
       edge_map : sitk.Image
         Output with the same size of the original one, in which
-        each edge component is labelled with a different index.
-        0    values identify the background.
+        each edge component is labelled with a different index:
+        0    values identify the background
         > 0  values identify the labeled edges found
         < -1 values identify the labeled hyper-nodes found
 
@@ -496,7 +498,9 @@ class GraphThicknessImageFilter (object):
 
     # get the number of edge components found
     _ = self._stats_shape.Execute(cc_edges)
-    ne = len(self._stats_shape.GetLabels()) + 1 # +1 since it starts from 1
+    # the current number of edges is equal to the number
+    # of labels found +1 since it starts from 1
+    ne = len(self._stats_shape.GetLabels()) + 1
 
     # set all 3x3[x3] squares/cubes around the nodes to -1
     # NOTE: in this way all the starting and ending point
@@ -555,11 +559,13 @@ class GraphThicknessImageFilter (object):
         # store in the lut this new component with a new label
         lut_edges[ne] = nodes_id
         # set the value of the edge_map with the new edge label
-        # NOTE: the int cast is mandatory due to a sitk issue with
-        # np.int32 values for the volume indexing
         edge_map[coords] = ne
         # increment the number of edge labels
         ne += 1
+      # otherwise it is a spurious neighborhood of the vertex
+      # so we need to turn off the edge_map element
+      else:
+        edge_map[coords] = 0
 
       # else condition is redundant
 
@@ -698,7 +704,7 @@ class GraphThicknessImageFilter (object):
 
       # now we need to take care of the LookUp table of the edges
       # and update it with the new edge label
-      lut_edges[ne] = set([src_coords, dst_coords])
+      lut_edges[ne] = {src_coords, dst_coords}
       # at the end we can increment the value of the edge labels
       # to be ready for the next component
       ne += 1

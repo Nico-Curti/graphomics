@@ -29,6 +29,13 @@ nth: 1
 # considering all the no-null values as signal
 binarize_input: True
 # [Optional]
+# force the resampling of the input mask to an equal
+# spacing in all direction
+# This is useful when we want to evaluate the network
+# weights according to the length of the edge paths, since
+# in this way we can ensure a correct computation
+equal_spacing: True
+# [Optional]
 # Minimum number of points for the identification of a surface in
 # the binary skeleton. This is an internal parameter of the
 # skeleton graph extractor filter

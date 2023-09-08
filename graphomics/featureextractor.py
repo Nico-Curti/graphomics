@@ -566,7 +566,8 @@ class GraphomicsFeatureExtractor (object):
         # load it
         mask = LoadImageFileInAnyFormat(
           filepath=mask_file,
-          binarize=self._features.get('binarize_input', False)
+          binarize=self._features.get('binarize_input', False),
+          equal_spacing=self._features.get('equal_spacing', False),
         )
 
     # if the skeleton file was not provided, we can compute using
@@ -591,7 +592,8 @@ class GraphomicsFeatureExtractor (object):
         # load it
         skeleton = LoadImageFileInAnyFormat(
           filepath=sk_file,
-          binarize=self._features.get('binarize_input', False)
+          binarize=self._features.get('binarize_input', False),
+          equal_spacing=self._features.get('equal_spacing', False),
         )
 
     # if the label file was not provided, we can set the
@@ -611,8 +613,9 @@ class GraphomicsFeatureExtractor (object):
         labelmap = LoadImageFileInAnyFormat(
           filepath=lbl_file,
           # binarize=self._features.get('binarize_input', False)
-          binarize=False # in this case the label map could contain
-                         # also floating point value that must be preserved
+          binarize=False, # in this case the label map could contain
+                          # also floating point value that must be preserved
+          equal_spacing=self._features.get('equal_spacing', False),
         )
 
     self._graphomic_features = self._Execute(
@@ -705,7 +708,7 @@ class GraphomicsFeatureExtractor (object):
       # was set by the member functions or by the configuration file
       if not hasattr(self, '_wtype') and self._features.get('graph_weights'):
         # get the selected weight type
-        wtype = self._features.get['graph_weights']
+        wtype = self._features.get('graph_weights')
         # check the correctness of the name
         if wtype not in self._weight_extractor.keys():
           # get the list of available methods
@@ -744,6 +747,22 @@ class GraphomicsFeatureExtractor (object):
           for k, v in self._features.get(f'{w_name}Parameters').items():
             wextra_params[k] = v
 
+        elif isinstance(wtype, EdgeLengthPathsFilter):
+          # if it is a EdgeLengthPathsFilter the input volume
+          # must have an equal spacing along all directions to
+          # preserve the correctness evaluation of the lengths
+
+          # get the image spacing
+          spacing = mask.GetSpacing()
+          # check the equality of the values
+          if not all(spacing[0] == x for x in spacing):
+            raise ValueError((
+              'Invalid image spacing. '
+              'For the correct usage of the EdgeLengthPathsFilter as weight extractor '
+              'the input mask must have an equal spacing along all direction. '
+              f'Given {spacing}'
+            ))
+
       # If not, the default EdgeLengthPathsFilter will
       # be used
       else:
@@ -772,7 +791,7 @@ class GraphomicsFeatureExtractor (object):
     # create the graph filter
     graph_filter = GraphThicknessImageFilter(
       surface_min_points=self._features.get('surface_min_points', 8),
-      remove_surface=self._features.get('remove_surface', False)
+      remove_surface=self._features.get('remove_surface', False),
     )
     # set the dimensionality of the input in the filter
     # for the evaluation of the internal kernels

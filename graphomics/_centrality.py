@@ -133,7 +133,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
-      x=degree,
+      x=list(dict(degree.values())),
       prefix=f'node_{weight_prefix}degree_'
     )
 
@@ -170,7 +170,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
-      x=bc,
+      x=list(bc.values()),
       prefix=f'node_{weight_prefix}betweenness_'
     )
 
@@ -207,7 +207,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
-      x=cc,
+      x=list(cc.values()),
       prefix=f'node_{weight_prefix}clustering_'
     )
 
@@ -244,7 +244,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
-      x=clo,
+      x=list(clo.values()),
       prefix=f'node_{weight_prefix}closeness_'
     )
 
@@ -281,7 +281,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
-      x=pagerank,
+      x=list(pagerank.values()),
       prefix=f'node_{weight_prefix}pagerank_'
     )
 
@@ -318,7 +318,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
-      x=harmonic,
+      x=list(harmonic.values()),
       prefix=f'node_{weight_prefix}harmonic_'
     )
 

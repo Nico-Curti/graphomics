@@ -73,9 +73,14 @@ if __name__ == '__main__':
   # the `binarize` argument to True: the loaded image will be thresholded
   # in the correct binary format keeping all the values != 0 as
   # foreground.
+  # If the `equal_spacing` is True, we force a resampling of the input
+  # volume to an equal spacing along all directions: assuming an image
+  # with spacing (N, N, M), the equal spacing force it to become
+  # uniform according to the most frequent value, i.e. (N, N, N)
   mask = LoadImageFileInAnyFormat(
     filepath=filename,
-    binarize=False
+    binarize=False,
+    equal_spacing=False
   )
   assert isinstance(mask, sitk.Image)
 

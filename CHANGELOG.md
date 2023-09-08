@@ -29,6 +29,7 @@ Further improvements will occur in the next versions.
 - :computer: [Python] New technique of semantic segmentation via Watershed algorithm, based on graphomics extraction
 - :computer: [Python] First version of the entire feature extraction module
 - :computer: [Python] Loader of medical images supporting all the SimpleITK fmt + FreeSurfer .mgz
+- :computer: [Python] Image resampling to equal spacing for the correct weighing of the network according to the path length
 - :computer: [Python] Test for feature extractor management
 - :computer: [Python] Test for feature extractor configuration file
 

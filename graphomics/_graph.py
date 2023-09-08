@@ -314,11 +314,10 @@ class EdgeLengthPathsFilter (GraphWeightsExtractorFilter):
       # found in the index list (corrected by the dimensionality
       # of the mapper, aka 2D or 3D)
       w = len(idx) // ndim
-      # TODO: check if it is necessary a correction related
-      # to the physical space of the mapper image...
+      # we are assuming an equal spacing of the volume along
+      # all direction
 
       # associate the weight to the corresponding edge
-      # TODO: check the consistency between the index and edge lbl
       weights[l - 1] = w
 
     self._weights = weights
@@ -504,7 +503,6 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
       w = reducer(label_val)
 
       # associate the weight to the corresponding edge
-      # TODO: check the consistency between the index and edge lbl
       weights[l - 1] = w
 
     self._weights = weights
