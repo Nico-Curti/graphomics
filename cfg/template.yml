@@ -36,6 +36,10 @@ binarize_input: True
 # in this way we can ensure a correct computation
 equal_spacing: True
 # [Optional]
+# force the cropping of the input mask according
+# to the minimum bounding box around the object
+crop_input : True
+# [Optional]
 # Minimum number of points for the identification of a surface in
 # the binary skeleton. This is an internal parameter of the
 # skeleton graph extractor filter

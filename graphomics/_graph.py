@@ -302,12 +302,11 @@ class EdgeLengthPathsFilter (GraphWeightsExtractorFilter):
     # initialize an empty buffer for the weights
     weights = [1.] * len(edgelist)
 
-    # loop along the components found
-    for l in self._stats.GetLabels():
-      # filter background and node components
-      if l <= 0:
-        continue
-
+    # loop along the edge lut keys
+    # NOTE: the edgelist is ordered as the lut
+    # dictionary so the correspondance between
+    # edgelist and weights is correct
+    for l in lut.keys():
       # get the indices of the voxels belonging to the CC
       idx = self._stats.GetIndexes(l)
       # the length of the path is given by the number of items
@@ -482,15 +481,18 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
 
     # evaluate the connected components statistics of the
     # identified regions
-    self._stats_shape.Execute(ws)
+    self._stats.Execute(ws)
 
     # initialize an empty buffer for the weights
     weights = [1.] * len(edgelist)
 
-    # loop along the identified components
-    for l in self._stats_shape.GetLabels():
+    # loop along the edge lut keys
+    # NOTE: the edgelist is ordered as the lut
+    # dictionary so the correspondance between
+    # edgelist and weights is correct
+    for l in lut.keys():
       # get the indices of the voxels belonging to the CC
-      idx = self._stats_shape.GetIndexes(l)
+      idx = self._stats.GetIndexes(l)
 
       # reshape to numpy coords
       idx = [idx[i : i + ndim]
