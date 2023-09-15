@@ -146,7 +146,7 @@ def LoadImageFileInAnyFormat (filepath : str,
     # call the crop function according to the
     # minimum bounding box around the object
     image = CropMinimumBoundingBox(
-      mask=mask,
+      mask=image,
       bbox=None
     )
 
