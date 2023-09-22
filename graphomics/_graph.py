@@ -308,7 +308,7 @@ class EdgeLengthPathsFilter (GraphWeightsExtractorFilter):
     # edgelist and weights is correct
     for l in lut.keys():
       # get the indices of the voxels belonging to the CC
-      idx = self._stats.GetIndexes(l)
+      idx = self._stats.GetIndexes(int(l))
       # the length of the path is given by the number of items
       # found in the index list (corrected by the dimensionality
       # of the mapper, aka 2D or 3D)

@@ -945,7 +945,7 @@ class GraphomicsFeatureExtractor (object):
     # save information about the weights usage
     metadata['WeightedGraph'] = self._features.get('enable_weighted_features', False)
     # if the weight extractor was used, save its information
-    if hasattr('_wtype'):
+    if hasattr(self, '_wtype'):
       metadata['GraphWeightsExtractor'] = self._wtype.__class__.__name__
 
     # add to the results the graphomic features
