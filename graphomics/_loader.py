@@ -21,7 +21,8 @@ __all__ = ['LoadImageFileInAnyFormat']
 
 def LoadImageFileInAnyFormat (filepath : str,
                               binarize : bool = True,
-                              equal_spacing : bool = False
+                              equal_spacing : bool = False,
+                              crop : bool = False,
                              ) -> sitk.Image :
   '''
   Medical Image data loader.
@@ -42,6 +43,10 @@ def LoadImageFileInAnyFormat (filepath : str,
       Force the image resampling to an equal spacing in all direction.
       The new spacing will acquired the most common size in the
       volume shape.
+
+    crop : bool (default := False)
+      Crop the input volume according to the minimum bounding box
+      around the input shape
 
   Returns
   -------
@@ -136,6 +141,15 @@ def LoadImageFileInAnyFormat (filepath : str,
       interpolator=sitk.sitkNearestNeighbor
     )
 
+  # if the crop is required
+  if crop:
+    # call the crop function according to the
+    # minimum bounding box around the object
+    image = CropMinimumBoundingBox(
+      mask=image,
+      bbox=None
+    )
+
   return image
 
 def ResampleSpacing (mask : sitk.Image,
@@ -188,3 +202,76 @@ def ResampleSpacing (mask : sitk.Image,
   )
 
   return resampled_mask
+
+def BoundingBox (mask : sitk.Image) -> tuple :
+  '''
+  Get the minimum bounding box around the input
+  mask shape for the correct cropping of the image.
+
+  Parameters
+  ----------
+    mask : sitk.Image
+      Input binary image mask to process.
+
+  Returns
+  -------
+    bbox : tuple
+      Bounding box as (x_start, y_start, ..., x_size, y_size, ...)
+  '''
+  # define the shape filter statistics for the evaluation
+  # of the connected components identified in the
+  # input mask
+  lssif = sitk.LabelShapeStatisticsImageFilter()
+  # apply it on the mask
+  lssif.Execute(mask)
+
+  # get the bounding box corresponding to the
+  # connected component identified as 1
+  bbox = lssif.GetBoundingBox(1)
+
+  return bbox
+
+def CropMinimumBoundingBox (mask : sitk.Image,
+                            bbox : tuple = None
+                           ) -> sitk.Image :
+  '''
+  Crop the input image mask according to the minimum
+  bounding box around the identified shape.
+
+  Parameters
+  ----------
+    mask : sitk.Image
+      Input binary image mask to process.
+
+    bbox : tuple (default := None)
+      Input bounding box to use for the image
+      cropping. If None, the minimum bounding
+      box around the 1-like shape in the input
+      mask is used.
+      The bbox must be a tuple as
+      (x_start, y_start, ..., x_size, y_size, ...).
+      An example is given by the BoundingBox function.
+
+  Returns
+  -------
+    cropped : sitk.Image
+      Cropped image with the same spacing of the
+      original one.
+  '''
+  # check if the bbox is available
+  if bbox is None:
+    # get the shape bounding box
+    bbox = BoundingBox(mask=mask)
+
+  # get the input dimension for the correct splitting
+  # of the bbox coordinates
+  ndim = len(bbox) // 2
+
+  # apply the crop on the input image
+  cropped = sitk.RegionOfInterest(
+    image1=mask,
+    size=bbox[ndim:],
+    index=bbox[:ndim],
+  )
+
+  return cropped

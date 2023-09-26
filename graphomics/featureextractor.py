@@ -568,6 +568,7 @@ class GraphomicsFeatureExtractor (object):
           filepath=mask_file,
           binarize=self._features.get('binarize_input', False),
           equal_spacing=self._features.get('equal_spacing', False),
+          crop=self._features.get('crop_input', False),
         )
 
     # if the skeleton file was not provided, we can compute using
@@ -594,6 +595,7 @@ class GraphomicsFeatureExtractor (object):
           filepath=sk_file,
           binarize=self._features.get('binarize_input', False),
           equal_spacing=self._features.get('equal_spacing', False),
+          crop=self._features.get('crop_input', False),
         )
 
     # if the label file was not provided, we can set the
@@ -614,9 +616,17 @@ class GraphomicsFeatureExtractor (object):
           filepath=lbl_file,
           # binarize=self._features.get('binarize_input', False)
           binarize=False, # in this case the label map could contain
-                          # also floating point value that must be preserved
+                          # also floating point values that must be preserved
           equal_spacing=self._features.get('equal_spacing', False),
+          # crop=self._features.get('crop_input', False),
+          crop=False, # in this case the label map could contain
+                      # also floating point values, so the crop must
+                      # be performed after the loading, according to the
+                      # bounding box get by the mask volume
         )
+        # TODO: implement the correct crop for the labelmap, to preserve
+        # the integrity of the floating information (is it necessary or can
+        # we just use the physical points???)
 
     self._graphomic_features = self._Execute(
       mask=mask,
@@ -935,7 +945,7 @@ class GraphomicsFeatureExtractor (object):
     # save information about the weights usage
     metadata['WeightedGraph'] = self._features.get('enable_weighted_features', False)
     # if the weight extractor was used, save its information
-    if hasattr('_wtype'):
+    if hasattr(self, '_wtype'):
       metadata['GraphWeightsExtractor'] = self._wtype.__class__.__name__
 
     # add to the results the graphomic features

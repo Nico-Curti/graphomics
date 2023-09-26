@@ -35,6 +35,10 @@ binarize_input: True
 # weights according to the length of the edge paths, since
 # in this way we can ensure a correct computation
 equal_spacing: True
+# [Optional]
+# force the cropping of the input mask according
+# to the minimum bounding box around the object
+crop_input : True
 
 ## Graphomics Weight estimation
 
