@@ -25,6 +25,11 @@ Topology
   in the skeleton graph.
   The distribution of the weight scores could be used as feature
   for the quantification of that metric.
+  
+* **Number of self links:**
+  A self link is defined as a link between a node and itself.
+  The number of self links could be informative about the
+  presence of shape's holes and invaginations.
 
 * **Euler number**:
   The Euler number is a topological invariant

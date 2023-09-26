@@ -21,8 +21,8 @@ keywords = [
 ]
 maintainers = [
   { name='Nico Curti', email='nico.curti2@unibo.it' },
-  { name='Gianluca Carlini', email='gianluca.carlini2@unibo.it' },
-  { name='Riccardo Biondi', email='riccardo.biondi2@unibo.it' },
+  { name='Gianluca Carlini', email='gianluca.carlini3@unibo.it' },
+  { name='Riccardo Biondi', email='riccardo.biondi7@unibo.it' },
 ]
 classifiers = [
   'Natural Language :: English',

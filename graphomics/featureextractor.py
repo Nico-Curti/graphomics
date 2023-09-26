@@ -35,8 +35,8 @@ __author__  = ['Nico Curti',
                'Riccardo Biondi'
               ]
 __email__ = ['nico.curti2@unibo.it',
-             'gianluca.carlini2@unibo.it',
-             'riccardo.biondi2@unibo.it'
+             'gianluca.carlini3@unibo.it',
+             'riccardo.biondi7@unibo.it'
             ]
 
 __all__ = ['GraphomicsFeatureExtractor']
@@ -789,10 +789,7 @@ class GraphomicsFeatureExtractor (object):
     ndim = len(skeleton.GetSize())
 
     # create the graph filter
-    graph_filter = GraphThicknessImageFilter(
-      surface_min_points=self._features.get('surface_min_points', 8),
-      remove_surface=self._features.get('remove_surface', False),
-    )
+    graph_filter = GraphThicknessImageFilter()
     # set the dimensionality of the input in the filter
     # for the evaluation of the internal kernels
     graph_filter.SetInputDimensionality(ndim=ndim)
@@ -833,6 +830,9 @@ class GraphomicsFeatureExtractor (object):
     )
     # get the graph and store it in the common inputs
     common['G'] = graph_proxy.GetGraph()
+
+    # store also the edge lut of the graph for further feature extraction
+    common['lut'] = lut
 
     # run the graphomic features extraction for each class
 

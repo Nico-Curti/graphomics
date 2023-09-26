@@ -10,8 +10,8 @@ __author__  = ['Nico Curti',
                'Riccardo Biondi'
               ]
 __email__ = ['nico.curti2@unibo.it',
-             'gianluca.carlini2@unibo.it',
-             'riccardo.biondi2@unibo.it'
+             'gianluca.carlini3@unibo.it',
+             'riccardo.biondi7@unibo.it'
             ]
 
 __all__ = ['GraphThicknessImageFilter']
@@ -35,32 +35,11 @@ class GraphThicknessImageFilter (object):
   The code implements the 2D/3D translation of the original
   2D algorithm provided in the online gist_.
 
-  Parameters
-  ----------
-    surface_min_points : int (default := 8)
-      Minimum number of points for the identification of a surface in
-      the binary skeleton. The presence of surface areas could be due
-      to the skeleton algorithm used (ref. sitk.BinaryThinningImageFilter3D).
-      The value 8 is estimated as the number of voxels belonging to a
-      plane in a 3x3x3 VOI of the skeleton. The resulting graph can
-      change according to this parameter!
-
-    remove_surface : bool (default := False)
-      In case of "surface edges" found in the 3D skeleton, turning on this
-      parameter, the related connected component can be discarded by the
-      skeleton and by the graph extraction procedure. The remotion of these
-      components can lead to broken graphs (i.e. multiple connected components)
-      and therefore it should be used with caution, according to your needs.
-
   .. _gist: https://gist.github.com/Nico-Curti/a586e6f58d4a2c758b77a3f4492e6d3f
   '''
 
-  def __init__ (self, surface_min_points : int = 8,
-                      remove_surface : bool = False
-                ):
+  def __init__ (self):
     self._ndim = None
-    self.surface_min_points = surface_min_points
-    self.remove_surface = remove_surface
 
     self._stats_shape = sitk.LabelShapeStatisticsImageFilter()
     self._stats_shape.SetBackgroundValue(0)
@@ -118,9 +97,6 @@ class GraphThicknessImageFilter (object):
                          [-1,  8, -1],
                          [-1, -1, -1]], dtype=np.int32)
       self._get_neighborhood = self._get_3x3_roi
-      # in 2D there are no possible surfaces in the skeleton
-      self.surface_min_points = float('inf')
-      self.remove_surface = False
 
     # convolutional kernel
     # (ref. `_ComputeNodes` for a deeper explanation of the coefficients)
@@ -302,7 +278,7 @@ class GraphThicknessImageFilter (object):
 
     # pad the input image pre-convolution
     padded = sitk.ConstantPad(
-      image1=src,
+      image1=tmp,
       padLowerBound=(1, 1, 1),
       padUpperBound=(1, 1, 1),
       constant=0
@@ -374,22 +350,6 @@ class GraphThicknessImageFilter (object):
       # get the indices of the voxels belonging to the CC
       idx = self._stats_shape.GetIndexes(l)
 
-      # if the CC represents a surface skip it
-      # or remove it, according the input parameter
-      # NOTE: we will take care of them after...
-      if len(idx) > self.surface_min_points * self._ndim and self.remove_surface:
-
-        # turn off this component from both the
-        # binary map of vertices, on the vertices label
-        # and on the processed skeleton
-        for i in range(0, len(idx), self._ndim):
-          coord = idx[i : i + self._ndim]
-          true_vertex[coord] = 0
-          cc_vertices[coord] = 0
-          tmp[coord] = 0
-        # skip
-        continue
-
       # reshape to numpy coords
       idx = [idx[i : i + self._ndim]
              for i in range(0, len(idx), self._ndim)
@@ -404,11 +364,6 @@ class GraphThicknessImageFilter (object):
       else:
         root_val = np.argmin(conv_val)
 
-      # conver the idx coordinates to the correct physical space
-      # NOTE: this is mandatory due to the boundary condition set
-      # in the convolution
-      #idx = [padded.TransformPhysicalPointToIndex(i) for i in idx]
-
       # get the root position
       root = idx[root_val]
 
@@ -417,8 +372,6 @@ class GraphThicknessImageFilter (object):
       hypernodes[l] = root
 
     return hypernodes, tmp, true_vertex, cc_vertices
-
-    raise NotImplementedError
 
   def _ComputeEdges (self, src : sitk.Image,
                            true_vertex : sitk.Image,
@@ -515,7 +468,7 @@ class GraphThicknessImageFilter (object):
     edge_map = (cc_edges - cc_vertices - dilated_vertex) * src
 
     # create the look-up table for the graph
-    lut_edges = defaultdict(set)
+    lut_edges = defaultdict(list)
 
     # get the coordinates of -1 voxels as points in which
     # monitor the vertex connection
@@ -543,36 +496,36 @@ class GraphThicknessImageFilter (object):
       # the nodes are negative values < -1
       # NOTE: abs to get it positive; -1 is the starting
       # point for node labeling
-      nodes_id = abs(edge_lbl[edge_lbl < -1]) - 1
+      node_id = abs(edge_lbl[edge_lbl < -1]) - 1
       # get the associated hyper-node position
-      nodes_id = [hypernodes[x] for x in nodes_id]
+      nodes_id = [hypernodes[x] for x in node_id]
       # the links are positive values > 0
       edges_id = edge_lbl[edge_lbl > 0]
 
       # reduce the node list to a unique set of values
       nodes_id = set(nodes_id)
 
-      # if there is just 1 node without edges, can be treated
-      # in a separated way since it is an artifact related to
-      # our algorithm
-      if len(nodes_id) > 1 and not len(edges_id):
+      # if there is more than one node and no edges
+      # it means that the -1 voxel is an edge connecting
+      # multiple nodes together
+      if len(nodes_id) > 1 and not len(edges_id) and sum(voi == -1) == 1:
         # store in the lut this new component with a new label
-        lut_edges[ne] = nodes_id
+        lut_edges[ne] = list(nodes_id)
         # set the value of the edge_map with the new edge label
         edge_map[coords] = ne
         # increment the number of edge labels
         ne += 1
       # otherwise it is a spurious neighborhood of the vertex
       # so we need to turn off the edge_map element
-      else:
-        edge_map[coords] = 0
+      elif len(nodes_id) == 1 and not len(edges_id) and sum(voi == -1) == 1:
+        edge_map[coords] = int(-node_id[0] - 1)
 
       # else condition is redundant
 
       # for each edge found
       for e in edges_id:
         # add all the nodes to this edge
-        lut_edges[e].update(nodes_id)
+        lut_edges[e].extend(nodes_id)
         # update the edge_map with this value
         # NOTE: the int cast is mandatory due to a sitk issue with
         # np.int32 values for the volume indexing
@@ -594,8 +547,6 @@ class GraphThicknessImageFilter (object):
     # maximum connectivity accepted in a 3D graph could drastically increase!
     # A "surface edge", indeed, is able to connect multiple nodes together,
     # incrementing the limit of the vertices' degree to high values.
-    # A drastically way to avoid the presence of "surface edges" is given by
-    # the parameter "remove_surface" of the constructor.
 
     # Now it is time to manage the edges with length == 2.
     # This step is obtained considering the subtraction between
@@ -664,9 +615,6 @@ class GraphThicknessImageFilter (object):
       # get the associated hyper-node position
       src_coords = hypernodes[nodes_id[0]]
 
-      # replace the value of the edge_map with the correct ne value
-      edge_map[coords] = ne
-
       ## Target node
 
       # extract the destination node coords
@@ -697,22 +645,20 @@ class GraphThicknessImageFilter (object):
       # one or not. If they are equal we can just skip that
       # fake-edge
       if src_coords == dst_coords:
+        edge_map[idx[0]] = int( - nodes_id[0] - 1)
+        edge_map[idx[1]] = int( - nodes_id[0] - 1)
         continue
 
-      # replace the value of the edge_map with the correct ne value
-      edge_map[coords] = ne
+      # replace the values of the edge_map with the correct ne values
+      edge_map[idx[0]] = ne
+      edge_map[idx[1]] = ne
 
       # now we need to take care of the LookUp table of the edges
       # and update it with the new edge label
-      lut_edges[ne] = {src_coords, dst_coords}
+      lut_edges[ne] = [src_coords, dst_coords]
       # at the end we can increment the value of the edge labels
       # to be ready for the next component
       ne += 1
-
-    # NOTE: the processed src image was padded with ones
-    # and to keep the edge_map with the same dimensions of the
-    # original skeleton we need to remove the padding
-    # TODO!!!
 
     return edge_map, lut_edges
 

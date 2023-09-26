@@ -13,8 +13,8 @@ __author__  = ['Nico Curti',
                'Riccardo Biondi'
               ]
 __email__ = ['nico.curti2@unibo.it',
-             'gianluca.carlini2@unibo.it',
-             'riccardo.biondi2@unibo.it'
+             'gianluca.carlini3@unibo.it',
+             'riccardo.biondi7@unibo.it'
             ]
 
 __all__ = ['GraphomicsTopology']
@@ -50,6 +50,12 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     in the skeleton graph.
     The distribution of the weight scores could be used as feature
     for the quantification of that metric.
+
+  * **Number of self links:**
+
+    A self link is defined as a link between a node and itself.
+    The number of self links could be informative about the
+    presence of shape's holes and invaginations.
 
   * **Euler number:**
 
@@ -173,6 +179,26 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     )
 
     return stats
+  
+  def _GetSelfLinks (self, lut : dict) -> int :
+    '''
+    Return the number of self links in the input graph.
+
+    Parameters
+    ----------
+      lut : dict
+        Dictionary with the edge map of the graph.
+
+    Returns
+    -------
+      nself_links : int
+        Number of self links in the graph.
+    '''
+
+    # get the number of self links
+    nself_links = len([1 for src, tgt in lut.values() if src == tgt])
+
+    return nself_links
 
   def _GetEulerNumber (self, mask : sitk.Image,
                              connectivity : int = None

@@ -35,17 +35,6 @@ binarize_input: True
 # weights according to the length of the edge paths, since
 # in this way we can ensure a correct computation
 equal_spacing: True
-# [Optional]
-# Minimum number of points for the identification of a surface in
-# the binary skeleton. This is an internal parameter of the
-# skeleton graph extractor filter
-surface_min_points: 8
-# [Optional]
-# In case of "surface edges" found in the 3D skeleton, turning on this
-# parameter, the related connected component can be discarded by the
-# skeleton and by the graph extraction procedure.
-# This is an internal parameter of the skeleton graph extractor filter
-remove_surface: False
 
 ## Graphomics Weight estimation
 
@@ -94,6 +83,7 @@ topology:
   NumberOfNodes: True
   NumberOfEdges: True
   EdgeWeights: True
+  SelfLinks: True
   EulerNumber: True
   NumberOfPendantNodes: True
   NumberOfConnectedComponents: True

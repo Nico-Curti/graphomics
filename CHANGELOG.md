@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1] - 2023-09-01
+## [0.0.1] - 2023-09-25
 
 First version of the library.
 This is the starting point of the development of the *pyGraphomics* package.
@@ -32,6 +32,7 @@ Further improvements will occur in the next versions.
 - :computer: [Python] Image resampling to equal spacing for the correct weighing of the network according to the path length
 - :computer: [Python] Test for feature extractor management
 - :computer: [Python] Test for feature extractor configuration file
+- :computer: [Python] Test for GraphThicknessImageFilter
 
 - :construction: [Features] First list of `Centrality` Graphomics features:
   * **Node degree centrality statistics**:
@@ -86,6 +87,10 @@ Further improvements will occur in the next versions.
     in the skeleton graph.
     The distribution of the weight scores could be used as feature
     for the quantification of that metric.
+  * **Number of self links:**
+    A self link is defined as a link between a node and itself.
+    The number of self links could be informative about the
+    presence of shape's holes and invaginations.
   * **Euler number**:
     The Euler number is a topological invariant
     which resume in a unique number the topological space's shape

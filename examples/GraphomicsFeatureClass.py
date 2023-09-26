@@ -12,8 +12,8 @@ __author__  = ['Nico Curti',
                'Riccardo Biondi'
               ]
 __email__ = ['nico.curti2@unibo.it',
-             'gianluca.carlini2@unibo.it',
-             'riccardo.biondi2@unibo.it'
+             'gianluca.carlini3@unibo.it',
+             'riccardo.biondi7@unibo.it'
             ]
 
 

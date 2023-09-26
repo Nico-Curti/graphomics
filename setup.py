@@ -42,7 +42,7 @@ __version__ = '{version}'
 
 PACKAGE_NAME = 'graphomics'
 AUTHOR = 'Nico Curti, Gianluca Carlini, Riccardo Biondi'
-EMAIL = 'nico.curti2@unibo.it, gianluca.carlini2@unibo.it, riccardo.biondi2@unibo.it'
+EMAIL = 'nico.curti2@unibo.it, gianluca.carlini3@unibo.it, riccardo.biondi7@unibo.it'
 REQUIRES_PYTHON = '>=3.5'
 PACKAGE_VERSION = '0.0.1'
 DESCRIPTION = 'Open-source python package for the extraction of Graphomics features from 2D and 3D binary masks.'

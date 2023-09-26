@@ -11,8 +11,8 @@ __author__  = ['Nico Curti',
                'Riccardo Biondi'
               ]
 __email__ = ['nico.curti2@unibo.it',
-             'gianluca.carlini2@unibo.it',
-             'riccardo.biondi2@unibo.it'
+             'gianluca.carlini3@unibo.it',
+             'riccardo.biondi7@unibo.it'
             ]
 
 __all__ = ['GraphWeightsExtractorFilter',
@@ -564,7 +564,7 @@ class GraphFilter (object):
 
       # associate the correct weight to each edge pair
       wedges = [(e1, e2, w)
-        for (e1, e2), w in zip(edgelist, weights)
+        for (e1, e2), w in zip(edgelist, weights) if e1 != e2
       ]
 
       # add the list of edges to the graph
@@ -572,7 +572,7 @@ class GraphFilter (object):
 
     else:
       # add the list of edges to the graph
-      graph.add_edges_from(edgelist)
+      graph.add_edges_from([(e1, e2) for e1, e2 in edgelist if e1 != e2])
 
     self._graph = graph
 

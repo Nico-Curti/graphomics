@@ -13,8 +13,8 @@ __author__  = ['Nico Curti',
                'Riccardo Biondi'
               ]
 __email__ = ['nico.curti2@unibo.it',
-             'gianluca.carlini2@unibo.it',
-             'riccardo.biondi2@unibo.it'
+             'gianluca.carlini3@unibo.it',
+             'riccardo.biondi7@unibo.it'
             ]
 
 template_file = os.path.join(
@@ -80,8 +80,6 @@ class TestExtractorConfig:
     assert 'check_consistency' in extractor._features
     assert 'nth' in extractor._features
     assert 'binarize_input' in extractor._features
-    assert 'surface_min_points' in extractor._features
-    assert 'remove_surface' in extractor._features
     assert 'graph_weights' in extractor._features
     assert 'enable_weighted_features' in extractor._features
     assert 'enable_topology_features' in extractor._features
@@ -119,8 +117,6 @@ class TestExtractorConfig:
     assert 'check_consistency' in extractor._features
     assert 'nth' in extractor._features
     assert 'binarize_input' in extractor._features
-    assert 'surface_min_points' in extractor._features
-    assert 'remove_surface' in extractor._features
     assert 'graph_weights' in extractor._features
     assert 'enable_weighted_features' in extractor._features
     assert 'enable_topology_features' in extractor._features
