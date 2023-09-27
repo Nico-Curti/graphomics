@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
 import pytest
 from graphomics import GraphThicknessImageFilter
@@ -5,6 +8,7 @@ from graphomics import LoadImageFileInAnyFormat
 from graphomics import SkeletonizeImageFilter
 import SimpleITK as sitk
 import numpy as np
+from .download_from_drive import download_file_from_google_drive
 
 __author__  = ['Nico Curti',
                'Gianluca Carlini',
@@ -15,12 +19,24 @@ __email__ = ['nico.curti2@unibo.it',
              'riccardo.biondi7@unibo.it'
             ]
 
-img_sample = os.path.join(
+# get the path of the sample image directory
+sample_dir = os.path.join(
   os.path.abspath(
     os.path.dirname(__file__)
   ),
-  '../samples/brain_seg.nii'
+  '../samples'
 )
+
+# define the path of the sample image
+img_sample = os.path.join(sample_dir, 'brain_seg_anon.nii')
+
+if not os.path.exists(img_sample):
+  # create the folder to store the files
+  os.makedirs(sample_dir, exist_ok=True)
+
+  # download the sample image
+  download_file_from_google_drive(Id='1UBPKRkadArzZBbBn3GeCDRDIOy199NeB', 
+                                  destination=img_sample)
 
 
 class TestGraphFilter:
