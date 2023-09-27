@@ -60,6 +60,21 @@ class TestFeatureCentrality:
       assert v >= 0.
       assert np.isfinite(v)
 
+    # add random weights to nodes
+    for (e1, e2) in G.edges():
+      G[e1][e2]['weight'] = 3.14
+
+    # evaluate the feature
+    res = feat._GetNodeDegreeCentrality(G=G, weight='weight')
+
+    # check the feature properties
+    assert isinstance(res, dict)
+    for k, v in res.items():
+      assert k.startswith('node_weighted_degree')
+      assert isinstance(k, str)
+      assert v >= 0.
+      assert np.isfinite(v)
+
   def test_feature_NodeBetweennessCentrality (self):
     # define the feature extractor class
     feat = GraphomicsCentrality()
@@ -95,6 +110,21 @@ class TestFeatureCentrality:
       assert isinstance(v, float) or isinstance(v, int)
       assert np.isfinite(v)
 
+    # add random weights to nodes
+    for (e1, e2) in G.edges():
+      G[e1][e2]['weight'] = 3.14
+
+    # evaluate the feature
+    res = feat._GetNodeBetweennessCentrality(G=G, weight='weight')
+
+    # check the feature properties
+    assert isinstance(res, dict)
+    for k, v in res.items():
+      assert k.startswith('node_weighted_betweenness')
+      assert isinstance(k, str)
+      assert v >= 0.
+      assert np.isfinite(v)
+
   def test_feature_NodeClusteringCoefficient (self):
     # define the feature extractor class
     feat = GraphomicsCentrality()
@@ -125,6 +155,21 @@ class TestFeatureCentrality:
     assert isinstance(res, dict)
     for k, v in res.items():
       assert k.startswith('node_clustering')
+      assert isinstance(k, str)
+      assert v >= 0.
+      assert np.isfinite(v)
+
+    # add random weights to nodes
+    for (e1, e2) in G.edges():
+      G[e1][e2]['weight'] = 3.14
+
+    # evaluate the feature
+    res = feat._GetNodeClusteringCoefficient(G=G, weight='weight')
+
+    # check the feature properties
+    assert isinstance(res, dict)
+    for k, v in res.items():
+      assert k.startswith('node_weighted_clustering')
       assert isinstance(k, str)
       assert v >= 0.
       assert np.isfinite(v)
@@ -164,6 +209,21 @@ class TestFeatureCentrality:
       assert isinstance(v, float) or isinstance(v, int)
       assert np.isfinite(v)
 
+    # add random weights to nodes
+    for (e1, e2) in G.edges():
+      G[e1][e2]['weight'] = 3.14
+
+    # evaluate the feature
+    res = feat._GetNodeClosenessCentrality(G=G, weight='weight')
+
+    # check the feature properties
+    assert isinstance(res, dict)
+    for k, v in res.items():
+      assert k.startswith('node_weighted_closeness')
+      assert isinstance(k, str)
+      assert v >= 0.
+      assert np.isfinite(v)
+
   def test_feature_NodePageRankCentrality (self):
     # define the feature extractor class
     feat = GraphomicsCentrality()
@@ -199,6 +259,21 @@ class TestFeatureCentrality:
       assert isinstance(v, float) or isinstance(v, int)
       assert np.isfinite(v)
 
+    # add random weights to nodes
+    for (e1, e2) in G.edges():
+      G[e1][e2]['weight'] = 3.14
+
+    # evaluate the feature
+    res = feat._GetNodePageRankCentrality(G=G, weight='weight')
+
+    # check the feature properties
+    assert isinstance(res, dict)
+    for k, v in res.items():
+      assert k.startswith('node_weighted_pagerank')
+      assert isinstance(k, str)
+      assert v >= 0.
+      assert np.isfinite(v)
+
   def test_feature_NodeHarmonicCentrality (self):
     # define the feature extractor class
     feat = GraphomicsCentrality()
@@ -231,5 +306,19 @@ class TestFeatureCentrality:
       assert k.startswith('node_harmonic')
       assert isinstance(k, str)
       assert v >= 0.
-      assert isinstance(v, float) or isinstance(v, int)
+      assert np.isfinite(v)
+
+    # add random weights to nodes
+    for (e1, e2) in G.edges():
+      G[e1][e2]['weight'] = 3.14
+
+    # evaluate the feature
+    res = feat._GetNodeHarmonicCentrality(G=G, weight='weight')
+
+    # check the feature properties
+    assert isinstance(res, dict)
+    for k, v in res.items():
+      assert k.startswith('node_weighted_harmonic')
+      assert isinstance(k, str)
+      assert v >= 0.
       assert np.isfinite(v)

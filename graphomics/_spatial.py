@@ -199,7 +199,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     mask = np.where(mask != 0, 1, 0)
 
     # determine the scales to measure on
-    if max_box_size == None:
+    if max_box_size is None:
       # default max size is the largest power of 2 that
       # fits in the smallest dimension of the array:
       max_box_size = int(

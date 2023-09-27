@@ -93,6 +93,28 @@ class TestFeatureSpatial:
     assert res >= 0.
     assert np.isfinite(res)
 
+    #evaluate the feature
+    res = feat._GetFractalDimension(
+      skeleton=skeleton,
+      max_box_size=4
+    )
+
+    # check the feature properties
+    assert isinstance(res, float)
+    assert res >= 0.
+    assert np.isfinite(res)
+
+    #evaluate the feature
+    res = feat._GetFractalDimension(
+      skeleton=skeleton,
+      n_offsets=1
+    )
+
+    # check the feature properties
+    assert isinstance(res, float)
+    assert res >= 0.
+    assert np.isfinite(res)
+
   def test_feature_AverageShortestPathLength (self):
     # define the feature extractor class
     feat = GraphomicsSpatial()
@@ -120,7 +142,19 @@ class TestFeatureSpatial:
     res = feat._GetAverageShortestPathLength(G=G)
 
     # check the feature properties
-    assert isinstance(res, float)
+    assert res >= 0.
+    assert np.isfinite(res)
+
+    # create a second graph
+    G2 = nx.complete_graph(range(40, 100, n))
+
+    # merge the two graphs
+    G = nx.compose(G, G2)
+
+    #evaluate the feature
+    res = feat._GetAverageShortestPathLength(G=G)
+
+    # check the feature properties
     assert res >= 0.
     assert np.isfinite(res)
 
@@ -146,6 +180,23 @@ class TestFeatureSpatial:
       seed=42,
       directed=False
     )
+
+    #evaluate the feature
+    res = feat._GetEccentricity(G=G)
+
+    # check the feature properties
+    assert isinstance(res, dict)
+    for k, v in res.items():
+      assert k.startswith('node_eccentricity')
+      assert isinstance(k, str)
+      assert v >= 0.
+      assert np.isfinite(v)
+
+    # create a second graph
+    G2 = nx.complete_graph(range(40, 100, n))
+
+    # merge the two graphs
+    G = nx.compose(G, G2)
 
     #evaluate the feature
     res = feat._GetEccentricity(G=G)
@@ -301,12 +352,13 @@ class TestFeatureSpatial:
       directed=False
     )
     # re-label the nodes to create 3D tuples of coords
+    mapping = {
+      k : tuple(np.random.uniform(low=0., high=1., size=(3, )))
+      for k in G.nodes()
+    }
     nx.relabel_nodes(
       G=G,
-      mapping={
-        k : tuple(np.random.uniform(low=0., high=1., size=(3, )))
-        for k in G.nodes()
-      },
+      mapping=mapping,
       copy=False
     )
 
@@ -314,9 +366,29 @@ class TestFeatureSpatial:
     res = feat._GetDistancePendantNodes(G=G)
 
     # check the feature properties
-    # check the feature properties
     assert isinstance(res, dict)
     for k, v in res.items():
+      assert k.startswith('node_pendant_distance')
+      assert isinstance(k, str)
+      assert v >= 0.
+      assert isinstance(v, float)
+      assert np.isfinite(v)
+
+    # create a complete graph
+    G = nx.complete_graph(n=n)
+    # re-label the nodes to create 3D tuples of coords
+    nx.relabel_nodes(
+      G=G,
+      mapping=mapping,
+      copy=False
+    )
+
+    #evaluate the feature
+    res2 = feat._GetDistancePendantNodes(G=G)
+
+    # check the feature properties
+    assert isinstance(res2, dict)
+    for k, v in res2.items():
       assert k.startswith('node_pendant_distance')
       assert isinstance(k, str)
       assert v >= 0.

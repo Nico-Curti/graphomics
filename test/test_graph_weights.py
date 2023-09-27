@@ -67,6 +67,11 @@ class TestGraphWeightsExtractor:
 
     # create the weight extractor filter
     wtype = NodePairwiseDistanceFilter()
+
+    # raise an error if we get the edges without execute
+    with pytest.raises(RuntimeError):
+      wtype.GetWeightsList()
+
     # apply the weight extractor to the graph
     wtype.Execute(
       nodelist=nodelist,
@@ -113,6 +118,11 @@ class TestGraphWeightsExtractor:
 
     # create the weight extractor filter
     wtype = EdgeLengthPathsFilter()
+
+    # raise an error if we get the edges without execute
+    with pytest.raises(RuntimeError):
+      wtype.GetWeightsList()
+
     # apply the weight extractor to the graph
     wtype.Execute(
       nodelist=nodelist,
@@ -159,6 +169,22 @@ class TestGraphWeightsExtractor:
 
     # create the weight extractor filter
     wtype = EdgeLabelWeightFilter()
+
+    # raise an error if we get the edges without execute
+    with pytest.raises(RuntimeError):
+      wtype.GetWeightsList()
+
+    # raise an error if the metric is incorrect
+    with pytest.raises(ValueError):
+      wtype.Execute(
+      nodelist=nodelist,
+      edgelist=edgelist,
+      lut=lut,
+      mapper=mapper,
+      labelmap=mapper,
+      metric='dummy'
+    )
+
     # apply the weight extractor to the graph
     wtype.Execute(
       nodelist=nodelist,
@@ -206,6 +232,11 @@ class TestGraphWeightsExtractor:
 
     # check the graph filter
     graph_proxy = GraphFilter()
+
+    # raise an error if we get the edges without execute
+    with pytest.raises(RuntimeError):
+      graph_proxy.GetGraph()
+
     # execute the filter on the inputs
     graph_proxy.Execute(
       nodelist=nodelist,
@@ -221,6 +252,14 @@ class TestGraphWeightsExtractor:
     assert len(G.nodes()) > 0
     assert len(G.edges()) > 0
     assert nx.get_edge_attributes(G, name='weight') == {}
+
+    # raise an error if we use an incorrect number of weights
+    with pytest.raises(ValueError):
+      graph_proxy.Execute(
+        nodelist=nodelist,
+        edgelist=edgelist,
+        weights=[1.] * (len(edgelist) + 1)
+      )
 
     # execute the filter on the inputs
     graph_proxy.Execute(

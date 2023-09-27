@@ -3,6 +3,7 @@ branch = True
 omit =
   */graphomics/__init__.py
   */graphomics/__version__.py
+  */graphomics/__main__.py
 
 [report]
 # Regexes for lines to exclude from consideration

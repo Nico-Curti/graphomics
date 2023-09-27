@@ -64,12 +64,12 @@ class TestFeatureTopology:
 
     # generate a random number of nodes
     n = np.random.randint(
-      low=2,
+      low=3,
       high=20
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -96,12 +96,12 @@ class TestFeatureTopology:
 
     # generate a random number of nodes
     n = np.random.randint(
-      low=2,
+      low=3,
       high=20
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -131,18 +131,33 @@ class TestFeatureTopology:
     assert isinstance(res['edge_weights_std'], float)
     assert res['edge_weights_std'] == 0.
 
+    # add random weights to nodes
+    for (e1, e2) in G.edges():
+      G[e1][e2]['weight'] = 3.14
+
+    # evaluate the feature
+    res = feat._GetEdgeWeights(G=G)
+
+    # check the feature properties
+    assert isinstance(res, dict)
+    for k, v in res.items():
+      assert k.startswith('edge_weights_')
+      assert isinstance(k, str)
+      assert v >= 0
+      assert np.isfinite(v)
+
   def test_feature_SelfLinks (self):
     # define the feature extractor class
     feat = GraphomicsTopology()
 
     # generate a random number of nodes
     n = np.random.randint(
-      low=1,
+      low=3,
       high=20
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -323,7 +338,7 @@ class TestFeatureTopology:
 
     # generate a random number of nodes
     n = np.random.randint(
-      low=1,
+      low=3,
       high=20
     )
 

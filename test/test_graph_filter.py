@@ -70,6 +70,15 @@ class TestGraphFilter:
     with pytest.raises(TypeError):
       skeleton_filter.Execute()
 
+  def test_skeletonezer_get_without_execute (self):
+
+    # construct the object
+    skeleton_filter = SkeletonizeImageFilter()
+
+    # get the image without the execute
+    with pytest.raises(RuntimeError):
+      skeleton_filter.GetSkeletonImage()
+
   def test_graph_filter_img_required (self):
 
     # construct the object
@@ -78,6 +87,33 @@ class TestGraphFilter:
     # execute the filter without a img
     with pytest.raises(TypeError):
       graph_filter.Execute()
+
+  def test_graph_filter_get_without_execute (self):
+
+    # construct the object
+    graph_filter = GraphThicknessImageFilter()
+
+    # get the nodes without the execute
+    with pytest.raises(RuntimeError):
+      graph_filter.GetNodeIndexes()
+    with pytest.raises(RuntimeError):
+      graph_filter.GetNodePhysicalPoints()
+
+    # get the edges without the execute
+    with pytest.raises(RuntimeError):
+      graph_filter.GetEdgeIndexes()
+    with pytest.raises(RuntimeError):
+      graph_filter.GetEdgePhysicalPoints()
+
+    # get the lut without the execute
+    with pytest.raises(RuntimeError):
+      graph_filter.GetEdgeLUTIndexes()
+    with pytest.raises(RuntimeError):
+      graph_filter.GetEdgeLUTPhysicalPoints()
+
+    # get the edge map without the execute
+    with pytest.raises(RuntimeError):
+      graph_filter.GetEdgeMap()
   
   def test_ndim_2D_3D (self):
     
@@ -91,6 +127,22 @@ class TestGraphFilter:
     # execute the filter with a 4D image
     with pytest.raises(ValueError):
       skeleton_filter.Execute(src=src)
+
+    # test with 2D input
+    src = np.ones(shape=(10, 10), dtype=np.uint8)
+    src = sitk.GetImageFromArray(src)
+
+    # construct the object
+    skeleton_filter = SkeletonizeImageFilter()
+    skeleton_filter.Execute(src=src)
+
+    # test with 3D input
+    src = np.ones(shape=(10, 10, 10), dtype=np.uint8)
+    src = sitk.GetImageFromArray(src)
+
+    # construct the object
+    skeleton_filter = SkeletonizeImageFilter()
+    skeleton_filter.Execute(src=src)
 
   def test_n_nodes_negative_components (self):
     
