@@ -18,7 +18,7 @@ Further improvements will occur in the next versions.
 - :globe_with_meridians: [Global] Manifest and pyproject files for the Python package
 - :globe_with_meridians: [Global] Add first version of Appveyor build CI for Windows
 - :globe_with_meridians: [Global] Add first version of Github Actions CI for Python and Docs
-- :globe_with_meridians: [Global] Added downloadable brain image sample for testing
+- :globe_with_meridians: [Global] Add download of medical image sample via Google Drive for testing
 
 - :computer: [Python] Installation file for the Python package
 - :computer: [Python] Entry point of the library for its usage with command line interface (ref. `graphomics/__main__.py`)
@@ -33,7 +33,10 @@ Further improvements will occur in the next versions.
 - :computer: [Python] Image resampling to equal spacing for the correct weighing of the network according to the path length
 - :computer: [Python] Test for feature extractor management
 - :computer: [Python] Test for feature extractor configuration file
-- :computer: [Python] Test for GraphThicknessImageFilter
+- :computer: [Python] Test for `GraphThicknessImageFilter`
+- :computer: [Python] Test for graphomic topological features (aka `GraphomicsTopology`)
+- :computer: [Python] Test for graphomic centrality features (aka `GraphomicsCentrality`)
+- :computer: [Python] Test for graphomic spatial features (aka `GraphomicsSpatial`)
 
 - :construction: [Features] First list of `Centrality` Graphomics features:
   * **Node degree centrality statistics**:

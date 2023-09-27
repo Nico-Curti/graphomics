@@ -133,7 +133,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     )
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
-      x=list(dict(degree.values())),
+      x=list(dict(degree).values()),
       prefix=f'node_{weight_prefix}degree_'
     )
 

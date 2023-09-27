@@ -222,9 +222,9 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     scales = np.unique(scales)
 
     # get the locations of all non-zero pixels
-    voxels = np.squeeze(
-      np.dstack(
-        np.where(skeleton != 0)
+    voxels = np.asarray(
+      list(
+        zip(*np.where(mask != 0))
       )
     )
 
@@ -247,7 +247,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
                       for x in bin_edges
                     ]
         H1, e = np.histogramdd(
-          voxels,
+          sample=voxels,
           bins=bin_edges
         )
         touched.append(np.sum(H1 > 0))
@@ -258,13 +258,13 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
 
     # From all sets N found, keep the smallest one at each scale
     Ns = Ns.min(axis=1)
-    Ns = np.unique(Ns)
 
     # Only keep scales at which Ns changed
     scales = [1. / np.min(scales[Ns == x])
               for x in Ns
              ]
 
+    Ns = np.unique(Ns)
     Ns = Ns[Ns > 0]
     scales = scales[:len(Ns)]
     # perform fit
@@ -345,18 +345,42 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     '''
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
-    # compute the distribution of values
-    ecc = nx.eccentricity(
-      G=G,
-      v=None,
-      sp=None,
-      weight=weight
-    )
-    # compute the statistics of the values distribution
-    stats = _get_distribution_main_stats(
-      x=list(ecc.values()),
-      prefix=f'node_{weight_prefix}eccentricity_'
-    )
+
+    # if the network is a single connected component
+    if nx.is_connected(G):
+      # compute the distribution of values
+      ecc = nx.eccentricity(
+        G=G,
+        v=None,
+        sp=None,
+        weight=weight
+      )
+      # compute the statistics of the values distribution
+      stats = _get_distribution_main_stats(
+        x=list(ecc.values()),
+        prefix=f'node_{weight_prefix}eccentricity_'
+      )
+    # otherwise evaluate the metric on the largest connected
+    # component
+    else:
+      # get the largest connected component indices
+      cc = max(nx.connected_components(G),
+        key=len
+      )
+      # extract the related sub-graph
+      G0 = G.subgraph(cc)
+      # compute the distribution of values
+      ecc = nx.eccentricity(
+        G=G0,
+        v=None,
+        sp=None,
+        weight=weight
+      )
+      # compute the statistics of the values distribution
+      stats = _get_distribution_main_stats(
+        x=list(ecc.values()),
+        prefix=f'node_{weight_prefix}eccentricity_'
+      )
 
     return stats
 
@@ -446,7 +470,6 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     )
 
     return stats
-
 
   def _GetDistanceNoPendantNodes (self, G : nx.Graph) -> dict:
     '''

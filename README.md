@@ -192,7 +192,7 @@ Description of the folders related to the `Python` version.
 
 | **Directory**                                                                        |  **Description**                                                             |
 |:-------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------|
-| [example](https://github.com/Nico-Curti/graphomics/blob/main/examples)               | Example codes for introducing new users to pyGraphomics library.             |
+| [examples](https://github.com/Nico-Curti/graphomics/blob/main/examples)              | Example codes for introducing new users to pyGraphomics library.             |
 | [notebook](https://github.com/Nico-Curti/graphomics/blob/main/docs/source/notebooks) | `Jupyter` notebook with some examples of image processing tasks.             |
 | [cfg](https://github.com/Nico-Curti/graphomics/blob/main/cfg)                        | Examples and templates of configuration files for pyGraphomics pipelines.    |
 | [graphomics](https://github.com/Nico-Curti/graphomics/blob/main/graphomics)          | List of `Python` scripts for `graphomic` features extraction and processing. |

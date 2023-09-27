@@ -106,7 +106,7 @@ class GraphThicknessImageFilter (object):
 
   def SetGlobalDefaultNumberOfThreads (self, nth : int):
     '''
-    Set the number of threads to used by the parallel
+    Set the number of threads to use by the parallel
     filters used by the object.
 
     Parameters

@@ -3,11 +3,17 @@
 
 import os
 import pytest
-from graphomics import GraphThicknessImageFilter
-from graphomics import LoadImageFileInAnyFormat
-from graphomics import SkeletonizeImageFilter
-import SimpleITK as sitk
+
 import numpy as np
+import SimpleITK as sitk
+
+# import filter for the medical image loading
+from graphomics import LoadImageFileInAnyFormat
+# import filter for the image skeletonization
+from graphomics import SkeletonizeImageFilter
+# import filter for the skeleton graph extraction
+from graphomics import GraphThicknessImageFilter
+# import the test sample downloader
 from .download_from_drive import download_file_from_google_drive
 
 __author__  = ['Nico Curti',
@@ -35,12 +41,14 @@ if not os.path.exists(img_sample):
   os.makedirs(sample_dir, exist_ok=True)
 
   # download the sample image
-  download_file_from_google_drive(Id='1UBPKRkadArzZBbBn3GeCDRDIOy199NeB', 
-                                  destination=img_sample)
+  download_file_from_google_drive(
+    Id='1UBPKRkadArzZBbBn3GeCDRDIOy199NeB',
+    destination=img_sample
+  )
 
 
 class TestGraphFilter:
-  """
+  '''
   Tests:
     - if the skeletonizer raises an error without a image
     - if the graph filter raises an error without a image
@@ -51,7 +59,7 @@ class TestGraphFilter:
     - if all the lut keys are in the edge map and all the labels in the edge map are in the lut keys
     - if the edge map is equal to the skeleton
     - if there are no pixels equal to -1 in the edge map
-  """
+  '''
   
   def test_skeletonezer_img_required (self):
 
@@ -316,4 +324,3 @@ class TestGraphFilter:
 
     # assert that there are no pixels equal to -1
     assert sitk.GetArrayViewFromImage(edgemap).sum() == 0
-
