@@ -336,7 +336,7 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     .. _networkx-cliques: https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.clique.find_cliques.html
     '''
 
-    return sum(1 for _ in nx.find_cliques(G=G, nodes=None))
+    return sum(1 for _ in nx.find_cliques(G=G))
 
 
 if __name__ == '__main__':
