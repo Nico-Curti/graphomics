@@ -349,12 +349,22 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     # if the network is a single connected component
     if nx.is_connected(G):
       # compute the distribution of values
-      ecc = nx.eccentricity(
-        G=G,
-        v=None,
-        sp=None,
-        weight=weight
-      )
+      if int(nx.__version__.split('.')[0]) >= 3:
+        ecc = nx.eccentricity(
+          G=G,
+          v=None,
+          sp=None,
+          weight=weight
+        )
+      else:
+        # for the older version of networkx there is no
+        # the possibility to insert weights
+        weight_prefix = ''
+        ecc = nx.eccentricity(
+          G=G,
+          v=None,
+          sp=None
+        )
       # compute the statistics of the values distribution
       stats = _get_distribution_main_stats(
         x=list(ecc.values()),
