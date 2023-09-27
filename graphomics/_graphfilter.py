@@ -226,10 +226,10 @@ class GraphThicknessImageFilter (object):
     self.lut = lut_edges
 
     # get the nodelist from the lut for a faster output
-    self.nodes = list(set(sum(list(map(list, self.lut.values())), [])))
+    self.nodes = list(set(sum([x for x in self.lut.values()], ())))
 
     # get the edgelist from the lut for a faster output
-    self.edges = list(map(tuple, self.lut.values()))
+    self.edges = list(self.lut.values())
 
     # get the edge map of the volume
     self.edge_map = edge_map

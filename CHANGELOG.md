@@ -37,6 +37,7 @@ Further improvements will occur in the next versions.
 - :computer: [Python] Test for graphomic topological features (aka `GraphomicsTopology`)
 - :computer: [Python] Test for graphomic centrality features (aka `GraphomicsCentrality`)
 - :computer: [Python] Test for graphomic spatial features (aka `GraphomicsSpatial`)
+- :computer: [Python] Test for graphomic weight extractor (aka `GraphWeightsExtractorFilter`)
 
 - :construction: [Features] First list of `Centrality` Graphomics features:
   * **Node degree centrality statistics**:

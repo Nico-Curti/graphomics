@@ -300,7 +300,7 @@ class EdgeLengthPathsFilter (GraphWeightsExtractorFilter):
     self._stats.Execute(mapper)
 
     # initialize an empty buffer for the weights
-    weights = [1.] * len(edgelist)
+    weights = [1.] * len(lut)
 
     # loop along the edge lut keys
     # NOTE: the edgelist is ordered as the lut
@@ -484,7 +484,10 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
     self._stats.Execute(ws)
 
     # initialize an empty buffer for the weights
-    weights = [1.] * len(edgelist)
+    # NOTE: we use the length of the lut and NOT the
+    # edgelist ones, since the lut could contain also
+    # self links that are removed by the edgelist
+    weights = [1.] * len(lut)
 
     # loop along the edge lut keys
     # NOTE: the edgelist is ordered as the lut
