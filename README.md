@@ -8,7 +8,7 @@
 
 | **Authors**  | **Project** |  **Documentation** | **Build Status** | **Code Quality** | **Coverage** |
 |:------------:|:-----------:|:------------------:|:----------------:|:----------------:|:------------:|
-| [**N. Curti**](https://github.com/Nico-Curti) <br/> [**G. Carlini**](https://github.com/GianlucaCarlini) <br/> [**R.Biondi**](https://github.com/RiccardoBiondi) | **graphomics** | [![Doxygen Sphinx](https://github.com/Nico-Curti/graphomics/actions/workflows/docs.yml/badge.svg)](https://github.com/Nico-Curti/graphomics/actions/workflows/docs.yml) <br/> [![ReadTheDocs](https://readthedocs.org/projects/graphomics/badge/?version=latest)](https://graphomics.readthedocs.io/en/latest/?badge=latest) | [![Python](https://github.com/Nico-Curti/graphomics/actions/workflows/python.yml/badge.svg)](https://github.com/Nico-Curti/graphomics/actions/workflows/python.yml) | **TODO** | [![codecov](https://codecov.io/gh/Nico-Curti/graphomics/branch/master/graph/badge.svg)](https://codecov.io/gh/Nico-Curti/graphomics) |
+| [**N. Curti**](https://github.com/Nico-Curti) <br/> [**G. Carlini**](https://github.com/GianlucaCarlini) <br/> [**R.Biondi**](https://github.com/RiccardoBiondi) | **graphomics** | [![Doxygen Sphinx](https://github.com/Nico-Curti/graphomics/actions/workflows/docs.yml/badge.svg)](https://github.com/Nico-Curti/graphomics/actions/workflows/docs.yml) <br/> [![ReadTheDocs](https://readthedocs.org/projects/graphomics/badge/?version=latest)](https://graphomics.readthedocs.io/en/latest/?badge=latest) | [![Python](https://github.com/Nico-Curti/graphomics/actions/workflows/python.yml/badge.svg)](https://github.com/Nico-Curti/graphomics/actions/workflows/python.yml) | **TODO** | [![codecov](https://codecov.io/gh/Nico-Curti/graphomics/graph/badge.svg?token=YcCFfQqC3r)](https://codecov.io/gh/Nico-Curti/graphomics) |
 
 **Appveyor:** [![appveyor](https://ci.appveyor.com/api/projects/status/djnkyxc64dlm4r6p/branch/main?svg=true)](https://ci.appveyor.com/project/Nico-Curti/graphomics-9jr6a/branch/main)
 
@@ -55,13 +55,69 @@ The platform supports both the feature extraction in 2D and 3D and can be used t
 
 **TODO**
 
+<div class="image">
+  <img src="https://github.com/Nico-Curti/graphomics/blob/main/img/brain.png" width="120" height="120">
+</div>
+
 ### Graphomics Features
 
-**TODO**
+Associated to each skeleton graph a set of *graphomic* features could be extracted and use to characterize the geometrical properties of the volume.
+
+The `graphomics` package implements an initial set of pre-defined features, dividing them into a series of classes:
+
+* [**Topology**](https://github.com/Nico-Curti/graphomics/blob/main/graphomics/_topology.py) graphomic features
+
+| **Class**  | **Feature**                   | **Description**                                      |
+|:-----------|:-----------------------------:|:-----------------------------------------------------|
+|            | `NumberOfNodes`               | Number of nodes of the skeleton graph                |
+|            | `NumberOfEdges`               | Number of edges of the skeleton graph                |
+|            | `EdgeWeights`                 | Main statistics of the edge weights distribution     |
+|            | `SelfLinks`                   | Number of self links of the skeleton graph           |
+| Topology   | `EulerNumber`                 | Euler number of the input image/volume               |
+|            | `NumberOfPendantNodes`        | Number of pendant nodes of the skeleton graph        |
+|            | `NumberOfConnectedComponents` | Number of connected components of the skeleton graph |
+|            | `ModularityScore`             | Modularity score of the skeleton graph               |
+|            | `NumberOfMaximalCliques`      | Number of maximal cliques of the skeleton graph      |
+
+* [**Centrality**](https://github.com/Nico-Curti/graphomics/blob/main/graphomics/_centrality.py) graphomic features
+
+| **Class**  | **Feature**                   | **Description**                                                 |
+|:-----------|:-----------------------------:|:----------------------------------------------------------------|
+|            | `NodeDegreeCentrality`        | Main statistics of the node degree centrality distribution      |
+|            | `NodeBetweennessCentrality`   | Main statistics of the node betweenness centrality distribution |
+| Centrality | `NodeClusteringCoefficient`   | Main statistics of the node clustering coefficient distribution |
+|            | `NodeClosenessCentrality`     | Main statistics of the node closeness centrality distribution   |
+|            | `NodePageRankCentrality`      | Main statistics of the node pagerank centrality distribution    |
+|            | `NodeHarmonicCentrality`      | Main statistics of the node harmonic centrality distribution    |
+
+* [**Spatial**](https://github.com/Nico-Curti/graphomics/blob/main/graphomics/_spatial.py) graphomic features
+
+| **Class**  | **Feature**                 | **Description**                                                                               |
+|:-----------|:---------------------------:|:----------------------------------------------------------------------------------------------|
+|            | `NodeDensityStatistics`     | Main statistics of the node density distribution                                              |
+|            | `FractalDimension`          | Fractal dimension of the skeleton graph                                                       |
+|            | `AverageShortestPathLength` | Average shortest path length in the skeleton graph                                            |
+|            | `Eccentricity`              | Main statistics of the node eccentricity distribution                                         |
+| Spatial    | `CenterOfMass`              | Center of mass of the skeleton graph nodes                                                    |
+|            | `DistanceMostCentralNodes`  | Main statistics of the distribution of distances of the top-k most central nodes in the graph |
+|            | `DistanceNoPendantNodes`    | Main statistics of the distribution of distances of central (no-pendant) nodes of the graph   |
+|            | `DistancePendantNodes`      | Main statistics of the distribution of distances of pendant nodes of the graph                |
+
+The above list of features could be easily extended providing novel member functions to the introduced feature classes **or** providing entire novel classes.
+
+In the first case, you need to include the novel feature as member function of the class, ensuring that the feature name is defined by `_Get[feature-name]` and paying attention to the signature of the function: the names used in the function signature must be the same of the other features (*otherwise you need to edit also the feature-extractor filter accordingly...*)
+
+In the second case, you need to create a novel class of graphomic features, inheriting by the [`_BaseGraphomicsFeatures`](https://github.com/Nico-Curti/graphomics/blob/main/graphomics/_basefeature.py).
+Each feature must be implemented as a member function, following the nomenclature `_Get[feature-name]`.
+Also in this case it is important to preserve the signature of the function and the variable naming.
+
+| :triangular_flag_on_post: Note |
+|:-------------------------------|
+| If you add extra or novel graphomic features remember to add them to the configuration file! |
 
 ## Prerequisites
 
-The complete list of requirements for the `graphomics` package is reported in the [requirements.txt](https://github.com/Nico-Curti/graphomics/blob/main/requirements.txt)
+The complete list of requirements for the `graphomics` packagegraphomics` package is reported in the [requirements.txt](https://github.com/Nico-Curti/graphomics/blob/main/requirements.txt)
 
 ## Installation
 

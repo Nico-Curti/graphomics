@@ -19,6 +19,7 @@ Further improvements will occur in the next versions.
 - :globe_with_meridians: [Global] Add first version of Appveyor build CI for Windows
 - :globe_with_meridians: [Global] Add first version of Github Actions CI for Python and Docs
 - :globe_with_meridians: [Global] Add download of medical image sample via Google Drive for testing
+- :globe_with_meridians: [Global] Include Codecov tracking of the package
 
 - :computer: [Python] Installation file for the Python package
 - :computer: [Python] Entry point of the library for its usage with command line interface (ref. `graphomics/__main__.py`)

@@ -433,8 +433,9 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
                                           topk : int = 10,
                                    ) -> dict:
     '''
-    Get the distance of the top-k most central nodes in the graph
-    in relation to the center of mass.
+    Get the main statistics of the distribution of distances
+    of the top-k most central nodes in the graph in relation
+    to the center of mass.
 
     Parameters
     ----------
@@ -492,7 +493,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
   def _GetDistanceNoPendantNodes (self, G : nx.Graph) -> dict:
     '''
     Get the main statistics of the distribution of distances
-    of pendant nodes of the graph in relation to the center
+    of central (no-pendant) nodes of the graph in relation to the center
     of mass.
 
     Parameters
