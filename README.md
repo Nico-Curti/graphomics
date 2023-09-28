@@ -53,11 +53,17 @@ The platform supports both the feature extraction in 2D and 3D and can be used t
 
 ## Overview
 
-**TODO**
+The aim of the graphomic analysis is to leverage topology to extract a series of informative features.
+To this purpose, the `graphomics` package represents a novel approach to medical image analysis, providing algorithms tailored to extract network-based information from 2D/3D medical images.
+Starting from the quantification of the skeleton of a 3D Volume of Interest (VOI), the 3D underlying network is evaluated, providing a novel set of information and features which could integrate the standard Radiomics analysis.
+The proposed method is totally independent of the medical image task and relies only on the availability of a segmented VOI, i.e., the analogous constraint of any Radiomics application.
+An example of the so-called *skeleton graph* obtained by the processing of a brain volume structure is showed in the following image.
 
-<div class="image">
-  <img src="https://github.com/Nico-Curti/graphomics/blob/main/img/brain.png" width="120" height="120">
-</div>
+<p align="center">
+  <img src="https://github.com/Nico-Curti/graphomics/blob/main/img/brain.png">
+</p>
+
+A wide list of network-based features could be extracted analyzing the skeleton graph using the `graphomics` package.
 
 ### Graphomics Features
 
