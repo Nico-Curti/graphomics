@@ -480,9 +480,9 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
     # selecting only the positive values, i.e. the edge markers
     markers = sitk.Threshold(
       image1=mapper,
-      lower=0,
-      upper=int(max(lut.keys())),
-      outsideValue=0
+      lower=0.0,
+      upper=float(max(lut.keys())),
+      outsideValue=0.0
     )
 
     # apply the watershed algorithm using the marker image
@@ -516,7 +516,7 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
     # edgelist and weights is correct
     for l in lut.keys():
       # get the indices of the voxels belonging to the CC
-      idx = self._stats.GetIndexes(l)
+      idx = self._stats.GetIndexes(int(l))
 
       # reshape to numpy coords
       idx = [idx[i : i + ndim]

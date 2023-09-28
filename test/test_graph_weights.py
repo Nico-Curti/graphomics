@@ -181,13 +181,13 @@ class TestGraphWeightsExtractor:
     # raise an error if the metric is incorrect
     with pytest.raises(ValueError):
       wtype.Execute(
-      nodelist=nodelist,
-      edgelist=edgelist,
-      lut=lut,
-      mapper=mapper,
-      labelmap=mapper,
-      metric='dummy'
-    )
+        nodelist=nodelist,
+        edgelist=edgelist,
+        lut=lut,
+        mapper=mapper,
+        labelmap=mask,
+        metric='dummy'
+      )
 
     # apply the weight extractor to the graph
     wtype.Execute(
@@ -195,7 +195,7 @@ class TestGraphWeightsExtractor:
       edgelist=edgelist,
       lut=lut,
       mapper=mapper,
-      labelmap=mapper,
+      labelmap=mask,
     )
 
     # get the computed weights from the filter
@@ -213,7 +213,7 @@ class TestGraphWeightsExtractor:
       edgelist=edgelist,
       lut=lut,
       mapper=mapper,
-      labelmap=mapper,
+      labelmap=mask,
       metric=np.nanmean,
     )
 
