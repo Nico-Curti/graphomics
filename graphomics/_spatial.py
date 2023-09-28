@@ -380,12 +380,20 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       # extract the related sub-graph
       G0 = G.subgraph(cc)
       # compute the distribution of values
-      ecc = nx.eccentricity(
-        G=G0,
-        v=None,
-        sp=None,
-        weight=weight
-      )
+      if int(nx.__version__.split('.')[0]) >= 3:
+        ecc = nx.eccentricity(
+          G=G0,
+          v=None,
+          sp=None,
+          weight=weight
+        )
+      else:
+        weight_prefix = ''
+        ecc = nx.eccentricity(
+          G=G0,
+          v=None,
+          sp=None
+        )
       # compute the statistics of the values distribution
       stats = _get_distribution_main_stats(
         x=list(ecc.values()),

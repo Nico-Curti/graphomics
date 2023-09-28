@@ -481,7 +481,7 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
     markers = sitk.Threshold(
       image1=mapper,
       lower=0,
-      upper=max(lut.keys()),
+      upper=int(max(lut.keys())),
       outsideValue=0
     )
 
