@@ -499,7 +499,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     '''
     # get the list of no-pendant nodes
     no_pendant = [n for n, d in G.degree() if d > 1]
-    # check if the graph is not a simple chain
+    # check if the graph is not a set of disjointed nodes
     if not no_pendant:
       # the no-pendant nodes are the same of pendant ones
       # and therefore the statistics must be the same

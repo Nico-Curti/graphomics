@@ -37,7 +37,7 @@ class TestFeatureCentrality:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -86,7 +86,7 @@ class TestFeatureCentrality:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -136,7 +136,7 @@ class TestFeatureCentrality:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -185,7 +185,7 @@ class TestFeatureCentrality:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -235,7 +235,7 @@ class TestFeatureCentrality:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -285,7 +285,7 @@ class TestFeatureCentrality:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 

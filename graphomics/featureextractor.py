@@ -834,8 +834,7 @@ class GraphomicsFeatureExtractor (object):
     graph_proxy = GraphFilter()
     # execute the filter on the inputs
     graph_proxy.Execute(
-      nodelist=nodes,
-      edgelist=edges,
+      lut=lut,
       weights=weights
     )
     # get the graph and store it in the common inputs
