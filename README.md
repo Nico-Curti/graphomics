@@ -127,7 +127,7 @@ The complete list of requirements for the `graphomics` packagegraphomics` packag
 
 ## Installation
 
-Python version supported : ![Python version](https://img.shields.io/badge/python-3.5|3.6|3.7|3.8|3.9|3.10-blue.svg)
+Python version supported : ![Python version](https://img.shields.io/badge/python-3.5|3.6|3.7|3.8|3.9|3.10|3.11-blue.svg)
 
 The easiest way to the get the `graphomics` package in `Python` is via pip installation
 
@@ -241,7 +241,7 @@ The tests are performed using the [`pytest`](https://github.com/pytest-dev/pytes
 You can run the full list of tests with:
 
 ```bash
-pytest
+python -m pytest ./test/ --cov=graphomics --cov-config=.coveragerc
 ```
 
 in the project root directory.
