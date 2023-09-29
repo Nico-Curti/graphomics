@@ -748,6 +748,7 @@ class GraphomicsFeatureExtractor (object):
             ))
           # set the extra parameters required
           wextra_params['labelmap'] = labelmap
+          wextra_params['mask'] = mask
 
         # set all the extra parameters
         w_name = wtype.__class__.__name__

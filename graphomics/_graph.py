@@ -390,6 +390,7 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
                      edgelist : list,
                      lut : dict,
                      mapper : sitk.Image,
+                     mask : sitk.Image,
                      labelmap : sitk.Image,
                      metric : str = 'average'
               ) -> dict :
@@ -415,6 +416,10 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
         The edge map stores the edge paths as disjoint lines in the
         original volume. The connected components of the edge-map are
         the edges of the graph found by the filter.
+
+      mask : sitk.Image
+        Original image volume to use as mask on the resulting
+        semantic segmentation.
 
       labelmap : sitk.Image
         Input image/volume with the same dimensions and metadata
@@ -495,10 +500,10 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
     )
 
     # mask the resulting watershed segmentation according
-    # to the original mask
+    # to the original volume
     ws = sitk.Mask(
       image=ws,
-      maskImage=labelmap,
+      maskImage=mask,
       outsideValue=0,
       maskingValue=0,
     )

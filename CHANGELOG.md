@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1] - 2023-09-28
+## [0.0.1] - 2023-09-29
 
 First version of the library.
 This is the starting point of the development of the *pyGraphomics* package.
@@ -220,6 +220,9 @@ Further improvements will occur in the next versions.
 - :closed_book: [Docs] Notebook example for the graph extraction processing in 3D
 - :closed_book: [Docs] Notebook example for the medical imaging application in 3D
 - :closed_book: [Docs] Notebook example for the graphomics semantic segmentation in 2D
+  with real-case application to femour, brain, and liver volumes
 - :closed_book: [Docs] Notebook example for the graphomics semantic segmentation in 3D
   with real-case application to femour, brain, and liver volumes
+- :closed_book: [Docs] Notebook example for multi-modal image analysis
+  with real-case application to multiple myeloma
 - :closed_book: [Docs] List of notebook examples in the sphinx documentation

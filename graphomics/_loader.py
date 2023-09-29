@@ -16,11 +16,17 @@ __email__ = ['nico.curti2@unibo.it',
              'riccardo.biondi7@unibo.it'
             ]
 
-__all__ = ['LoadImageFileInAnyFormat']
+__all__ = [
+  'LoadImageFileInAnyFormat',
+  'ResampleSpacing',
+  'ResampleSize',
+  'BoundingBox',
+  'CropMinimumBoundingBox'
+]
 
 
 def LoadImageFileInAnyFormat (filepath : str,
-                              binarize : bool = True,
+                              binarize : bool = False,
                               equal_spacing : bool = False,
                               crop : bool = False,
                              ) -> sitk.Image :
@@ -35,7 +41,7 @@ def LoadImageFileInAnyFormat (filepath : str,
     filepath : str
       Input filename or path in which load the images.
 
-    binarize : bool (default := True)
+    binarize : bool (default := False)
       Force the binarization of the loaded image into [0, 1] range,
       considering all the no-null values as signal.
 
@@ -157,7 +163,7 @@ def ResampleSpacing (mask : sitk.Image,
                      interpolator : int = sitk.sitkNearestNeighbor,
                     ) -> sitk.Image :
   '''
-  Resample input binary mask to equal spacing
+  Resample input binary mask to the required spacing
 
   Parameters
   ----------
@@ -186,6 +192,57 @@ def ResampleSpacing (mask : sitk.Image,
     s = np.round((osi * osp) / nsp)
     s = int(s)
     new_size.append(s)
+
+  # evaluate the resampling
+  resampled_mask = sitk.Resample(
+    image1=mask,
+    size=new_size,
+    transform=sitk.Transform(),
+    interpolator=interpolator,
+    outputOrigin=mask.GetOrigin(),
+    outputSpacing=new_spacing,
+    outputDirection=mask.GetDirection(),
+    defaultPixelValue=0,
+    outputPixelType=mask.GetPixelID(),
+    useNearestNeighborExtrapolator=False
+  )
+
+  return resampled_mask
+
+def ResampleSize (mask : sitk.Image,
+                  new_size : tuple,
+                  interpolator : int = sitk.sitkNearestNeighbor,
+                 ) -> sitk.Image :
+  '''
+  Resample input binary mask to the required size
+
+  Parameters
+  ----------
+    mask : sitk.Image
+      Input binary image mask to process.
+
+    new_size : tuple
+      Size required for the new image.
+
+    interpolator : int (default := sitk.sitkNearestNeighbor)
+      Interpolator type to use.
+      Default is the NearestNeighbor interpolator which is the most
+      appropriated to preserve binary format of the masks.
+  '''
+
+  # get the original spacing
+  orig_spacing = mask.GetSpacing()
+  # get the original size
+  orig_size = mask.GetSize()
+  # compute the new spacing of the image according
+  # to the required new spacing
+  new_spacing = []
+  # loop along the available variables
+  for osi, osp, nsp in zip(orig_size, orig_spacing, new_size):
+    # the new spacing is given by (old_size / old_spacing) / new_size
+    s = np.round((osi * osp) / nsp)
+    s = int(s)
+    new_spacing.append(s)
 
   # evaluate the resampling
   resampled_mask = sitk.Resample(

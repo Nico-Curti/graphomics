@@ -185,6 +185,7 @@ class TestGraphWeightsExtractor:
         edgelist=edgelist,
         lut=lut,
         mapper=mapper,
+        mask=mask,
         labelmap=mask,
         metric='dummy'
       )
@@ -195,6 +196,7 @@ class TestGraphWeightsExtractor:
       edgelist=edgelist,
       lut=lut,
       mapper=mapper,
+      mask=mask,
       labelmap=mask,
     )
 
@@ -213,6 +215,7 @@ class TestGraphWeightsExtractor:
       edgelist=edgelist,
       lut=lut,
       mapper=mapper,
+      mask=mask,
       labelmap=mask,
       metric=np.nanmean,
     )
