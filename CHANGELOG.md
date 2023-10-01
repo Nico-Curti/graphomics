@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1] - 2023-09-29
+## [0.0.1] - 2023-10-01
 
 First version of the library.
 This is the starting point of the development of the *pyGraphomics* package.
@@ -41,6 +41,8 @@ Further improvements will occur in the next versions.
 - :computer: [Python] Test for graphomic centrality features (aka `GraphomicsCentrality`)
 - :computer: [Python] Test for graphomic spatial features (aka `GraphomicsSpatial`)
 - :computer: [Python] Test for graphomic weight extractor (aka `GraphWeightsExtractorFilter`)
+- :computer: [Python] Test for graphomic base features (aka `_BaseGraphomicsFeatures`)
+- :computer: [Python] Test for graphomic features extractor (aka `GraphomicsFeatureExtractor`)
 
 - :construction: [Features] First list of `Centrality` Graphomics features:
   * **Node degree centrality statistics**:

@@ -16,6 +16,7 @@ from ._skeletonizer import SkeletonizeImageFilter
 from ._graphfilter import GraphThicknessImageFilter
 # import filters for graph weighing
 from ._graph import (
+  GraphWeightsExtractorFilter,
   NodePairwiseDistanceFilter,
   EdgeLengthPathsFilter,
   EdgeLabelWeightFilter,

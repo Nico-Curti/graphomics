@@ -123,7 +123,7 @@ Also in this case it is important to preserve the signature of the function and 
 
 ## Prerequisites
 
-The complete list of requirements for the `graphomics` packagegraphomics` package is reported in the [requirements.txt](https://github.com/Nico-Curti/graphomics/blob/main/requirements.txt)
+The complete list of requirements for the `graphomics` package is reported in the [requirements.txt](https://github.com/Nico-Curti/graphomics/blob/main/requirements.txt)
 
 ## Installation
 
