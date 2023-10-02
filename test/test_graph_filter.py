@@ -15,6 +15,7 @@ from graphomics import SkeletonizeImageFilter
 from graphomics import GraphThicknessImageFilter
 # import the test sample downloader
 from .download_from_drive import download_file_from_google_drive
+from skimage.data import binary_blobs
 
 __author__  = ['Nico Curti',
                'Gianluca Carlini',
@@ -45,6 +46,16 @@ if not os.path.exists(img_sample):
     Id='1UBPKRkadArzZBbBn3GeCDRDIOy199NeB',
     destination=img_sample
   )
+
+img = LoadImageFileInAnyFormat(img_sample, binarize=True, equal_spacing=True)
+
+skeleton_filter = SkeletonizeImageFilter()
+skeleton_filter.Execute(src=img)
+skeleton_3d = skeleton_filter.GetSkeletonImage()
+
+slice = img[:, :, img.GetSize()[2] // 2]
+skeleton_filter.Execute(src=slice)
+skeleton_2d = skeleton_filter.GetSkeletonImage()
 
 
 class TestGraphFilter:
@@ -105,65 +116,81 @@ class TestGraphFilter:
     with pytest.raises(RuntimeError):
       graph_filter.GetEdgePhysicalPoints()
 
-    # get the lut without the execute
+    # get the edges lut without the execute
     with pytest.raises(RuntimeError):
       graph_filter.GetEdgeLUTIndexes()
     with pytest.raises(RuntimeError):
       graph_filter.GetEdgeLUTPhysicalPoints()
+    
+    # get the nodes lut without the execute
+    with pytest.raises(RuntimeError):
+      graph_filter.GetNodeLUTIndexes()
+    with pytest.raises(RuntimeError):
+      graph_filter.GetNodeLUTPhysicalPoints()
 
     # get the edge map without the execute
     with pytest.raises(RuntimeError):
       graph_filter.GetEdgeMap()
   
-  def test_ndim_2D_3D (self):
+  def test_ndim_not_2D_3D (self):
     
-    # create a 4D image
-    src = np.ones(shape=(10, 10, 10, 10), dtype=np.uint8)
-    src = sitk.GetImageFromArray(src)
-
+    # create a random dimension between 4 and 10
+    ndim = np.random.randint(4, 10)
+    
     # construct the object
-    skeleton_filter = SkeletonizeImageFilter()
+    graph_filter = GraphThicknessImageFilter()
 
-    # execute the filter with a 4D image
     with pytest.raises(ValueError):
-      skeleton_filter.Execute(src=src)
+      # set the dimensionality
+      graph_filter.SetInputDimensionality(ndim)
 
-    # test with 2D input
-    src = np.ones(shape=(10, 10), dtype=np.uint8)
-    src = sitk.GetImageFromArray(src)
-
-    # construct the object
-    skeleton_filter = SkeletonizeImageFilter()
-    skeleton_filter.Execute(src=src)
-
-    # test with 3D input
-    src = np.ones(shape=(10, 10, 10), dtype=np.uint8)
-    src = sitk.GetImageFromArray(src)
-
-    # construct the object
-    skeleton_filter = SkeletonizeImageFilter()
-    skeleton_filter.Execute(src=src)
-
-  def test_n_nodes_negative_components (self):
+  def set_number_of_threads (self):
     
-    # load the image
-    mask = LoadImageFileInAnyFormat(
-      filepath=img_sample,
-      binarize=True,
-      equal_spacing=True
-    )
+    # create a random number of threads between 1 and 100
+    n_threads = np.random.randint(1, 100)
+    
+    # construct the object
+    graph_filter = GraphThicknessImageFilter()
+    
+    # set the number of threads
+    graph_filter.SetGlobalDefaultNumberOfThreads(n_threads)
 
-    # skeletonize the image
-    skeleton_filter = SkeletonizeImageFilter()
-    skeleton_filter.Execute(src=mask)
-    skeleton = skeleton_filter.GetSkeletonImage()
+  @pytest.mark.parametrize('input, volume', 
+                           [(skeleton_3d, True), (skeleton_2d, False),
+                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+  def test_n_nodes_negative_components (self, input, volume):
+    
+    # load or create the image
+    if isinstance(input, sitk.Image):
+      skeleton = input
+    else:
+      # create a random mask, either 2D or 3D
+      if volume:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=3
+        )
+      else:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=2
+        )
+      mask = sitk.GetImageFromArray(mask.astype(np.uint8))
 
-    # get the number of dimensions
-    ndim = len(skeleton.GetSize())
+      # skeletonize the image
+      skeleton_filter = SkeletonizeImageFilter()
+      skeleton_filter.Execute(src=mask)
+      skeleton = skeleton_filter.GetSkeletonImage()
 
     # compute the graph
     graph_filter = GraphThicknessImageFilter()
-    graph_filter.SetInputDimensionality(ndim=ndim)
     graph_filter.Execute(src=skeleton)
 
     # get the nodes and the edge map
@@ -185,26 +212,42 @@ class TestGraphFilter:
     cc_nodes = [x for x in _stats.GetLabels() if x < 0]
     assert all([x in range(-2, -len(nodelist) - 2, -1) for x in cc_nodes])
 
-  def test_n_edges_positive_components (self):
+  @pytest.mark.parametrize('input, volume', 
+                           [(skeleton_3d, True), (skeleton_2d, False),
+                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+  def test_n_edges_positive_components (self, input, volume):
       
-    # load the image
-    mask = LoadImageFileInAnyFormat(
-      filepath=img_sample,
-      binarize=True,
-      equal_spacing=True
-    )
+    # load or create the image
+    if isinstance(input, sitk.Image):
+      skeleton = input
+    else:
+      # create a random mask, either 2D or 3D
+      if volume:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=3
+        )
+      else:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=2
+        )
+      mask = sitk.GetImageFromArray(mask.astype(np.uint8))
 
-    # skeletonize the image
-    skeleton_filter = SkeletonizeImageFilter()
-    skeleton_filter.Execute(src=mask)
-    skeleton = skeleton_filter.GetSkeletonImage()
+      # skeletonize the image
+      skeleton_filter = SkeletonizeImageFilter()
+      skeleton_filter.Execute(src=mask)
+      skeleton = skeleton_filter.GetSkeletonImage()
     
-    # get the number of dimensions
-    ndim = len(skeleton.GetSize())
-
     # compute the graph
     graph_filter = GraphThicknessImageFilter()
-    graph_filter.SetInputDimensionality(ndim=ndim)
     graph_filter.Execute(src=skeleton)
 
     # get the edges and the edge map
@@ -226,26 +269,42 @@ class TestGraphFilter:
     cc_edges = [x for x in _stats.GetLabels() if x > 0]
     assert all([x in range(1, len(edgelist) + 1) for x in cc_edges])
 
-  def test_n_edges_lut_keys (self):
+  @pytest.mark.parametrize('input, volume', 
+                           [(skeleton_3d, True), (skeleton_2d, False),
+                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+  def test_n_edges_lut_keys (self, input, volume):
       
-    # load the image
-    mask = LoadImageFileInAnyFormat(
-      filepath=img_sample,
-      binarize=True,
-      equal_spacing=True
-    )
+    # load or create the image
+    if isinstance(input, sitk.Image):
+      skeleton = input
+    else:
+      # create a random mask, either 2D or 3D
+      if volume:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=3
+        )
+      else:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=2
+        )
+      mask = sitk.GetImageFromArray(mask.astype(np.uint8))
 
-    # skeletonize the image
-    skeleton_filter = SkeletonizeImageFilter()
-    skeleton_filter.Execute(src=mask)
-    skeleton = skeleton_filter.GetSkeletonImage()
-
-    # get the number of dimensions
-    ndim = len(skeleton.GetSize())
+      # skeletonize the image
+      skeleton_filter = SkeletonizeImageFilter()
+      skeleton_filter.Execute(src=mask)
+      skeleton = skeleton_filter.GetSkeletonImage()
 
     # compute the graph
     graph_filter = GraphThicknessImageFilter()
-    graph_filter.SetInputDimensionality(ndim=ndim)
     graph_filter.Execute(src=skeleton)
 
     # get the lut and the edge map
@@ -265,28 +324,101 @@ class TestGraphFilter:
 
     # check if lut keys are sequential
     lut_keys = list(lut.keys())
-    assert all([x in range(1, len(lut) + 1) for x in lut_keys])
+    assert all([x in list(range(1, len(lut) + 1)) for x in lut_keys])
 
-  def test_lut_keys_in_edge_map (self):
-      
-    # load the image
-    mask = LoadImageFileInAnyFormat(
-      filepath=img_sample,
-      binarize=True,
-      equal_spacing=True
-    )
+  @pytest.mark.parametrize('input, volume', 
+                           [(skeleton_3d, True), (skeleton_2d, False),
+                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+  def n_nodes_lut_keys(self, input, volume):
     
-    # skeletonize the image
-    skeleton_filter = SkeletonizeImageFilter()
-    skeleton_filter.Execute(src=mask)
-    skeleton = skeleton_filter.GetSkeletonImage()
+    # load or create the image
+    if isinstance(input, sitk.Image):
+      skeleton = input
+    else:
+      # create a random mask, either 2D or 3D
+      if volume:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=3
+        )
+      else:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=2
+        )
+      mask = sitk.GetImageFromArray(mask.astype(np.uint8))
 
-    # get the number of dimensions
-    ndim = len(skeleton.GetSize())
+      # skeletonize the image
+      skeleton_filter = SkeletonizeImageFilter()
+      skeleton_filter.Execute(src=mask)
+      skeleton = skeleton_filter.GetSkeletonImage()
 
     # compute the graph
     graph_filter = GraphThicknessImageFilter()
-    graph_filter.SetInputDimensionality(ndim=ndim)
+    graph_filter.Execute(src=skeleton)
+
+    # get the lut and the edge map
+    lut = graph_filter.GetNodeLUTIndexes()
+    edgemap = graph_filter.GetEdgeMap()
+  
+    # get the number of positive connected components in the edge map
+    _stats = sitk.LabelShapeStatisticsImageFilter()
+    _stats.SetBackgroundValue(0)
+    _stats.SetGlobalDefaultNumberOfThreads(1)
+    _stats.Execute(edgemap)
+    n_cc_nodes = len([x for x in _stats.GetLabels() if x < 0])
+
+    # check if the number of lut keys is equal to the number of
+    # positive connected components
+    assert len(lut) == n_cc_nodes
+
+    # check if lut keys are sequential
+    lut_keys = list(lut.keys())
+    assert all([x in list(range(1, len(lut) + 1)) for x in lut_keys])
+
+  @pytest.mark.parametrize('input, volume', 
+                           [(skeleton_3d, True), (skeleton_2d, False),
+                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+  def test_edge_lut_keys_in_edge_map (self, input, volume):
+      
+    # load or create the image
+    if isinstance(input, sitk.Image):
+      skeleton = input
+    else:
+      # create a random mask, either 2D or 3D
+      if volume:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=3
+        )
+      else:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=2
+        )
+      mask = sitk.GetImageFromArray(mask.astype(np.uint8))
+    
+      # skeletonize the image
+      skeleton_filter = SkeletonizeImageFilter()
+      skeleton_filter.Execute(src=mask)
+      skeleton = skeleton_filter.GetSkeletonImage()
+
+    # compute the graph
+    graph_filter = GraphThicknessImageFilter()
     graph_filter.Execute(src=skeleton)
 
     # get the lut and the edge map
@@ -305,26 +437,98 @@ class TestGraphFilter:
     assert all([x in lut.keys() for x in cc_edges])
     assert all([x in cc_edges for x in lut.keys()])
 
-  def test_edgemap_equals_skeleton (self):
-      
-    # load the image
-    mask = LoadImageFileInAnyFormat(
-      filepath=img_sample,
-      binarize=True,
-      equal_spacing=True
-    )
-  
-    # skeletonize the image
-    skeleton_filter = SkeletonizeImageFilter()
-    skeleton_filter.Execute(src=mask)
-    skeleton = skeleton_filter.GetSkeletonImage()
+  @pytest.mark.parametrize('input, volume', 
+                           [(skeleton_3d, True), (skeleton_2d, False),
+                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+  def test_node_lut_keys_in_edge_map(self, input, volume):
 
-    # get the number of dimensions
-    ndim = len(skeleton.GetSize())
+    # load or create the image
+    if isinstance(input, sitk.Image):
+      skeleton = input
+    else:
+      # create a random mask, either 2D or 3D
+      if volume:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=3
+        )
+      else:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=2
+        )
+      mask = sitk.GetImageFromArray(mask.astype(np.uint8))
+    
+      # skeletonize the image
+      skeleton_filter = SkeletonizeImageFilter()
+      skeleton_filter.Execute(src=mask)
+      skeleton = skeleton_filter.GetSkeletonImage()
 
     # compute the graph
     graph_filter = GraphThicknessImageFilter()
-    graph_filter.SetInputDimensionality(ndim=ndim)
+    graph_filter.Execute(src=skeleton)
+
+    # get the lut and the edge map
+    # here we take the physical points and not the indexes
+    # just to cover more test cases
+    lut = graph_filter.GetNodeLUTPhysicalPoints()
+    edgemap = graph_filter.GetEdgeMap()
+
+    # get the labels of positive connected components in the edge map    
+    _stats = sitk.LabelShapeStatisticsImageFilter()
+    _stats.SetBackgroundValue(0)
+    _stats.SetGlobalDefaultNumberOfThreads(1)
+    _stats.Execute(edgemap)
+    cc_nodes = [x for x in _stats.GetLabels() if x < 0]
+
+    # check if all the lut keys are in the edge map
+    # and all the labels in the edge map are in the lut keys
+    assert all([abs(x + 1) in lut.keys() for x in cc_nodes])
+    assert all([- x - 1 in cc_nodes for x in lut.keys()])
+
+  @pytest.mark.parametrize('input, volume', 
+                           [(skeleton_3d, True), (skeleton_2d, False),
+                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+  def test_edgemap_equals_skeleton (self, input, volume):
+      
+    # load or create the image
+    if isinstance(input, sitk.Image):
+      skeleton = input
+    else:
+      # create a random mask, either 2D or 3D
+      if volume:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=3
+        )
+      else:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=2
+        )
+      mask = sitk.GetImageFromArray(mask.astype(np.uint8))
+  
+      # skeletonize the image
+      skeleton_filter = SkeletonizeImageFilter()
+      skeleton_filter.Execute(src=mask)
+      skeleton = skeleton_filter.GetSkeletonImage()
+
+    # compute the graph
+    graph_filter = GraphThicknessImageFilter()
     graph_filter.Execute(src=skeleton)
 
     # get the edge map and binarize it
@@ -346,26 +550,42 @@ class TestGraphFilter:
     # assert that the diff is 0
     assert sitk.GetArrayViewFromImage(diff).sum() == 0
 
-  def test_no_neighbour_pixels (self):
+  @pytest.mark.parametrize('input, volume', 
+                           [(skeleton_3d, True), (skeleton_2d, False),
+                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+  def test_no_neighbour_pixels (self, input, volume):
 
-    # load the image
-    mask = LoadImageFileInAnyFormat(
-      filepath=img_sample,
-      binarize=True,
-      equal_spacing=True
-    )
+    # load or create the image
+    if isinstance(input, sitk.Image):
+      skeleton = input
+    else:
+      # create a random mask, either 2D or 3D
+      if volume:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=3
+        )
+      else:
+        mask = binary_blobs(
+          length=128,
+          blob_size_fraction=.25,
+          volume_fraction=.5,
+          rng=input,
+          n_dim=2
+        )
+      mask = sitk.GetImageFromArray(mask.astype(np.uint8))
 
-    # skeletonize the image
-    skeleton_filter = SkeletonizeImageFilter()
-    skeleton_filter.Execute(src=mask)
-    skeleton = skeleton_filter.GetSkeletonImage()
-
-    # get the number of dimensions
-    ndim = len(skeleton.GetSize())
+      # skeletonize the image
+      skeleton_filter = SkeletonizeImageFilter()
+      skeleton_filter.Execute(src=mask)
+      skeleton = skeleton_filter.GetSkeletonImage()
 
     # compute the graph
     graph_filter = GraphThicknessImageFilter()
-    graph_filter.SetInputDimensionality(ndim=ndim)
     graph_filter.Execute(src=skeleton)
 
     # get the edge map

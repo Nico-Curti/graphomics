@@ -57,7 +57,7 @@ class GraphThicknessImageFilter (object):
         or volume (ndim:=3)
     '''
     # work-around to reduce code redundancy
-    self._SetInternalKernels(shape=(1, 1, 1))
+    self._SetInternalKernels(shape=(1,) * ndim)
     return self
 
 
@@ -223,13 +223,14 @@ class GraphThicknessImageFilter (object):
       hypernodes=hypernodes
     )
 
-    self.lut = lut_edges
+    self.lut_edges = lut_edges
+    self.lut_nodes = hypernodes
 
     # get the nodelist from the lut for a faster output
-    self.nodes = list(set(sum(list(map(list, self.lut.values())), [])))
+    self.nodes = list(map(tuple, self.lut_nodes.values()))
 
     # get the edgelist from the lut for a faster output
-    self.edges = list(map(tuple, self.lut.values()))
+    self.edges = list(map(tuple, self.lut_edges.values()))
 
     # get the edge map of the volume
     self.edge_map = edge_map
@@ -279,8 +280,8 @@ class GraphThicknessImageFilter (object):
     # pad the input image pre-convolution
     padded = sitk.ConstantPad(
       image1=tmp,
-      padLowerBound=(1, 1, 1),
-      padUpperBound=(1, 1, 1),
+      padLowerBound=(1,) * self._ndim,
+      padUpperBound=(1,) * self._ndim,
       constant=0
     )
 
@@ -312,8 +313,9 @@ class GraphThicknessImageFilter (object):
     # of the resulting convolution == 25 in 3D and convolution == 7 in 2D
     ramification_score = (3 ** self._ndim) - 3
     pendant_score = (3 ** self._ndim) - 2
+    isolated_score = (3 ** self._ndim) - 1
 
-    true_vertex = ((conv < ramification_score) & (conv > 0)) | (conv == pendant_score)
+    true_vertex = ((conv < ramification_score) & (conv > 0)) | (conv == pendant_score) | (conv == isolated_score)
     # cast to integer for next computation
     true_vertex = sitk.Cast(
       image=true_vertex,
@@ -727,20 +729,20 @@ class GraphThicknessImageFilter (object):
     '''
     Get the lookup table of the edge labels for the edge map.
     '''
-    if not hasattr(self, 'lut'):
+    if not hasattr(self, 'lut_edges'):
       class_name = self.__class__.__name__
       raise RuntimeError(('Runtime Exception. '
         f'The {class_name} object is not executed yet. '
         'To get the node list you need to call the Execute function'
       ))
 
-    return self.lut
+    return self.lut_edges
 
   def GetEdgeLUTPhysicalPoints (self) -> defaultdict:
     '''
     Get the lookup table of the edge labels for the edge map.
     '''
-    if not hasattr(self, 'lut'):
+    if not hasattr(self, 'lut_edges'):
       class_name = self.__class__.__name__
       raise RuntimeError(('Runtime Exception. '
         f'The {class_name} object is not executed yet. '
@@ -750,7 +752,35 @@ class GraphThicknessImageFilter (object):
     return {k: (self._cooordinate_converter(src),
                 self._cooordinate_converter(dst)
                )
-            for k, (src, dst) in self.lut.items()
+            for k, (src, dst) in self.lut_edges.items()
+           }
+
+  def GetNodeLUTIndexes (self) -> dict:
+    """
+    Get the lookup table for the nodes found in the edge map
+    """
+    if not hasattr(self, 'lut_nodes'):
+      class_name = self.__class__.__name__
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
+        'To get the node list you need to call the Execute function'
+      ))
+    
+    return self.lut_nodes
+  
+  def GetNodeLUTPhysicalPoints (self) -> dict:
+    """
+    Get the lookup table for the nodes found in the edge map
+    """
+    if not hasattr(self, 'lut_nodes'):
+      class_name = self.__class__.__name__
+      raise RuntimeError(('Runtime Exception. '
+        f'The {class_name} object is not executed yet. '
+        'To get the node list you need to call the Execute function'
+      ))
+
+    return {k: self._cooordinate_converter(coord) 
+            for k, coord in self.lut_nodes.items()
            }
 
   def GetEdgeMap (self) -> sitk.Image:
