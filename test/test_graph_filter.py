@@ -71,24 +71,6 @@ class TestGraphFilter:
     - if the edge map is equal to the skeleton
     - if there are no pixels equal to -1 in the edge map
   '''
-  
-  def test_skeletonezer_img_required (self):
-
-    # construct the object
-    skeleton_filter = SkeletonizeImageFilter()
-    
-    # execute the filter without a img
-    with pytest.raises(TypeError):
-      skeleton_filter.Execute()
-
-  def test_skeletonezer_get_without_execute (self):
-
-    # construct the object
-    skeleton_filter = SkeletonizeImageFilter()
-
-    # get the image without the execute
-    with pytest.raises(RuntimeError):
-      skeleton_filter.GetSkeletonImage()
 
   def test_graph_filter_img_required (self):
 

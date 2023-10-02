@@ -380,12 +380,20 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       # extract the related sub-graph
       G0 = G.subgraph(cc)
       # compute the distribution of values
-      ecc = nx.eccentricity(
-        G=G0,
-        v=None,
-        sp=None,
-        weight=weight
-      )
+      if int(nx.__version__.split('.')[0]) >= 3:
+        ecc = nx.eccentricity(
+          G=G0,
+          v=None,
+          sp=None,
+          weight=weight
+        )
+      else:
+        weight_prefix = ''
+        ecc = nx.eccentricity(
+          G=G0,
+          v=None,
+          sp=None
+        )
       # compute the statistics of the values distribution
       stats = _get_distribution_main_stats(
         x=list(ecc.values()),
@@ -425,8 +433,9 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
                                           topk : int = 10,
                                    ) -> dict:
     '''
-    Get the distance of the top-k most central nodes in the graph
-    in relation to the center of mass.
+    Get the main statistics of the distribution of distances
+    of the top-k most central nodes in the graph in relation
+    to the center of mass.
 
     Parameters
     ----------
@@ -484,7 +493,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
   def _GetDistanceNoPendantNodes (self, G : nx.Graph) -> dict:
     '''
     Get the main statistics of the distribution of distances
-    of pendant nodes of the graph in relation to the center
+    of central (no-pendant) nodes of the graph in relation to the center
     of mass.
 
     Parameters
@@ -499,7 +508,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     '''
     # get the list of no-pendant nodes
     no_pendant = [n for n, d in G.degree() if d > 1]
-    # check if the graph is not a simple chain
+    # check if the graph is not a set of disjointed nodes
     if not no_pendant:
       # the no-pendant nodes are the same of pendant ones
       # and therefore the statistics must be the same

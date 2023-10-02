@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1] - 2023-09-27
+## [0.0.1] - 2023-10-01
 
 First version of the library.
 This is the starting point of the development of the *pyGraphomics* package.
@@ -19,6 +19,7 @@ Further improvements will occur in the next versions.
 - :globe_with_meridians: [Global] Add first version of Appveyor build CI for Windows
 - :globe_with_meridians: [Global] Add first version of Github Actions CI for Python and Docs
 - :globe_with_meridians: [Global] Add download of medical image sample via Google Drive for testing
+- :globe_with_meridians: [Global] Include Codecov tracking of the package
 
 - :computer: [Python] Installation file for the Python package
 - :computer: [Python] Entry point of the library for its usage with command line interface (ref. `graphomics/__main__.py`)
@@ -33,11 +34,15 @@ Further improvements will occur in the next versions.
 - :computer: [Python] Image resampling to equal spacing for the correct weighing of the network according to the path length
 - :computer: [Python] Test for feature extractor management
 - :computer: [Python] Test for feature extractor configuration file
+- :computer: [Python] Test for image data loader
+- :computer: [Python] Test for image skeletonizer (aka `SkeletonizeImageFilter`)
 - :computer: [Python] Test for `GraphThicknessImageFilter`
 - :computer: [Python] Test for graphomic topological features (aka `GraphomicsTopology`)
 - :computer: [Python] Test for graphomic centrality features (aka `GraphomicsCentrality`)
 - :computer: [Python] Test for graphomic spatial features (aka `GraphomicsSpatial`)
 - :computer: [Python] Test for graphomic weight extractor (aka `GraphWeightsExtractorFilter`)
+- :computer: [Python] Test for graphomic base features (aka `_BaseGraphomicsFeatures`)
+- :computer: [Python] Test for graphomic features extractor (aka `GraphomicsFeatureExtractor`)
 
 - :construction: [Features] First list of `Centrality` Graphomics features:
   * **Node degree centrality statistics**:
@@ -217,6 +222,9 @@ Further improvements will occur in the next versions.
 - :closed_book: [Docs] Notebook example for the graph extraction processing in 3D
 - :closed_book: [Docs] Notebook example for the medical imaging application in 3D
 - :closed_book: [Docs] Notebook example for the graphomics semantic segmentation in 2D
+  with real-case application to femour, brain, and liver volumes
 - :closed_book: [Docs] Notebook example for the graphomics semantic segmentation in 3D
   with real-case application to femour, brain, and liver volumes
+- :closed_book: [Docs] Notebook example for multi-modal image analysis
+  with real-case application to multiple myeloma
 - :closed_book: [Docs] List of notebook examples in the sphinx documentation

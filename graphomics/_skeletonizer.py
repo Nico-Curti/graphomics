@@ -86,11 +86,6 @@ class SkeletonizeImageFilter (object):
     # get the dimensionality of the input
     ndim = len(src.GetSize())
 
-    if ndim not in [2, 3]:
-      raise ValueError(('Input mismatch shape. '
-        f'Valid input shape must be 2 or 3. Given {ndim}.'
-      ))
-
     # convert the input to a numpy buffer
     src_np = sitk.GetArrayViewFromImage(src)
 

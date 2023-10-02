@@ -3,13 +3,20 @@
 
 from .__version__ import __version__
 # import the function required for the input loading
-from ._loader import LoadImageFileInAnyFormat
+from ._loader import (
+  LoadImageFileInAnyFormat,
+  ResampleSpacing,
+  ResampleSize,
+  BoundingBox,
+  CropMinimumBoundingBox,
+)
 # import filter for skeletonize image/volume
 from ._skeletonizer import SkeletonizeImageFilter
 # import filter for graph extraction
 from ._graphfilter import GraphThicknessImageFilter
 # import filters for graph weighing
 from ._graph import (
+  GraphWeightsExtractorFilter,
   NodePairwiseDistanceFilter,
   EdgeLengthPathsFilter,
   EdgeLabelWeightFilter,

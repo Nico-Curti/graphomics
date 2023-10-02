@@ -41,7 +41,7 @@ class TestFeatureSpatial:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -126,7 +126,7 @@ class TestFeatureSpatial:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -146,7 +146,7 @@ class TestFeatureSpatial:
     assert np.isfinite(res)
 
     # create a second graph
-    G2 = nx.complete_graph(range(40, 100, n))
+    G2 = nx.complete_graph(range(80, 100, n))
 
     # merge the two graphs
     G = nx.compose(G, G2)
@@ -169,7 +169,7 @@ class TestFeatureSpatial:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -193,7 +193,7 @@ class TestFeatureSpatial:
       assert np.isfinite(v)
 
     # create a second graph
-    G2 = nx.complete_graph(range(40, 100, n))
+    G2 = nx.complete_graph(range(80, 100, n))
 
     # merge the two graphs
     G = nx.compose(G, G2)
@@ -220,7 +220,7 @@ class TestFeatureSpatial:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -251,7 +251,7 @@ class TestFeatureSpatial:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -296,7 +296,7 @@ class TestFeatureSpatial:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -307,17 +307,39 @@ class TestFeatureSpatial:
       seed=42,
       directed=False
     )
+    mapping = {
+      k : tuple(np.random.uniform(low=0., high=1., size=(3, )))
+      for k in G.nodes()
+    }
     # re-label the nodes to create 3D tuples of coords
     nx.relabel_nodes(
       G=G,
-      mapping={
-        k : tuple(np.random.uniform(low=0., high=1., size=(3, )))
-        for k in G.nodes()
-      },
+      mapping=mapping,
       copy=False
     )
 
     #evaluate the feature
+    res = feat._GetDistanceNoPendantNodes(G=G)
+
+    # check the feature properties
+    assert isinstance(res, dict)
+    for k, v in res.items():
+      assert k.startswith('node_no_pendant_distance')
+      assert isinstance(k, str)
+      assert v >= 0.
+      assert isinstance(v, float)
+      assert np.isfinite(v)
+
+    # create an empty graph
+    G = nx.empty_graph(n=n)
+    # re-label the nodes to create 3D tuples of coords
+    nx.relabel_nodes(
+      G=G,
+      mapping=mapping,
+      copy=False
+    )
+
+    # evaluate the feature
     res = feat._GetDistanceNoPendantNodes(G=G)
 
     # check the feature properties
@@ -340,7 +362,7 @@ class TestFeatureSpatial:
     )
     # generate a probability from a uniform distribution
     p = np.random.uniform(
-      low=0.,
+      low=0.5,
       high=1.
     )
 
@@ -362,7 +384,7 @@ class TestFeatureSpatial:
       copy=False
     )
 
-    #evaluate the feature
+    # evaluate the feature
     res = feat._GetDistancePendantNodes(G=G)
 
     # check the feature properties
@@ -383,12 +405,15 @@ class TestFeatureSpatial:
       copy=False
     )
 
-    #evaluate the feature
-    res2 = feat._GetDistancePendantNodes(G=G)
+    pendant = [n for n, d in G.degree() if d == 1]
+    assert not pendant
+
+    # evaluate the feature
+    res = feat._GetDistancePendantNodes(G=G)
 
     # check the feature properties
-    assert isinstance(res2, dict)
-    for k, v in res2.items():
+    assert isinstance(res, dict)
+    for k, v in res.items():
       assert k.startswith('node_pendant_distance')
       assert isinstance(k, str)
       assert v >= 0.

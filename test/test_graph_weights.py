@@ -85,8 +85,9 @@ class TestGraphWeightsExtractor:
 
     # check the correctness of the weights
     assert len(weights) == len(edgelist)
-    assert isinstance(weights, list)
-    assert all(isinstance(x, float) for x in weights)
+    assert weights.keys() == lut.keys()
+    assert isinstance(weights, dict)
+    assert all(isinstance(x, float) for x in weights.values())
 
   def test_EdgeLengthPaths_weights (self):
     # create a random binary volume
@@ -118,6 +119,7 @@ class TestGraphWeightsExtractor:
 
     # create the weight extractor filter
     wtype = EdgeLengthPathsFilter()
+    wtype.SetGlobalDefaultNumberOfThreads(1)
 
     # raise an error if we get the edges without execute
     with pytest.raises(RuntimeError):
@@ -136,8 +138,9 @@ class TestGraphWeightsExtractor:
 
     # check the correctness of the weights
     assert len(weights) == len(edgelist)
-    assert isinstance(weights, list)
-    assert all(isinstance(x, float) for x in weights)
+    assert weights.keys() == lut.keys()
+    assert isinstance(weights, dict)
+    assert all(isinstance(x, int) for x in weights.values())
 
   def test_EdgeLabelWeight_weights (self):
     # create a random binary volume
@@ -169,6 +172,7 @@ class TestGraphWeightsExtractor:
 
     # create the weight extractor filter
     wtype = EdgeLabelWeightFilter()
+    wtype.SetGlobalDefaultNumberOfThreads(1)
 
     # raise an error if we get the edges without execute
     with pytest.raises(RuntimeError):
@@ -177,13 +181,14 @@ class TestGraphWeightsExtractor:
     # raise an error if the metric is incorrect
     with pytest.raises(ValueError):
       wtype.Execute(
-      nodelist=nodelist,
-      edgelist=edgelist,
-      lut=lut,
-      mapper=mapper,
-      labelmap=mapper,
-      metric='dummy'
-    )
+        nodelist=nodelist,
+        edgelist=edgelist,
+        lut=lut,
+        mapper=mapper,
+        mask=mask,
+        labelmap=mask,
+        metric='dummy'
+      )
 
     # apply the weight extractor to the graph
     wtype.Execute(
@@ -191,7 +196,8 @@ class TestGraphWeightsExtractor:
       edgelist=edgelist,
       lut=lut,
       mapper=mapper,
-      labelmap=mapper,
+      mask=mask,
+      labelmap=mask,
     )
 
     # get the computed weights from the filter
@@ -199,8 +205,29 @@ class TestGraphWeightsExtractor:
 
     # check the correctness of the weights
     assert len(weights) == len(edgelist)
-    assert isinstance(weights, list)
-    assert all(isinstance(x, float) for x in weights)
+    assert weights.keys() == lut.keys()
+    assert isinstance(weights, dict)
+    assert all(isinstance(x, float) for x in weights.values())
+
+    # create the weight extractor filter with a custom metric
+    wtype.Execute(
+      nodelist=nodelist,
+      edgelist=edgelist,
+      lut=lut,
+      mapper=mapper,
+      mask=mask,
+      labelmap=mask,
+      metric=np.nanmean,
+    )
+
+    # get the computed weights from the filter
+    weights = wtype.GetWeightsList()
+
+    # check the correctness of the weights
+    assert len(weights) == len(edgelist)
+    assert weights.keys() == lut.keys()
+    assert isinstance(weights, dict)
+    assert all(isinstance(x, float) for x in weights.values())
 
   def test_GraphFilter (self):
     # create a random binary volume
@@ -239,8 +266,7 @@ class TestGraphWeightsExtractor:
 
     # execute the filter on the inputs
     graph_proxy.Execute(
-      nodelist=nodelist,
-      edgelist=edgelist,
+      lut=lut,
       weights=None
     )
 
@@ -255,17 +281,24 @@ class TestGraphWeightsExtractor:
 
     # raise an error if we use an incorrect number of weights
     with pytest.raises(ValueError):
+      w = {k : 1 for k in lut.keys()}
+      # add an extra key
+      w[-1] = 1.
       graph_proxy.Execute(
-        nodelist=nodelist,
-        edgelist=edgelist,
-        weights=[1.] * (len(edgelist) + 1)
+        lut=lut,
+        weights=w
+      )
+    # raise an error if we use an incorrect set of keys
+    with pytest.raises(ValueError):
+      graph_proxy.Execute(
+        lut=lut,
+        weights={k + 1 : 1 for k in lut.keys()}
       )
 
     # execute the filter on the inputs
     graph_proxy.Execute(
-      nodelist=nodelist,
-      edgelist=edgelist,
-      weights=[1.] * len(edgelist)
+      lut=lut,
+      weights={k : 1 for k in lut.keys()}
     )
 
     # get the graph and store it in the common inputs

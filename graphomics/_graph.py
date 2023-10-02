@@ -48,11 +48,11 @@ class GraphWeightsExtractorFilter (object):
   def __init__ (self):
     pass
 
-  def _check_input (nodelist : list,
-                    edgelist : list,
-                    lut : dict,
-                    mapper : sitk.Image
-                   ) :
+  def _check_input (self, nodelist : list,
+                          edgelist : list,
+                          lut : dict,
+                          mapper : sitk.Image
+                    ) :
     '''
     Validate the input parameters
     '''
@@ -63,7 +63,7 @@ class GraphWeightsExtractorFilter (object):
                      edgelist : list,
                      lut : dict,
                      mapper : sitk.Image
-              ) :
+              ) -> dict :
     '''
     Compute the graph weights according to a
     custom evaluation metric.
@@ -89,24 +89,31 @@ class GraphWeightsExtractorFilter (object):
 
     Returns
     -------
-      weights : list
-        List of weights to associate at each edge in the graph
+      weights : dict
+        Lookup table of weights to associate at each edge in the graph
     '''
     # TODO: add here all the pre-processing steps required
     # by all the inherit filters
+    self._check_input(
+      nodelist=nodelist,
+      edgelist=edgelist,
+      lut=lut,
+      mapper=mapper,
+    )
+
     return self
 
-  def GetWeightsList (self) -> list :
+  def GetWeightsList (self) -> dict :
     '''
     Get the graph weights computed according to the defined
     evaluation criteria.
 
     Returns
     -------
-      weights : list
-        List of floating point weights to associate at each edge pair
-        in the graph. The list of weights is ordered according to the
-        edgelist provided during the computation.
+      weights : dict
+        Lookup table of floating point weights to associate at each edge pair
+        in the graph. The keys of the weights' lut are associated to the
+        list of keys of the original edge lut.
     '''
     if not hasattr(self, '_weights'):
       class_name = self.__class__.__name__
@@ -184,7 +191,7 @@ class NodePairwiseDistanceFilter (GraphWeightsExtractorFilter):
                      edgelist : list,
                      lut : dict,
                      mapper : sitk.Image
-              ) :
+              ) -> dict :
     '''
     Compute the graph weights according to a
     custom evaluation metric.
@@ -207,6 +214,11 @@ class NodePairwiseDistanceFilter (GraphWeightsExtractorFilter):
         The edge map stores the edge paths as disjoint lines in the
         original volume. The connected components of the edge-map are
         the edges of the graph found by the filter.
+
+    Returns
+    -------
+      weights : dict
+        Lookup table of weights to associate at each edge in the graph
     '''
     # call the base class executor for safety checks
     super(NodePairwiseDistanceFilter, self).Execute(
@@ -226,7 +238,9 @@ class NodePairwiseDistanceFilter (GraphWeightsExtractorFilter):
     # for consistency with the other filters
     weights = weights.ravel().tolist()
 
-    self._weights = weights
+    # create the lut of weights
+    self._weights = {k : w for k, w in zip(lut.keys(), weights)}
+
     return self
 
 
@@ -260,7 +274,7 @@ class EdgeLengthPathsFilter (GraphWeightsExtractorFilter):
                      edgelist : list,
                      lut : dict,
                      mapper : sitk.Image
-              ) :
+              ) -> dict :
     '''
     Compute the graph weights according to a
     custom evaluation metric.
@@ -283,6 +297,11 @@ class EdgeLengthPathsFilter (GraphWeightsExtractorFilter):
         The edge map stores the edge paths as disjoint lines in the
         original volume. The connected components of the edge-map are
         the edges of the graph found by the filter.
+
+    Returns
+    -------
+      weights : dict
+        Lookup table of weights to associate at each edge in the graph
     '''
     # call the base class executor for safety checks
     super(EdgeLengthPathsFilter, self).Execute(
@@ -300,7 +319,7 @@ class EdgeLengthPathsFilter (GraphWeightsExtractorFilter):
     self._stats.Execute(mapper)
 
     # initialize an empty buffer for the weights
-    weights = [1.] * len(lut)
+    weights = {}
 
     # loop along the edge lut keys
     # NOTE: the edgelist is ordered as the lut
@@ -317,7 +336,7 @@ class EdgeLengthPathsFilter (GraphWeightsExtractorFilter):
       # all direction
 
       # associate the weight to the corresponding edge
-      weights[l - 1] = w
+      weights[l] = w
 
     self._weights = weights
 
@@ -371,9 +390,10 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
                      edgelist : list,
                      lut : dict,
                      mapper : sitk.Image,
+                     mask : sitk.Image,
                      labelmap : sitk.Image,
                      metric : str = 'average'
-              ) :
+              ) -> dict :
     '''
     Compute the graph weights according to the information stored
     in the corresponding labelmap, according to the provided metric.
@@ -396,6 +416,10 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
         The edge map stores the edge paths as disjoint lines in the
         original volume. The connected components of the edge-map are
         the edges of the graph found by the filter.
+
+      mask : sitk.Image
+        Original image volume to use as mask on the resulting
+        semantic segmentation.
 
       labelmap : sitk.Image
         Input image/volume with the same dimensions and metadata
@@ -423,6 +447,11 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
         * variance
         * max
         * min
+
+    Returns
+    -------
+      weights : dict
+        Lookup table of weights to associate at each edge in the graph
     '''
     # call the base class executor for safety checks
     super(EdgeLabelWeightFilter, self).Execute(
@@ -456,9 +485,9 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
     # selecting only the positive values, i.e. the edge markers
     markers = sitk.Threshold(
       image1=mapper,
-      lower=0,
-      upper=len(edgelist),
-      outsideValue=0
+      lower=0.0,
+      upper=float(max(lut.keys())),
+      outsideValue=0.0
     )
 
     # apply the watershed algorithm using the marker image
@@ -471,10 +500,10 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
     )
 
     # mask the resulting watershed segmentation according
-    # to the original mask
+    # to the original volume
     ws = sitk.Mask(
       image=ws,
-      maskImage=labelmap,
+      maskImage=mask,
       outsideValue=0,
       maskingValue=0,
     )
@@ -484,10 +513,7 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
     self._stats.Execute(ws)
 
     # initialize an empty buffer for the weights
-    # NOTE: we use the length of the lut and NOT the
-    # edgelist ones, since the lut could contain also
-    # self links that are removed by the edgelist
-    weights = [1.] * len(lut)
+    weights = {}
 
     # loop along the edge lut keys
     # NOTE: the edgelist is ordered as the lut
@@ -495,7 +521,7 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
     # edgelist and weights is correct
     for l in lut.keys():
       # get the indices of the voxels belonging to the CC
-      idx = self._stats.GetIndexes(l)
+      idx = self._stats.GetIndexes(int(l))
 
       # reshape to numpy coords
       idx = [idx[i : i + ndim]
@@ -508,7 +534,7 @@ class EdgeLabelWeightFilter (GraphWeightsExtractorFilter):
       w = reducer(label_val)
 
       # associate the weight to the corresponding edge
-      weights[l - 1] = w
+      weights[l] = w
 
     self._weights = weights
 
@@ -533,9 +559,8 @@ class GraphFilter (object):
   def __init__ (self):
     pass
 
-  def Execute (self, nodelist : list,
-                     edgelist : list,
-                     weights : list = None
+  def Execute (self, lut : dict,
+                     weights : dict = None
               ) :
     '''
     Execute the filter on the network attributes and
@@ -543,12 +568,11 @@ class GraphFilter (object):
 
     Parameters
     ----------
-      nodelist : list
-        List of node coordinates
-
-      edgelist : list
-        List of pairs as (src, tgt) with the items belonging
-        to the nodelist
+      lut : dict
+        LookUp table of the edge labels associated to the correspoding
+        nodes. This object is mandatory for the correct association
+        between the value in the edge_map, the nodes, and the possible
+        weighted graph.
 
       weights : list (default := None)
         List of weights associated to each edge pair
@@ -556,20 +580,29 @@ class GraphFilter (object):
 
     # define the graph
     graph = nx.Graph()
+    # get the list of nodes from the lut
+    nodelist = list(set(sum(list(map(list, lut.values())), [])))
     # add the list of nodes to the empty graph
     graph.add_nodes_from(nodelist)
 
     if weights is not None:
 
       # check the consistency of the edgelist and weights
-      if len(edgelist) != len(weights):
+      if len(lut) != len(weights):
         raise ValueError((
           'Lenght mismatch between edgelist and weights'
         ))
 
+      # check the two lut has the same set of keys
+      if lut.keys() != weights.keys():
+        raise ValueError((
+          'Key mismatch between edge lut and weights'
+        ))
+
       # associate the correct weight to each edge pair
-      wedges = [(e1, e2, w)
-        for (e1, e2), w in zip(edgelist, weights) if e1 != e2
+      wedges = [(*lut[k], weights[k])
+        for k, (src, tgt) in lut.items()
+        if src != tgt
       ]
 
       # add the list of edges to the graph
@@ -577,7 +610,10 @@ class GraphFilter (object):
 
     else:
       # add the list of edges to the graph
-      graph.add_edges_from([(e1, e2) for e1, e2 in edgelist if e1 != e2])
+      graph.add_edges_from([(src, tgt)
+        for src, tgt in lut.values()
+        if src != tgt
+      ])
 
     self._graph = graph
 

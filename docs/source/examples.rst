@@ -10,3 +10,4 @@ Examples
   ./notebooks/graphomics_graph_extraction.ipynb
   ./notebooks/graphomics_medical_imaging.ipynb
   ./notebooks/graphomics_semantic_segmentation.ipynb
+  ./notebooks/graphomics_multimodal_graph.ipynb

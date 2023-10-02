@@ -412,6 +412,16 @@ class GraphomicsFeatureExtractor (object):
 
     return self
 
+  def DisableWeightedFeatures (self) :
+    '''
+    Disable the evaluation of the graphomic features using
+    the weighted network.
+    '''
+    # override the key
+    self._features['enable_weighted_features'] = False
+
+    return self
+
   def SetWeightExtractorByName (self, wtype : str) :
     '''
     Set the graph weight extractor filter to use during the graphomic
@@ -464,6 +474,9 @@ class GraphomicsFeatureExtractor (object):
 
     # assign the weight extractor
     self._wtype = wtype
+    # set also the config key for sake of
+    # completeness
+    self._features['graph_weights'] = wtype.__class__.__name__
 
     return self
 
@@ -748,6 +761,7 @@ class GraphomicsFeatureExtractor (object):
             ))
           # set the extra parameters required
           wextra_params['labelmap'] = labelmap
+          wextra_params['mask'] = mask
 
         # set all the extra parameters
         w_name = wtype.__class__.__name__
@@ -834,8 +848,7 @@ class GraphomicsFeatureExtractor (object):
     graph_proxy = GraphFilter()
     # execute the filter on the inputs
     graph_proxy.Execute(
-      nodelist=nodes,
-      edgelist=edges,
+      lut=lut,
       weights=weights
     )
     # get the graph and store it in the common inputs
