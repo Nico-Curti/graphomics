@@ -304,7 +304,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     # if the network is a single connected component
     if nx.is_connected(G):
       shortest = nx.average_shortest_path_length(
-        G=G,
+        G,
         weight=weight
       )
     # otherwise evaluate the metric on the largest connected
@@ -318,7 +318,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       G0 = G.subgraph(cc)
       # evaluate the shortest path on it
       shortest = nx.average_shortest_path_length(
-        G=G0,
+        G0,
         weight=weight
       )
 
@@ -351,7 +351,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       # compute the distribution of values
       if int(nx.__version__.split('.')[0]) >= 3:
         ecc = nx.eccentricity(
-          G=G,
+          G,
           v=None,
           sp=None,
           weight=weight
@@ -361,7 +361,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
         # the possibility to insert weights
         weight_prefix = ''
         ecc = nx.eccentricity(
-          G=G,
+          G,
           v=None,
           sp=None
         )
@@ -382,7 +382,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       # compute the distribution of values
       if int(nx.__version__.split('.')[0]) >= 3:
         ecc = nx.eccentricity(
-          G=G0,
+          G0,
           v=None,
           sp=None,
           weight=weight
@@ -390,7 +390,7 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       else:
         weight_prefix = ''
         ecc = nx.eccentricity(
-          G=G0,
+          G0,
           v=None,
           sp=None
         )
@@ -453,12 +453,12 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       stats : dict
         Dictionary with the computed statistics.
     '''
-    # ensure that at least the top K exists
-    topk = min(G.number_of_nodes() - 1, topk)
     # check if weights are available
     weight_prefix = '' if weight is None else 'weighted_'
     # add parameter of topk in the label
     weight_prefix += f'top{topk}_'
+    # ensure that at least the top K exists
+    topk = min(G.number_of_nodes() - 1, topk)
     # compute the distribution of values
     degree = G.degree(weight=weight)
     # get the top K node coordinates

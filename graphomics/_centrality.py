@@ -165,7 +165,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
     bc = nx.betweenness_centrality(
-      G=G,
+      G,
       weight=weight
     )
     # compute the statistics of the values distribution
@@ -202,7 +202,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
     cc = nx.clustering(
-      G=G,
+      G,
       weight=weight
     )
     # compute the statistics of the values distribution
@@ -239,7 +239,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
     clo = nx.closeness_centrality(
-      G=G,
+      G,
       distance=weight
     )
     # compute the statistics of the values distribution
@@ -276,7 +276,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
     pagerank = nx.pagerank(
-      G=G,
+      G,
       weight=weight
     )
     # compute the statistics of the values distribution
@@ -313,7 +313,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
     harmonic = nx.harmonic_centrality(
-      G=G,
+      G,
       distance=weight
     )
     # compute the statistics of the values distribution

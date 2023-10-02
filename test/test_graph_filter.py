@@ -5,7 +5,11 @@ import os
 import pytest
 
 import numpy as np
+import skimage as sk
 import SimpleITK as sitk
+from functools import partial
+# generation of random binary blobs
+from skimage.data import binary_blobs
 
 # import filter for the medical image loading
 from graphomics import LoadImageFileInAnyFormat
@@ -15,7 +19,6 @@ from graphomics import SkeletonizeImageFilter
 from graphomics import GraphThicknessImageFilter
 # import the test sample downloader
 from .download_from_drive import download_file_from_google_drive
-from skimage.data import binary_blobs
 
 __author__  = ['Nico Curti',
                'Gianluca Carlini',
@@ -53,10 +56,24 @@ skeleton_filter = SkeletonizeImageFilter()
 skeleton_filter.Execute(src=img)
 skeleton_3d = skeleton_filter.GetSkeletonImage()
 
-slice = img[:, :, img.GetSize()[2] // 2]
-skeleton_filter.Execute(src=slice)
+_slice = img[:, :, img.GetSize()[2] // 2]
+skeleton_filter.Execute(src=_slice)
 skeleton_2d = skeleton_filter.GetSkeletonImage()
 
+# get the skimage version for retro-compatibility
+binary_blobs_3d = partial(binary_blobs,
+  length=128,
+  blob_size_fraction=.25,
+  volume_fraction=.5,
+  n_dim=3
+)
+binary_blobs_2d = partial(binary_blobs,
+  length=128,
+  blob_size_fraction=.25,
+  volume_fraction=.5,
+  n_dim=2
+)
+sk_major, sk_minor, *_ = sk.__version__.split('.')
 
 class TestGraphFilter:
   '''
@@ -137,33 +154,22 @@ class TestGraphFilter:
     # set the number of threads
     graph_filter.SetGlobalDefaultNumberOfThreads(n_threads)
 
-  @pytest.mark.parametrize('input, volume', 
+  @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
                             *[(np.random.randint(0, 1e5), True) for _ in range(2)],
                             *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
-  def test_n_nodes_negative_components (self, input, volume):
+  def test_n_nodes_negative_components (self, inpt, volume):
     
     # load or create the image
-    if isinstance(input, sitk.Image):
-      skeleton = input
+    if isinstance(inpt, sitk.Image):
+      skeleton = inpt
     else:
       # create a random mask, either 2D or 3D
       if volume:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=3
-        )
+        mask = binary_blobs_3d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_3d(rng=inpt)
       else:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=2
-        )
+        mask = binary_blobs_2d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_2d(rng=inpt)
+
       mask = sitk.GetImageFromArray(mask.astype(np.uint8))
 
       # skeletonize the image
@@ -194,33 +200,22 @@ class TestGraphFilter:
     cc_nodes = [x for x in _stats.GetLabels() if x < 0]
     assert all([x in range(-2, -len(nodelist) - 2, -1) for x in cc_nodes])
 
-  @pytest.mark.parametrize('input, volume', 
+  @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
                             *[(np.random.randint(0, 1e5), True) for _ in range(2)],
                             *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
-  def test_n_edges_positive_components (self, input, volume):
+  def test_n_edges_positive_components (self, inpt, volume):
       
     # load or create the image
-    if isinstance(input, sitk.Image):
-      skeleton = input
+    if isinstance(inpt, sitk.Image):
+      skeleton = inpt
     else:
       # create a random mask, either 2D or 3D
       if volume:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=3
-        )
+        mask = binary_blobs_3d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_3d(rng=inpt)
       else:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=2
-        )
+        mask = binary_blobs_2d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_2d(rng=inpt)
+
       mask = sitk.GetImageFromArray(mask.astype(np.uint8))
 
       # skeletonize the image
@@ -251,33 +246,22 @@ class TestGraphFilter:
     cc_edges = [x for x in _stats.GetLabels() if x > 0]
     assert all([x in range(1, len(edgelist) + 1) for x in cc_edges])
 
-  @pytest.mark.parametrize('input, volume', 
+  @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
                             *[(np.random.randint(0, 1e5), True) for _ in range(2)],
                             *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
-  def test_n_edges_lut_keys (self, input, volume):
+  def test_n_edges_lut_keys (self, inpt, volume):
       
     # load or create the image
-    if isinstance(input, sitk.Image):
-      skeleton = input
+    if isinstance(inpt, sitk.Image):
+      skeleton = inpt
     else:
       # create a random mask, either 2D or 3D
       if volume:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=3
-        )
+        mask = binary_blobs_3d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_3d(rng=inpt)
       else:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=2
-        )
+        mask = binary_blobs_2d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_2d(rng=inpt)
+
       mask = sitk.GetImageFromArray(mask.astype(np.uint8))
 
       # skeletonize the image
@@ -308,33 +292,22 @@ class TestGraphFilter:
     lut_keys = list(lut.keys())
     assert all([x in list(range(1, len(lut) + 1)) for x in lut_keys])
 
-  @pytest.mark.parametrize('input, volume', 
+  @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
                             *[(np.random.randint(0, 1e5), True) for _ in range(2)],
                             *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
-  def n_nodes_lut_keys(self, input, volume):
+  def n_nodes_lut_keys(self, inpt, volume):
     
     # load or create the image
-    if isinstance(input, sitk.Image):
-      skeleton = input
+    if isinstance(inpt, sitk.Image):
+      skeleton = inpt
     else:
       # create a random mask, either 2D or 3D
       if volume:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=3
-        )
+        mask = binary_blobs_3d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_3d(rng=inpt)
       else:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=2
-        )
+        mask = binary_blobs_2d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_2d(rng=inpt)
+
       mask = sitk.GetImageFromArray(mask.astype(np.uint8))
 
       # skeletonize the image
@@ -365,33 +338,22 @@ class TestGraphFilter:
     lut_keys = list(lut.keys())
     assert all([x in list(range(1, len(lut) + 1)) for x in lut_keys])
 
-  @pytest.mark.parametrize('input, volume', 
+  @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
                             *[(np.random.randint(0, 1e5), True) for _ in range(2)],
                             *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
-  def test_edge_lut_keys_in_edge_map (self, input, volume):
+  def test_edge_lut_keys_in_edge_map (self, inpt, volume):
       
     # load or create the image
-    if isinstance(input, sitk.Image):
-      skeleton = input
+    if isinstance(inpt, sitk.Image):
+      skeleton = inpt
     else:
       # create a random mask, either 2D or 3D
       if volume:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=3
-        )
+        mask = binary_blobs_3d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_3d(rng=inpt)
       else:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=2
-        )
+        mask = binary_blobs_2d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_2d(rng=inpt)
+
       mask = sitk.GetImageFromArray(mask.astype(np.uint8))
     
       # skeletonize the image
@@ -419,33 +381,22 @@ class TestGraphFilter:
     assert all([x in lut.keys() for x in cc_edges])
     assert all([x in cc_edges for x in lut.keys()])
 
-  @pytest.mark.parametrize('input, volume', 
+  @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
                             *[(np.random.randint(0, 1e5), True) for _ in range(2)],
                             *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
-  def test_node_lut_keys_in_edge_map(self, input, volume):
+  def test_node_lut_keys_in_edge_map(self, inpt, volume):
 
     # load or create the image
-    if isinstance(input, sitk.Image):
-      skeleton = input
+    if isinstance(inpt, sitk.Image):
+      skeleton = inpt
     else:
       # create a random mask, either 2D or 3D
       if volume:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=3
-        )
+        mask = binary_blobs_3d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_3d(rng=inpt)
       else:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=2
-        )
+        mask = binary_blobs_2d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_2d(rng=inpt)
+
       mask = sitk.GetImageFromArray(mask.astype(np.uint8))
     
       # skeletonize the image
@@ -475,33 +426,22 @@ class TestGraphFilter:
     assert all([abs(x + 1) in lut.keys() for x in cc_nodes])
     assert all([- x - 1 in cc_nodes for x in lut.keys()])
 
-  @pytest.mark.parametrize('input, volume', 
+  @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
                             *[(np.random.randint(0, 1e5), True) for _ in range(2)],
                             *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
-  def test_edgemap_equals_skeleton (self, input, volume):
+  def test_edgemap_equals_skeleton (self, inpt, volume):
       
     # load or create the image
-    if isinstance(input, sitk.Image):
-      skeleton = input
+    if isinstance(inpt, sitk.Image):
+      skeleton = inpt
     else:
       # create a random mask, either 2D or 3D
       if volume:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=3
-        )
+        mask = binary_blobs_3d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_3d(rng=inpt)
       else:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=2
-        )
+        mask = binary_blobs_2d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_2d(rng=inpt)
+
       mask = sitk.GetImageFromArray(mask.astype(np.uint8))
   
       # skeletonize the image
@@ -532,33 +472,22 @@ class TestGraphFilter:
     # assert that the diff is 0
     assert sitk.GetArrayViewFromImage(diff).sum() == 0
 
-  @pytest.mark.parametrize('input, volume', 
+  @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
                             *[(np.random.randint(0, 1e5), True) for _ in range(2)],
                             *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
-  def test_no_neighbour_pixels (self, input, volume):
+  def test_no_neighbour_pixels (self, inpt, volume):
 
     # load or create the image
-    if isinstance(input, sitk.Image):
-      skeleton = input
+    if isinstance(inpt, sitk.Image):
+      skeleton = inpt
     else:
       # create a random mask, either 2D or 3D
       if volume:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=3
-        )
+        mask = binary_blobs_3d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_3d(rng=inpt)
       else:
-        mask = binary_blobs(
-          length=128,
-          blob_size_fraction=.25,
-          volume_fraction=.5,
-          rng=input,
-          n_dim=2
-        )
+        mask = binary_blobs_2d(seed=inpt) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_2d(rng=inpt)
+
       mask = sitk.GetImageFromArray(mask.astype(np.uint8))
 
       # skeletonize the image

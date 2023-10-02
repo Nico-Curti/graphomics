@@ -42,6 +42,14 @@ Topology
   The number of pendant nodes could be informative about the
   presence of shape's holes and invaginations.
 
+* **Number of isolated nodes:**
+  An isolated node is defined as a node with a degree equal to
+  zero.
+  The number of isolated nodes could be informative about the
+  presence of spurious parts on the volume mask or they describe
+  sphere-like structures on the volume (note: the skeleton of
+  a sphere is just its center point).
+
 * **Number of connected components**:
   The number of connected components of the skeleton graph
   could provides a fast information about the number of distinct

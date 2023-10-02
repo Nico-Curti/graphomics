@@ -80,6 +80,7 @@ The `graphomics` package implements an initial set of pre-defined features, divi
 |            | `EdgeWeights`                 | Main statistics of the edge weights distribution     |
 |            | `SelfLinks`                   | Number of self links of the skeleton graph           |
 | Topology   | `EulerNumber`                 | Euler number of the input image/volume               |
+|            | `NumberOfIsolatedNodes`       | Number of isolated nodes of the skeleton graph       |
 |            | `NumberOfPendantNodes`        | Number of pendant nodes of the skeleton graph        |
 |            | `NumberOfConnectedComponents` | Number of connected components of the skeleton graph |
 |            | `ModularityScore`             | Modularity score of the skeleton graph               |

@@ -5,7 +5,9 @@ import pytest
 
 import numpy as np
 import networkx as nx
+import skimage as sk
 import SimpleITK as sitk
+from functools import partial
 # generation of random binary blobs
 from skimage.data import binary_blobs
 
@@ -23,6 +25,20 @@ __email__ = ['nico.curti2@unibo.it',
              'riccardo.biondi7@unibo.it'
             ]
 
+# get the skimage version for retro-compatibility
+binary_blobs_3d = partial(binary_blobs,
+  length=64,
+  blob_size_fraction=.5,
+  volume_fraction=.1,
+  n_dim=3
+)
+binary_blobs_2d = partial(binary_blobs,
+  length=64,
+  blob_size_fraction=.5,
+  volume_fraction=.1,
+  n_dim=2
+)
+sk_major, sk_minor, *_ = sk.__version__.split('.')
 
 class TestFeatureSpatial:
   '''
@@ -70,13 +86,8 @@ class TestFeatureSpatial:
     feat = GraphomicsSpatial()
 
     # create a random binary volume
-    volume = binary_blobs(
-      length=64,
-      blob_size_fraction=.5,
-      volume_fraction=.1,
-      seed=42,
-      n_dim=3
-    )
+    volume = binary_blobs_3d(seed=42) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_3d(rng=42)
+
     # convert it to a sitk format
     mask = sitk.GetImageFromArray(np.uint8(volume))
 
@@ -274,12 +285,11 @@ class TestFeatureSpatial:
 
     #evaluate the feature
     res = feat._GetDistanceMostCentralNodes(G=G)
-    topk = min(G.number_of_nodes() - 1, 10)
 
     # check the feature properties
     assert isinstance(res, dict)
     for k, v in res.items():
-      assert k.startswith(f'node_top{topk}_distance')
+      assert k.startswith(f'node_top10_distance')
       assert isinstance(k, str)
       assert v >= 0.
       assert isinstance(v, float)

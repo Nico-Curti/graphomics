@@ -77,6 +77,15 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     The number of pendant nodes could be informative about the
     presence of shape's holes and invaginations.
 
+  * **Number of isolated nodes:**
+
+    An isolated node is defined as a node with a degree equal to
+    zero.
+    The number of isolated nodes could be informative about the
+    presence of spurious parts on the volume mask or they describe
+    sphere-like structures on the volume (note: the skeleton of
+    a sphere is just its center point).
+
   * **Number of connected components:**
 
     The number of connected components of the skeleton graph
@@ -261,6 +270,26 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     '''
 
     return len([n for n, d in G.degree() if d == 1])
+
+  def _GetNumberOfIsolatedNodes (self, G : nx.Graph) -> int :
+    '''
+    Return the number of isolated nodes of the input graph
+    (ref. [networkx-degree_]).
+
+    Parameters
+    ----------
+      G : nx.Graph
+        Input graph to analyze
+
+    Returns
+    -------
+      nisolated : int
+        Number of isolated nodes in the graph.
+
+    .. _networkx-degree: https://networkx.org/documentation/stable/reference/classes/generated/networkx.Graph.degree.html
+    '''
+
+    return len([n for n, d in G.degree() if d == 0])
 
   def _GetNumberOfConnectedComponents (self, G : nx.Graph) -> int :
     '''

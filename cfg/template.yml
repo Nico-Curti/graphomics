@@ -89,6 +89,7 @@ topology:
   EdgeWeights: True
   SelfLinks: True
   EulerNumber: True
+  NumberOfIsolatedNodes: True
   NumberOfPendantNodes: True
   NumberOfConnectedComponents: True
   ModularityScore: True

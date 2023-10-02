@@ -297,6 +297,38 @@ class TestFeatureTopology:
     assert np.isfinite(res)
     assert res == n
 
+  def test_feature_NumberOfIsolatedNodes (self):
+    # define the feature extractor class
+    feat = GraphomicsTopology()
+
+    # generate a random number of nodes
+    n = np.random.randint(
+      low=3,
+      high=20
+    )
+
+    # create a complete graph
+    G = nx.complete_graph(n=n)
+
+    # evaluate the feature
+    res = feat._GetNumberOfIsolatedNodes(G=G)
+
+    # check the feature properties
+    assert isinstance(res, int)
+    assert np.isfinite(res)
+    assert res == 0
+
+    # create a star graph
+    G = nx.star_graph(n=n)
+
+    # evaluate the feature
+    res = feat._GetNumberOfIsolatedNodes(G=G)
+
+    # check the feature properties
+    assert isinstance(res, int)
+    assert np.isfinite(res)
+    assert res == 0
+
   def test_feature_NumberOfConnectedComponents (self):
     # define the feature extractor class
     feat = GraphomicsTopology()
