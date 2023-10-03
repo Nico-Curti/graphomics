@@ -81,6 +81,22 @@ Further improvements will occur in the next versions.
     in the graph in terms of its distance to the other nodes.
     This metric could be informative about the presence of hubs
     and ramifications in the skeleton structure.
+  * **Degree distribution power law fit:**
+    Fit of the degree distribution values as power law function.
+    The characterization of the degree distribution provides hints
+    about the nature of the underlying graph.
+    A power law degree distribution is typical of scale-free graph.
+    The value of the power law exponent and the associated score
+    of Kolmogorov-Smirnov fit allow the description of the graph
+    in these terms.
+  * **Degree distribution exponential fit:**
+    Fit of the degree distribution values as exponential function.
+    The characterization of the degree distribution provides hints
+    about the nature of the underlying graph.
+    An exponential degree distribution is typical of Barabasi graph.
+    The value of the fit exponent and the associated score
+    of Kolmogorov-Smirnov fit allow the description of the graph
+    in these terms.
 
 - :construction: [Features] First list of `Topological` Graphomics features:
   * **Number of nodes**:

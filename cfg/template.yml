@@ -148,3 +148,5 @@ centrality:
   NodeClosenessCentrality: True
   NodePageRankCentrality: True
   NodeHarmonicCentrality: True
+  DegreePowerlawFit: True
+  DegreeExponentialFit: True

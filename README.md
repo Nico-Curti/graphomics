@@ -92,10 +92,12 @@ The `graphomics` package implements an initial set of pre-defined features, divi
 |:-----------|:-----------------------------:|:----------------------------------------------------------------|
 |            | `NodeDegreeCentrality`        | Main statistics of the node degree centrality distribution      |
 |            | `NodeBetweennessCentrality`   | Main statistics of the node betweenness centrality distribution |
-| Centrality | `NodeClusteringCoefficient`   | Main statistics of the node clustering coefficient distribution |
+|            | `NodeClusteringCoefficient`   | Main statistics of the node clustering coefficient distribution |
 |            | `NodeClosenessCentrality`     | Main statistics of the node closeness centrality distribution   |
-|            | `NodePageRankCentrality`      | Main statistics of the node pagerank centrality distribution    |
+| Centrality | `NodePageRankCentrality`      | Main statistics of the node pagerank centrality distribution    |
 |            | `NodeHarmonicCentrality`      | Main statistics of the node harmonic centrality distribution    |
+|            | `DegreePowerlawFit`           | Fit parameters of the degree distribution as power-law          |
+|            | `DegreeExponentialFit`        | Fit parameters of the degree distribution as exponential        |
 
 * [**Spatial**](https://github.com/Nico-Curti/graphomics/blob/main/graphomics/_spatial.py) graphomic features
 

@@ -322,3 +322,73 @@ class TestFeatureCentrality:
       assert isinstance(k, str)
       assert v >= 0.
       assert np.isfinite(v)
+
+  def test_feature_DegreePowerlawFit (self):
+    # define the feature extractor class
+    feat = GraphomicsCentrality()
+
+    # generate a random number of nodes
+    n = np.random.randint(
+      low=3,
+      high=30
+    )
+    # generate a probability from a uniform distribution
+    p = np.random.uniform(
+      low=0.5,
+      high=1.
+    )
+
+    # create a random graph according to Erdos-Renyi definition
+    G = nx.erdos_renyi_graph(
+      n=n,
+      p=p,
+      seed=42,
+      directed=False
+    )
+
+    # evaluate the feature
+    res = feat._GetDegreePowerlawFit(G=G)
+
+    # check the feature properties
+    assert isinstance(res, dict)
+    assert 'degree_powerlaw_fit_alpha' in res
+    assert 'degree_powerlaw_fit_KS' in res
+    assert isinstance(res['degree_powerlaw_fit_alpha'], float)
+    assert isinstance(res['degree_powerlaw_fit_KS'], float)
+    assert res['degree_powerlaw_fit_KS'] >= 0.
+    assert res['degree_powerlaw_fit_KS'] <= 1.
+
+  def test_feature_DegreeExponentialFit (self):
+    # define the feature extractor class
+    feat = GraphomicsCentrality()
+
+    # generate a random number of nodes
+    n = np.random.randint(
+      low=3,
+      high=30
+    )
+    # generate a probability from a uniform distribution
+    p = np.random.uniform(
+      low=0.5,
+      high=1.
+    )
+
+    # create a random graph according to Erdos-Renyi definition
+    G = nx.erdos_renyi_graph(
+      n=n,
+      p=p,
+      seed=42,
+      directed=False
+    )
+
+    # evaluate the feature
+    res = feat._GetDegreeExponentialFit(G=G)
+
+    # check the feature properties
+    assert isinstance(res, dict)
+    assert 'degree_exponential_fit_lambda' in res
+    assert 'degree_exponential_fit_KS' in res
+    assert isinstance(res['degree_exponential_fit_lambda'], float)
+    assert isinstance(res['degree_exponential_fit_KS'], float)
+    assert res['degree_exponential_fit_KS'] >= 0.
+    assert res['degree_exponential_fit_KS'] <= 1.

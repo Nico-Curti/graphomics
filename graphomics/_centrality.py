@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import powerlaw
 import networkx as nx
 
 from ._statistics import _get_distribution_main_stats
@@ -98,6 +99,26 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     in the graph in terms of its distance to the other nodes.
     This metric could be informative about the presence of hubs
     and ramifications in the skeleton structure.
+
+  * **Degree distribution power law fit:**
+
+    Fit of the degree distribution values as power law function.
+    The characterization of the degree distribution provides hints
+    about the nature of the underlying graph.
+    A power law degree distribution is typical of scale-free graph.
+    The value of the power law exponent and the associated score
+    of Kolmogorov-Smirnov fit allow the description of the graph
+    in these terms.
+
+  * **Degree distribution exponential fit:**
+
+    Fit of the degree distribution values as exponential function.
+    The characterization of the degree distribution provides hints
+    about the nature of the underlying graph.
+    An exponential degree distribution is typical of Barabasi graph.
+    The value of the fit exponent and the associated score
+    of Kolmogorov-Smirnov fit allow the description of the graph
+    in these terms.
   '''
 
   def __init__ (self, *args, **kwargs):
@@ -323,6 +344,86 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
     )
 
     return stats
+
+  def _GetDegreePowerlawFit (self, G : nx.Graph,
+                                   weight : str = None
+                            ) -> dict :
+    '''
+    Evaluate the power law fit of the degree distribution
+    of values.
+
+    Parameters
+    ----------
+      G : nx.Graph
+        Input graph to analyze.
+
+      weight : str (default := None)
+        Evaluate the metric considering the graph weights.
+
+    Returns
+    -------
+      params : dict
+        Parameters of the power law best fit as
+        alpha, i.e. exponent of the power
+        law best fit function, and KS, i.e., Kolmogorov-Smirnov
+        score of the best fit
+    '''
+    # check if weights are available
+    weight_prefix = '' if weight is None else 'weighted_'
+    # compute the distribution of values
+    degree = G.degree(
+      weight=weight
+    )
+    # convert the degree values to a simple list
+    degree = list(dict(degree).values())
+    # evaluate the best fit of the values
+    best_fit_degree = powerlaw.Fit(degree, xmin=1)
+    # get the parameters of the best fit
+    params = {
+      f'degree_{weight_prefix}powerlaw_fit_alpha' : best_fit_degree.power_law.alpha,
+      f'degree_{weight_prefix}powerlaw_fit_KS' : best_fit_degree.power_law.KS(),
+    }
+    return params
+
+  def _GetDegreeExponentialFit (self, G : nx.Graph,
+                                      weight : str = None
+                               ) -> dict :
+    '''
+    Evaluate the exponential fit of the degree distribution
+    of values.
+
+    Parameters
+    ----------
+      G : nx.Graph
+        Input graph to analyze.
+
+      weight : str (default := None)
+        Evaluate the metric considering the graph weights.
+
+    Returns
+    -------
+      params : dict
+        Parameters of the exponential best fit as
+        lambda, i.e. exponent of the exponential
+        best fit function, and KS, i.e., Kolmogorov-Smirnov
+        score of the best fit
+    '''
+    # check if weights are available
+    weight_prefix = '' if weight is None else 'weighted_'
+    # compute the distribution of values
+    degree = G.degree(
+      weight=weight
+    )
+    # convert the degree values to a simple list
+    degree = list(dict(degree).values())
+    # evaluate the best fit of the values
+    best_fit_degree = powerlaw.Fit(degree, xmin=1)
+    # get the parameters of the best fit
+    params = {
+      f'degree_{weight_prefix}exponential_fit_lambda' : best_fit_degree.exponential.Lambda,
+      f'degree_{weight_prefix}exponential_fit_KS' : best_fit_degree.exponential.KS(),
+    }
+    return params
 
 
 if __name__ == '__main__':
