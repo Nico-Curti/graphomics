@@ -50,7 +50,11 @@ if not os.path.exists(img_sample):
     destination=img_sample
   )
 
-img = LoadImageFileInAnyFormat(img_sample, binarize=True, equal_spacing=True)
+img = LoadImageFileInAnyFormat(
+  filepath=img_sample,
+  masklabel=1,
+  equal_spacing=True,
+)
 
 skeleton_filter = SkeletonizeImageFilter()
 skeleton_filter.Execute(src=img)

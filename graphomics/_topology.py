@@ -177,10 +177,10 @@ class GraphomicsTopology (_BaseGraphomicsFeatures):
     # if it is an empty dict there are no weights
     if weights == {}:
       # set the weights to a uniform list of ones
-      weights = [1] * G.number_of_edges()
+      weights = {n : 1 for n in G.nodes()}
 
     # convert it to a list for safety evaluation
-    weights = list(weights)
+    weights = list(weights.values())
     # compute the statistics of the values distribution
     stats = _get_distribution_main_stats(
       x=weights,

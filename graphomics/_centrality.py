@@ -345,9 +345,7 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
 
     return stats
 
-  def _GetDegreePowerlawFit (self, G : nx.Graph,
-                                   weight : str = None
-                            ) -> dict :
+  def _GetDegreePowerlawFit (self, G : nx.Graph) -> dict :
     '''
     Evaluate the power law fit of the degree distribution
     of values.
@@ -357,9 +355,6 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
       G : nx.Graph
         Input graph to analyze.
 
-      weight : str (default := None)
-        Evaluate the metric considering the graph weights.
-
     Returns
     -------
       params : dict
@@ -368,26 +363,27 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
         law best fit function, and KS, i.e., Kolmogorov-Smirnov
         score of the best fit
     '''
-    # check if weights are available
-    weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
     degree = G.degree(
-      weight=weight
+      weight=None # force the exclusion of the weights
     )
     # convert the degree values to a simple list
     degree = list(dict(degree).values())
+    # filter the values with a 0 degree, aka isolated nodes
+    degree = [x for x in degree if x > 0]
     # evaluate the best fit of the values
-    best_fit_degree = powerlaw.Fit(degree, xmin=1)
+    best_fit_degree = powerlaw.Fit(
+      data=degree,
+      xmin=1
+    )
     # get the parameters of the best fit
     params = {
-      f'degree_{weight_prefix}powerlaw_fit_alpha' : best_fit_degree.power_law.alpha,
-      f'degree_{weight_prefix}powerlaw_fit_KS' : best_fit_degree.power_law.KS(),
+      f'degree_powerlaw_fit_alpha' : best_fit_degree.power_law.alpha,
+      f'degree_powerlaw_fit_KS' : best_fit_degree.power_law.KS(),
     }
     return params
 
-  def _GetDegreeExponentialFit (self, G : nx.Graph,
-                                      weight : str = None
-                               ) -> dict :
+  def _GetDegreeExponentialFit (self, G : nx.Graph) -> dict :
     '''
     Evaluate the exponential fit of the degree distribution
     of values.
@@ -397,9 +393,6 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
       G : nx.Graph
         Input graph to analyze.
 
-      weight : str (default := None)
-        Evaluate the metric considering the graph weights.
-
     Returns
     -------
       params : dict
@@ -408,20 +401,23 @@ class GraphomicsCentrality (_BaseGraphomicsFeatures):
         best fit function, and KS, i.e., Kolmogorov-Smirnov
         score of the best fit
     '''
-    # check if weights are available
-    weight_prefix = '' if weight is None else 'weighted_'
     # compute the distribution of values
     degree = G.degree(
-      weight=weight
+      weight=None # force the exclusion of the weights
     )
     # convert the degree values to a simple list
     degree = list(dict(degree).values())
+    # filter the values with a 0 degree, aka isolated nodes
+    degree = [x for x in degree if x > 0]
     # evaluate the best fit of the values
-    best_fit_degree = powerlaw.Fit(degree, xmin=1)
+    best_fit_degree = powerlaw.Fit(
+      data=degree,
+      xmin=1
+    )
     # get the parameters of the best fit
     params = {
-      f'degree_{weight_prefix}exponential_fit_lambda' : best_fit_degree.exponential.Lambda,
-      f'degree_{weight_prefix}exponential_fit_KS' : best_fit_degree.exponential.KS(),
+      f'degree_exponential_fit_lambda' : best_fit_degree.exponential.Lambda,
+      f'degree_exponential_fit_KS' : best_fit_degree.exponential.KS(),
     }
     return params
 

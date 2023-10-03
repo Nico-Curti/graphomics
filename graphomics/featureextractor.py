@@ -3,7 +3,11 @@
 
 import sys
 import yaml
+import powerlaw
 import numpy as np
+import scipy as sp
+import skimage as ski
+import networkx as nx
 import SimpleITK as sitk
 from datetime import datetime
 
@@ -11,6 +15,12 @@ from .__version__ import __version__
 
 # import the functions required for the input loading
 from ._loader import LoadImageFileInAnyFormat
+# import the functions required for the pre-processing
+# of the loaded inputs
+from ._loader import BoundingBox
+# import the functions required for the pre-processing
+# of the loaded inputs
+from ._loader import CropMinimumBoundingBox
 # import filter for skeletonize image/volume
 from ._skeletonizer import SkeletonizeImageFilter
 # import filter for graph extraction
@@ -579,10 +589,23 @@ class GraphomicsFeatureExtractor (object):
         # load it
         mask = LoadImageFileInAnyFormat(
           filepath=mask_file,
-          binarize=self._features.get('binarize_input', False),
+          masklabel=self._features.get('masklabel', None),
           equal_spacing=self._features.get('equal_spacing', False),
-          crop=self._features.get('crop_input', False),
         )
+
+    # perform the image cropping
+    if self._features.get('crop_input', False):
+      # evaluate the minimum bounding box around the
+      # masked volume
+      bbox = BoundingBox(mask=mask)
+      # call the crop function according to the
+      # minimum bounding box around the object
+      mask = CropMinimumBoundingBox(
+        mask=mask,
+        bbox=bbox
+      )
+    else:
+      bbox = None
 
     # if the skeleton file was not provided, we can compute using
     # the package filter
@@ -606,10 +629,19 @@ class GraphomicsFeatureExtractor (object):
         # load it
         skeleton = LoadImageFileInAnyFormat(
           filepath=sk_file,
-          binarize=self._features.get('binarize_input', False),
+          masklabel=self._features.get('masklabel', None),
           equal_spacing=self._features.get('equal_spacing', False),
-          crop=self._features.get('crop_input', False),
         )
+
+        # if required use the mask bbox to crop also
+        # the skeleton
+        if self._features.get('crop_input', False):
+          # call the crop function according to the
+          # minimum bounding box around the object
+          skeleton = CropMinimumBoundingBox(
+            mask=skeleton,
+            bbox=bbox
+          )
 
     # if the label file was not provided, we can set the
     # value to None
@@ -627,19 +659,20 @@ class GraphomicsFeatureExtractor (object):
         # load it
         labelmap = LoadImageFileInAnyFormat(
           filepath=lbl_file,
-          # binarize=self._features.get('binarize_input', False)
-          binarize=False, # in this case the label map could contain
+          # masklabel=self._features.get('masklabel', False)
+          masklabel=None, # in this case the label map could contain
                           # also floating point values that must be preserved
           equal_spacing=self._features.get('equal_spacing', False),
-          # crop=self._features.get('crop_input', False),
-          crop=False, # in this case the label map could contain
-                      # also floating point values, so the crop must
-                      # be performed after the loading, according to the
-                      # bounding box get by the mask volume
         )
-        # TODO: implement the correct crop for the labelmap, to preserve
-        # the integrity of the floating information (is it necessary or can
-        # we just use the physical points???)
+        # if required use the mask bbox to crop also
+        # the labelmap
+        if self._features.get('crop_input', False):
+          # call the crop function according to the
+          # minimum bounding box around the object
+          labelmap = CropMinimumBoundingBox(
+            mask=labelmap,
+            bbox=bbox
+          )
 
     self._graphomic_features = self._Execute(
       mask=mask,
@@ -720,6 +753,9 @@ class GraphomicsFeatureExtractor (object):
       'skeleton' : skeleton,
       'labelmap' : labelmap,
     }
+
+    # store the weight extra parameters
+    wextra_params = {}
 
     # if the weight are required set the key in the common
     # dictionary of parameters
@@ -945,12 +981,16 @@ class GraphomicsFeatureExtractor (object):
     # Add to the dictionary the metadata of the package
     # required for the correct reproducibility of the results
     metadata = {
-      'pygraphomics_version' : __version__,
+      'pyGraphomics_version' : __version__,
       'SimpleITK_version': sitk.__version__,
       'Numpy_version': np.__version__,
+      'Scipy_version': sp.__version__,
+      'Networkx_version': nx.__version__,
+      'Skimage_version': ski.__version__,
+      'Powerlaw_version': powerlaw.__version__,
       'Python_version': sys.version,
       'PipelineName': self._features.get('name', f'pygraphomics_{today}'),
-      'PipelineDescription': self._features.get('desc', ''),
+      'PipelineDescription': self._features.get('desc', None),
       'PipelineVersion': self._features.get('pipeline_version', '0.0.1'),
       # TODO: check if other global metadata could be helpful
     }
