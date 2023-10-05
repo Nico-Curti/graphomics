@@ -98,6 +98,7 @@ class TestGraphWeightsExtractor:
     assert weights.keys() == lut.keys()
     assert isinstance(weights, dict)
     assert all(isinstance(x, float) for x in weights.values())
+    assert all(x > 0. for x in weights.values())
 
   def test_EdgeLengthPaths_weights (self):
     # create a random binary volume
@@ -145,6 +146,7 @@ class TestGraphWeightsExtractor:
     assert weights.keys() == lut.keys()
     assert isinstance(weights, dict)
     assert all(isinstance(x, int) for x in weights.values())
+    assert all(x > 0 for x in weights.values())
 
   def test_EdgeLabelWeight_weights (self):
     # create a random binary volume

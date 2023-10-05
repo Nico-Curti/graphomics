@@ -26,9 +26,8 @@ __all__ = [
 
 
 def LoadImageFileInAnyFormat (filepath : str,
-                              binarize : bool = False,
-                              equal_spacing : bool = False,
-                              crop : bool = False,
+                              masklabel : int = None,
+                              equal_spacing : bool = False
                              ) -> sitk.Image :
   '''
   Medical Image data loader.
@@ -41,18 +40,17 @@ def LoadImageFileInAnyFormat (filepath : str,
     filepath : str
       Input filename or path in which load the images.
 
-    binarize : bool (default := False)
-      Force the binarization of the loaded image into [0, 1] range,
-      considering all the no-null values as signal.
+    masklabel : int (default := None)
+      Set the label to consider in the provided mask.
+      The input mask is binarized considering as turned on
+      all the value equal to the provided label.
+      If the value is set to None, the binarization step is
+      skipped and the image is loaded as it is.
 
     equal_spacing : bool (default := False)
       Force the image resampling to an equal spacing in all direction.
       The new spacing will acquired the most common size in the
       volume shape.
-
-    crop : bool (default := False)
-      Crop the input volume according to the minimum bounding box
-      around the input shape
 
   Returns
   -------
@@ -125,10 +123,10 @@ def LoadImageFileInAnyFormat (filepath : str,
           'for the complete list of supported formats'
         ))
 
-  # if the binarization is required
-  if binarize:
-    # performed a thresholding in [0, 1] of all the values
-    image = (image != 0)
+  # performed a thresholding in [0, 1] of all the values
+  # equal/different from the provided masklabel
+  if masklabel is not None:
+    image = (image == masklabel)
 
   # if the resampling is required
   if equal_spacing:
@@ -145,15 +143,6 @@ def LoadImageFileInAnyFormat (filepath : str,
       mask=image,
       new_spacing=new_spacing,
       interpolator=sitk.sitkNearestNeighbor
-    )
-
-  # if the crop is required
-  if crop:
-    # call the crop function according to the
-    # minimum bounding box around the object
-    image = CropMinimumBoundingBox(
-      mask=image,
-      bbox=None
     )
 
   return image

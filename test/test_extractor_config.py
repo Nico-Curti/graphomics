@@ -79,7 +79,7 @@ class TestExtractorConfig:
     assert 'label_filepath' in extractor._features
     assert 'check_consistency' in extractor._features
     assert 'nth' in extractor._features
-    assert 'binarize_input' in extractor._features
+    assert 'masklabel' in extractor._features
     assert 'graph_weights' in extractor._features
     assert 'enable_weighted_features' in extractor._features
     assert 'enable_topology_features' in extractor._features

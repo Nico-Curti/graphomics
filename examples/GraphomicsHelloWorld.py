@@ -70,8 +70,8 @@ if __name__ == '__main__':
   # extraction, the input image **must** be a binary mask with values
   # equal to 0 (background) and 1 (foreground).
   # You can easily force the binarization of the loaded volume, setting
-  # the `binarize` argument to True: the loaded image will be thresholded
-  # in the correct binary format keeping all the values != 0 as
+  # the `masklabel` argument to 1: the loaded image will be thresholded
+  # in the correct binary format keeping all the values == `masklabel` as
   # foreground.
   # If the `equal_spacing` is True, we force a resampling of the input
   # volume to an equal spacing along all directions: assuming an image
@@ -79,7 +79,7 @@ if __name__ == '__main__':
   # uniform according to the most frequent value, i.e. (N, N, N)
   mask = LoadImageFileInAnyFormat(
     filepath=filename,
-    binarize=False,
+    masklabel=1,
     equal_spacing=False
   )
   assert isinstance(mask, sitk.Image)

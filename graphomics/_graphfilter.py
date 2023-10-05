@@ -57,7 +57,7 @@ class GraphThicknessImageFilter (object):
         or volume (ndim:=3)
     '''
     # work-around to reduce code redundancy
-    self._SetInternalKernels(shape=(1,) * ndim)
+    self._SetInternalKernels(shape=(1, ) * ndim)
     return self
 
 
@@ -223,7 +223,11 @@ class GraphThicknessImageFilter (object):
       hypernodes=hypernodes
     )
 
+    # get the lookup table of edges simply copying the
+    # evaluated defaultdict of edges
     self.lut_edges = lut_edges
+    # get the lookup table of nodes using the dictionary
+    # of hypernodes computed during the convolution
     self.lut_nodes = hypernodes
 
     # get the nodelist from the lut for a faster output
@@ -280,8 +284,8 @@ class GraphThicknessImageFilter (object):
     # pad the input image pre-convolution
     padded = sitk.ConstantPad(
       image1=tmp,
-      padLowerBound=(1,) * self._ndim,
-      padUpperBound=(1,) * self._ndim,
+      padLowerBound=(1, ) * self._ndim,
+      padUpperBound=(1, ) * self._ndim,
       constant=0
     )
 
@@ -311,6 +315,9 @@ class GraphThicknessImageFilter (object):
 
     # 3. a pendant node is given by a value
     # of the resulting convolution == 25 in 3D and convolution == 7 in 2D
+
+    # 4. an isolated node is given by a value
+    # of the resulting convolution == 26 in 3D and convolution == 8 in 2D
     ramification_score = (3 ** self._ndim) - 3
     pendant_score = (3 ** self._ndim) - 2
     isolated_score = (3 ** self._ndim) - 1
@@ -378,7 +385,8 @@ class GraphThicknessImageFilter (object):
   def _ComputeEdges (self, src : sitk.Image,
                            true_vertex : sitk.Image,
                            cc_vertices : sitk.Image,
-                           hypernodes : dict) -> tuple:
+                           hypernodes : dict
+                    ) -> tuple:
     '''
     Compute the edges coordinates as connected components of
     the original input with the node coordinates removed.
@@ -756,9 +764,9 @@ class GraphThicknessImageFilter (object):
            }
 
   def GetNodeLUTIndexes (self) -> dict:
-    """
+    '''
     Get the lookup table for the nodes found in the edge map
-    """
+    '''
     if not hasattr(self, 'lut_nodes'):
       class_name = self.__class__.__name__
       raise RuntimeError(('Runtime Exception. '
@@ -769,9 +777,9 @@ class GraphThicknessImageFilter (object):
     return self.lut_nodes
   
   def GetNodeLUTPhysicalPoints (self) -> dict:
-    """
+    '''
     Get the lookup table for the nodes found in the edge map
-    """
+    '''
     if not hasattr(self, 'lut_nodes'):
       class_name = self.__class__.__name__
       raise RuntimeError(('Runtime Exception. '
@@ -833,8 +841,8 @@ if __name__ == '__main__':
   # get the returning values
   nodes = graph_filter.GetNodeIndexes()
   edges = graph_filter.GetEdgeIndexes()
-  edgeLUT = graph_filter.GetEdgeLUTIndexes()
-  edges_lbl = graph_filter.GetEdgeMap()
+  #edgeLUT = graph_filter.GetEdgeLUTIndexes()
+  #edges_lbl = graph_filter.GetEdgeMap()
 
   # create the 3D plot
   fig = plt.figure(figsize=(15, 15))
@@ -852,5 +860,5 @@ if __name__ == '__main__':
     ax.plot(*zip(*(ex, ey)), color='blue', linewidth=2, alpha=.5)
 
   # multiply by 2 the z axis since it is commonly lower than x, y
-  ax.set_box_aspect((np.ptp(px), np.ptp(py), np.ptp(pz)*2))
+  ax.set_box_aspect((np.ptp(px), np.ptp(py), np.ptp(pz)))
   ax.view_init(elev=0., azim=270)

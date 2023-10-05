@@ -29,6 +29,12 @@ nth: 1
 # considering all the no-null values as signal
 binarize_input: True
 # [Optional]
+# set the mask label to consider during the evaluation
+# of the input mask image
+# All the values equal to the provided masklabel are
+# considered as turned on
+masklabel: 1
+# [Optional]
 # force the resampling of the input mask to an equal
 # spacing in all direction
 # This is useful when we want to evaluate the network

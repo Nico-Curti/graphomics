@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import partial
+from inspect import Parameter
 from inspect import signature
 from inspect import getmembers
 import inspect
@@ -127,15 +128,17 @@ class _BaseGraphomicsFeatures (object):
     for name, func in feature_todo.items():
       # get the list of the required parameters
       sign = signature(func)
-      parameters = sign.parameters
-      required_arguments = [name 
-        for name, param in parameters.items() 
-          if param.default == inspect.Parameter.empty
+      # filter the list of parameters according to
+      # the only required ones, aka the parameters
+      # without a default value already set
+      req_params = [name
+        for name, param in sign.parameters.items()
+          if param.default == Parameter.empty
       ]
       # select the appropriated inputs to feed
       inpts = {}
       # loop along the required parameters
-      for k in required_arguments:
+      for k in req_params:
         # if it is not a parameter already set
         if k not in params.get(name, {}):
           # add it to the dictionary if it exists

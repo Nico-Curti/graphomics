@@ -8,7 +8,13 @@ import numpy as np
 import SimpleITK as sitk
 
 # import filter for the medical image loading
-from graphomics import LoadImageFileInAnyFormat, ResampleSize
+from graphomics import LoadImageFileInAnyFormat
+# import the functions required for the pre-processing
+# of the loaded inputs
+from graphomics import BoundingBox
+# import the functions required for the pre-processing
+# of the loaded inputs
+from graphomics import CropMinimumBoundingBox
 # import the test sample downloader
 from .download_from_drive import download_file_from_google_drive
 import tarfile
@@ -139,9 +145,8 @@ class TestLoader:
     # load the image
     mask = LoadImageFileInAnyFormat(
       filepath=nifti_sample,
-      binarize=False,
+      masklabel=None,
       equal_spacing=False,
-      crop=False
     )
 
     # check input properties
@@ -153,9 +158,8 @@ class TestLoader:
     # load the image
     mask = LoadImageFileInAnyFormat(
       filepath=nifti_sample,
-      binarize=True,
+      masklabel=1,
       equal_spacing=False,
-      crop=False
     )
 
     # get the numpy volume for faster checks
@@ -173,9 +177,8 @@ class TestLoader:
     # load the image
     mask = LoadImageFileInAnyFormat(
       filepath=nifti_sample,
-      binarize=False,
+      masklabel=None,
       equal_spacing=True,
-      crop=False
     )
 
     # check input properties
@@ -187,16 +190,22 @@ class TestLoader:
     # load the image without crop
     orig = LoadImageFileInAnyFormat(
       filepath=nifti_sample,
-      binarize=False,
+      masklabel=None,
       equal_spacing=False,
-      crop=False
     )
     # load the image with crop
     mask = LoadImageFileInAnyFormat(
       filepath=nifti_sample,
-      binarize=False,
+      masklabel=None,
       equal_spacing=False,
-      crop=True
+    )
+    # get the minimum bounding box around
+    # the input mask
+    bbox = BoundingBox(mask=mask)
+    # crop the mask according to the bbox
+    mask = CropMinimumBoundingBox(
+      mask=mask,
+      bbox=bbox
     )
 
     # check input properties
