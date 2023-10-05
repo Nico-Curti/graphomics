@@ -15,6 +15,9 @@ from graphomics import BoundingBox
 # import the functions required for the pre-processing
 # of the loaded inputs
 from graphomics import CropMinimumBoundingBox
+# import the functions required for the pre-processing
+# of the loaded inputs
+from graphomics import ResampleSize
 # import the test sample downloader
 from .download_from_drive import download_file_from_google_drive
 import tarfile
@@ -105,10 +108,10 @@ class TestLoader:
   def test_dcm_directory (self):
     
     # load the series
-    mask = LoadImageFileInAnyFormat(filepath=dicom_sample,
-                                    binarize=False,
-                                    equal_spacing=False,
-                                    crop=False)
+    mask = LoadImageFileInAnyFormat(
+      filepath=dicom_sample,
+      equal_spacing=False,
+    )
     
     # check input properties
     assert isinstance(mask, sitk.Image)
@@ -117,10 +120,10 @@ class TestLoader:
   def test_mgz_directory (self):
     
     # load the image
-    mask = LoadImageFileInAnyFormat(filepath=mgz_sample,
-                                    binarize=False,
-                                    equal_spacing=False,
-                                    crop=False)
+    mask = LoadImageFileInAnyFormat(
+      filepath=mgz_sample,
+      equal_spacing=False,
+    )
     
     # check input properties
     assert isinstance(mask, sitk.Image)
@@ -217,9 +220,7 @@ class TestLoader:
     # load the image
     mask = LoadImageFileInAnyFormat(
       filepath=nifti_sample,
-      binarize=False,
-      equal_spacing=True,
-      crop=False
+      equal_spacing=True,  
     )
 
     original_size = mask.GetSize()
