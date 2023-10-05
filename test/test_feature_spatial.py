@@ -242,14 +242,27 @@ class TestFeatureSpatial:
       seed=42,
       directed=False
     )
+    # re-label the nodes to create 3D tuples of coords
+    nx.relabel_nodes(
+      G=G,
+      mapping={
+        k : tuple(np.random.uniform(low=0., high=1., size=(2, )))
+        for k in G.nodes()
+      },
+      copy=False
+    )
 
     #evaluate the feature
     res = feat._GetCenterOfMass(G=G)
 
     # check the feature properties
-    assert isinstance(res, float)
-    assert res >= 0
-    assert np.isfinite(res)
+    assert isinstance(res, dict)
+    assert len(res) == 2
+    assert 'cdm_x' in res
+    assert 'cdm_y' in res
+    assert res['cdm_x'] >= 0
+    assert res['cdm_y'] >= 0
+    assert np.isfinite(res['cdm_x'])
 
   def test_feature_DistanceMostCentralNodes (self):
     # define the feature extractor class

@@ -425,6 +425,8 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     nodes = np.asarray(G.nodes())
     # evaluate the barycenter of the coordinates
     cdm = nodes.mean(axis=0)
+    # replace the value as dict
+    cdm = {f'cdm_{x}' : v for x, v in zip(['x', 'y', 'z'], cdm)}
 
     return cdm
 
@@ -473,6 +475,8 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     topk_degree = np.asarray(topk_degree)
     # evaluate the center of mass of the graph
     cdm = self._GetCenterOfMass(G=G)
+    # re-convert to a numpy array
+    cdm = np.asarray(list(cdm.values()))
     # standardize the coordinates translating the center
     topk_degree_standardized = (topk_degree - cdm)
     # evaluate the Euclidean distance from the center
@@ -517,6 +521,8 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     no_pendant = np.asarray(no_pendant)
     # evaluate the center of mass of the graph
     cdm = self._GetCenterOfMass(G=G)
+    # re-convert to a numpy array
+    cdm = np.asarray(list(cdm.values()))
     # standardize the coordinates translating the center
     no_pendant_standardized = (no_pendant - cdm)
     # evaluate the Euclidean distance from the center
@@ -561,6 +567,8 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     pendant = np.asarray(pendant)
     # evaluate the center of mass of the graph
     cdm = self._GetCenterOfMass(G=G)
+    # re-convert to a numpy array
+    cdm = np.asarray(list(cdm.values()))
     # standardize the coordinates translating the center
     pendant_standardized = (pendant - cdm)
     # evaluate the Euclidean distance from the center
