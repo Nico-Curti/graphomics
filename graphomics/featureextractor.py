@@ -129,6 +129,10 @@ class GraphomicsFeatureExtractor (object):
     Enable all the possible graphomics features.
     '''
     for name in self._feature_classes.keys():
+      
+      # enable the feature class
+      self._features[f'enable_{name}_features'] = True
+
       # add the feature class to the list of features
       self._features[name] = {}
       # get all the possible inner-features related
@@ -524,16 +528,24 @@ class GraphomicsFeatureExtractor (object):
         Dictionary of the private parameters related to each filter.
         The dictionary is organized as (FeatureName, dictionary of parameters).
     '''
+    # get the available feature classes
+    available_classes = list(self._feature_classes.keys())
+
+    # check the validity of the provided feature class
+    if feature_class not in available_classes:
+      # get the list of available feature class
+      available_classes = ', '.join(available_classes)
+      raise ValueError((
+        'Invalid feature class name. '
+        f'Available classes are {available_classes}. '
+        f'Given {feature_class}.'
+      ))
+
     # extract the list of required features for that class
     whole_dict = self._features.get(feature_class, None)
     if whole_dict is None:
-      # get the list of available feature class
-      available_classes = ', '.join(self._feature_classes.keys())
-      raise ValueError((
-        'Invalid feature class name. '
-        f'The available features classes are only {available_classes} '
-        f'Given {feature_class}'
-      ))
+      # raise an error if the feature class was not enabled
+      raise ValueError(f'No features enabled for the given class ({feature_class}).')
 
     # declare the list of todo and related parameters
     todo = []
@@ -733,64 +745,65 @@ class GraphomicsFeatureExtractor (object):
         # get the selected weight type
         wtype = self._features.get('graph_weights')
         # check the correctness of the name
-        if wtype not in self._weight_extractor.keys():
-          # get the list of available methods
-          available_wtype = ', '.join(self._weight_extractor.keys())
-          raise ValueError((
-            'Invalid weight extractor name. '
-            f'Available classes are {available_wtype}. '
-            f'Given {wtype}.'
-          ))
-        # extract the object from the available ones
-        wtype = self._weight_extractor[wtype]
-        # set the extra parameters that could be need by the filter
-        wextra_params = {}
-
-        # check if the required weight extractor has all the
-        # inputs necessary
-        # TODO: find a better way to check the wtype requirements
-        if isinstance(wtype, EdgeLabelWeightFilter):
-          # if it is a EdgeLabelWeightFilter the labelmap must
-          # be provided by the user
-          if labelmap is None:
-            raise ValueError((
-              'Invalid weight extractor. '
-              'For the correct usage of the EdgeLabelWeightFilter as weight extractor '
-              'a valid labelmap must be provided. '
-              'See the SetLabelImage or SetLabelFilepath for the details.'
-            ))
-          # set the extra parameters required
-          wextra_params['labelmap'] = labelmap
-          wextra_params['mask'] = mask
-
-        # set all the extra parameters
-        w_name = wtype.__class__.__name__
-        # if there are parameters to store
-        if self._features.get(f'{w_name}Parameters', False):
-          # set all the extra parameters
-          for k, v in self._features.get(f'{w_name}Parameters').items():
-            wextra_params[k] = v
-
-        elif isinstance(wtype, EdgeLengthPathsFilter):
-          # if it is a EdgeLengthPathsFilter the input volume
-          # must have an equal spacing along all directions to
-          # preserve the correctness evaluation of the lengths
-
-          # get the image spacing
-          spacing = mask.GetSpacing()
-          # check the equality of the values
-          if not all(spacing[0] == x for x in spacing):
-            raise ValueError((
-              'Invalid image spacing. '
-              'For the correct usage of the EdgeLengthPathsFilter as weight extractor '
-              'the input mask must have an equal spacing along all direction. '
-              f'Given {spacing}'
-            ))
 
       # If not, the default EdgeLengthPathsFilter will
       # be used
       else:
-        wtype = EdgeLengthPathsFilter()
+        wtype = 'EdgeLengthPathsFilter'
+
+      if wtype not in self._weight_extractor.keys():
+        # get the list of available methods
+        available_wtype = ', '.join(self._weight_extractor.keys())
+        raise ValueError((
+          'Invalid weight extractor name. '
+          f'Available classes are {available_wtype}. '
+          f'Given {wtype}.'
+        ))
+      # extract the object from the available ones
+      wtype = self._weight_extractor[wtype]
+      # set the extra parameters that could be need by the filter
+      wextra_params = {}
+
+      # check if the required weight extractor has all the
+      # inputs necessary
+      # TODO: find a better way to check the wtype requirements
+      if isinstance(wtype, EdgeLabelWeightFilter):
+        # if it is a EdgeLabelWeightFilter the labelmap must
+        # be provided by the user
+        if labelmap is None:
+          raise ValueError((
+            'Invalid weight extractor. '
+            'For the correct usage of the EdgeLabelWeightFilter as weight extractor '
+            'a valid labelmap must be provided. '
+            'See the SetLabelImage or SetLabelFilepath for the details.'
+          ))
+        # set the extra parameters required
+        wextra_params['labelmap'] = labelmap
+        wextra_params['mask'] = mask
+
+      elif isinstance(wtype, EdgeLengthPathsFilter):
+        # if it is a EdgeLengthPathsFilter the input volume
+        # must have an equal spacing along all directions to
+        # preserve the correctness evaluation of the lengths
+
+        # get the image spacing
+        spacing = mask.GetSpacing()
+        # check the equality of the values
+        if not all(spacing[0] == x for x in spacing):
+          raise ValueError((
+            'Invalid image spacing. '
+            'For the correct usage of the EdgeLengthPathsFilter as weight extractor '
+            'the input mask must have an equal spacing along all direction. '
+            f'Given {spacing}'
+          ))
+
+      # set all the extra parameters
+      w_name = wtype.__class__.__name__
+      # if there are parameters to store
+      if self._features.get(f'{w_name}Parameters', False):
+        # set all the extra parameters
+        for k, v in self._features.get(f'{w_name}Parameters').items():
+          wextra_params[k] = v
 
       self._wtype = wtype
 

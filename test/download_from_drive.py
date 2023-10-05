@@ -46,7 +46,7 @@ def download_file_from_google_drive (Id : int, destination : str):
     Download the file chunk by chunk and plot the progress
     '''
 
-    chunk_size = 32768
+    chunk_size = 64 * 1024
 
     with open(destination, 'wb') as fp:
       dl = 0
@@ -78,11 +78,8 @@ def download_file_from_google_drive (Id : int, destination : str):
       stream=True
     )
 
-  save_response_content(
-    response=response,
-    destination=destination
-  )
-
+  save_response_content(response, destination)
+  
 
 if __name__ == '__main__':
 

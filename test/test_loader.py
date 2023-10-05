@@ -8,9 +8,10 @@ import numpy as np
 import SimpleITK as sitk
 
 # import filter for the medical image loading
-from graphomics import LoadImageFileInAnyFormat
+from graphomics import LoadImageFileInAnyFormat, ResampleSize
 # import the test sample downloader
 from .download_from_drive import download_file_from_google_drive
+import tarfile
 
 __author__  = ['Nico Curti',
                'Gianluca Carlini',
@@ -42,6 +43,39 @@ if not os.path.exists(nifti_sample):
     destination=nifti_sample
   )
 
+mgz_sample = os.path.join(sample_dir, 'brain_seg_anon.mgz')
+
+if not os.path.exists(mgz_sample):
+  # create the folder to store the files
+  os.makedirs(sample_dir, exist_ok=True)
+
+  # download the sample image
+  download_file_from_google_drive(
+    Id='1SrcDOqvjH5jjzBH0Qx-2-nB0ioyRb5__',
+    destination=mgz_sample
+  )
+
+dicom_sample = os.path.join(sample_dir, 'dicom.tar')
+
+if not os.path.exists(dicom_sample):
+  # create the folder to store the files
+  os.makedirs(sample_dir, exist_ok=True)
+
+  # download the sample image
+  download_file_from_google_drive(
+    Id='1EJP6wSiUiPphilu2nXpc5Ntp7nm-ndYV',
+    destination=dicom_sample
+  )
+
+  # decompress the file
+  with tarfile.open(dicom_sample, 'r') as fp:
+    fp.extractall(os.path.join(sample_dir, 'series'))
+
+  # remove the tar file
+  os.remove(dicom_sample)
+
+  dicom_sample = os.path.join(sample_dir, 'series')
+
 
 class TestLoader:
   '''
@@ -63,12 +97,28 @@ class TestLoader:
       LoadImageFileInAnyFormat(filepath='dummy.txt')
 
   def test_dcm_directory (self):
-    # TODO: add a dcm sample to check
-    pass
+    
+    # load the series
+    mask = LoadImageFileInAnyFormat(filepath=dicom_sample,
+                                    binarize=False,
+                                    equal_spacing=False,
+                                    crop=False)
+    
+    # check input properties
+    assert isinstance(mask, sitk.Image)
+    assert len(mask.GetSize()) == 3
 
   def test_mgz_directory (self):
-    # TODO: add a mgz sample to check
-    pass
+    
+    # load the image
+    mask = LoadImageFileInAnyFormat(filepath=mgz_sample,
+                                    binarize=False,
+                                    equal_spacing=False,
+                                    crop=False)
+    
+    # check input properties
+    assert isinstance(mask, sitk.Image)
+    assert len(mask.GetSize()) == 3
 
   def test_invalid_extension (self):
 
@@ -153,3 +203,23 @@ class TestLoader:
     assert isinstance(mask, sitk.Image)
     assert mask.GetSize() < orig.GetSize()
 
+  def test_resample_image (self):
+    
+    # load the image
+    mask = LoadImageFileInAnyFormat(
+      filepath=nifti_sample,
+      binarize=False,
+      equal_spacing=True,
+      crop=False
+    )
+
+    original_size = mask.GetSize()
+
+    mask = ResampleSize(mask, new_size=(256, 256, 256))
+    
+    # check input properties
+    assert isinstance(mask, sitk.Image)
+    assert mask.GetSize() == (256, 256, 256)
+    assert len(set(mask.GetSpacing())) == 1
+    assert len(mask.GetSize()) == 3
+    assert original_size != mask.GetSize()

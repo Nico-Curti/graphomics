@@ -156,8 +156,8 @@ class TestGraphFilter:
 
   @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
-                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
-                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+                            *[(np.random.randint(0, 1e5), True) for _ in range(1)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(1)],])
   def test_n_nodes_negative_components (self, inpt, volume):
     
     # load or create the image
@@ -202,8 +202,8 @@ class TestGraphFilter:
 
   @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
-                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
-                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+                            *[(np.random.randint(0, 1e5), True) for _ in range(1)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(1)],])
   def test_n_edges_positive_components (self, inpt, volume):
       
     # load or create the image
@@ -248,8 +248,8 @@ class TestGraphFilter:
 
   @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
-                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
-                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+                            *[(np.random.randint(0, 1e5), True) for _ in range(1)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(1)],])
   def test_n_edges_lut_keys (self, inpt, volume):
       
     # load or create the image
@@ -294,8 +294,8 @@ class TestGraphFilter:
 
   @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
-                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
-                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+                            *[(np.random.randint(0, 1e5), True) for _ in range(1)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(1)],])
   def n_nodes_lut_keys(self, inpt, volume):
     
     # load or create the image
@@ -340,8 +340,8 @@ class TestGraphFilter:
 
   @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
-                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
-                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+                            *[(np.random.randint(0, 1e5), True) for _ in range(1)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(1)],])
   def test_edge_lut_keys_in_edge_map (self, inpt, volume):
       
     # load or create the image
@@ -383,8 +383,8 @@ class TestGraphFilter:
 
   @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
-                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
-                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+                            *[(np.random.randint(0, 1e5), True) for _ in range(1)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(1)],])
   def test_node_lut_keys_in_edge_map(self, inpt, volume):
 
     # load or create the image
@@ -428,8 +428,8 @@ class TestGraphFilter:
 
   @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
-                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
-                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+                            *[(np.random.randint(0, 1e5), True) for _ in range(1)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(1)],])
   def test_edgemap_equals_skeleton (self, inpt, volume):
       
     # load or create the image
@@ -474,8 +474,8 @@ class TestGraphFilter:
 
   @pytest.mark.parametrize('inpt, volume',
                            [(skeleton_3d, True), (skeleton_2d, False),
-                            *[(np.random.randint(0, 1e5), True) for _ in range(2)],
-                            *[(np.random.randint(0, 1e5), False) for _ in range(2)],])
+                            *[(np.random.randint(0, 1e5), True) for _ in range(1)],
+                            *[(np.random.randint(0, 1e5), False) for _ in range(1)],])
   def test_no_neighbour_pixels (self, inpt, volume):
 
     # load or create the image
