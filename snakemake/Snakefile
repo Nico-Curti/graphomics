@@ -1,0 +1,325 @@
+# snakemake --cores 1                   # to run
+# snakemake --force clear               # to force rule
+# snakemake --dryrun --forceall         # check workflow
+# REMEMBER : pipe in powershell wraps the object into utf-16 char set (avoid it...evil!)
+# WIN32 :=  cmd /C "snakemake --dag | dot -Tpdf > workflow.pdf"
+# UNIX  :=  snakemake --dag | dot -Tpdf > workflow.pdf
+
+import os
+import json
+from glob import glob
+import multiprocessing as mp
+from functools import partial
+
+__author__  = ['Nico Curti',
+               'Gianluca Carlini',
+               'Riccardo Biondi'
+              ]
+__email__ = ['nico.curti2@unibo.it',
+             'gianluca.carlini3@unibo.it',
+             'riccardo.biondi7@unibo.it'
+            ]
+
+def get_files_multiple_ext (directory : str,
+                            extensions : list
+                           ) -> list :
+  '''
+  Get all the files in the directory with the provided
+  (possible) extensions
+
+  Parameters
+  ----------
+    directory: str
+      Input directory path in which search the files
+
+    extensions: list
+      List of extensions to search
+
+  Returns
+  -------
+    files: list
+      List of files found
+  '''
+  files = sum([
+    glob('{}/*{}'.format(directory, ext))
+      for ext in extensions
+    ], []
+  )
+  return files
+
+def handle_extension (wildcards : str,
+                      directory : str,
+                      extensions : list
+                     ) -> str:
+  '''
+  Get the first filename found in the directory
+  with one of the possible extensions
+
+  Parameters
+  ----------
+    wildcards: str
+      Wildcard to use in the snakemake pipeline
+      to build the input filename
+
+    directory: str
+      Input directory path in which search the files
+
+    extensions: list
+      List of extensions to search
+
+  Returns
+  -------
+    file: str
+      First occurrence found as file path
+  '''
+  # for each extension
+  for ext in extensions:
+    # build the file path
+    file = f'{directory}/{wildcards.filename}{ext}'
+    # if it exists
+    if os.path.exists(file):
+      # return it
+      return file
+  # if not found raise Error
+  raise ValueError((
+    'Mask file not found in the provided directory. '
+    f'Given: {directory}. '
+    'Something goes wrong in the search... '
+  ))
+
+def handle_extension_with_prefix (wildcards : str,
+                                  prefix : str,
+                                  directory : str,
+                                  extensions : list
+                                 ) -> str:
+  '''
+  Get the first filename found in the directory
+  with one of the possible extensions, with a
+  prefix string as output.
+  This is an utility functions to handle the optional
+  parameters of the graphomic cmd.
+
+  Parameters
+  ----------
+    wildcards: str
+      Wildcard to use in the snakemake pipeline
+      to build the input filename
+
+    prefix: str
+      Prefix string to pre-pend to the output
+
+    directory: str
+      Input directory path in which search the files
+
+    extensions: list
+      List of extensions to search
+
+  Returns
+  -------
+    cmd: str
+      Output string with prefix
+  '''
+  try:
+    outfile = handle_extension(
+      wildcards=wildcards,
+      directory=directory,
+      extensions=extensions
+    )
+    return ' '.join((f'{prefix}', outfile))
+  except ValueError:
+    return ''
+
+def get_resulting_json_file (directory : str):
+  '''
+  Utility function for the building of the resulting
+  graphomic feature output file.
+
+  Parameters
+  ----------
+    directory: str
+      Output directory
+
+  Returns
+  -------
+    outfile: str
+      F-string of the resulting output file to
+      fill using snakemake rule
+  '''
+  return f'{directory}/{{filename}}.json'
+
+def multidict2table (d : dict) :
+  '''
+  '''
+  return d
+
+
+# Load the config file
+configfile: 'template.yml'
+
+# IO directories
+mask_dir = os.path.abspath(config['mask_dir'])
+skeleton_dir = config['skeleton_dir']
+if skeleton_dir is not None:
+  skeleton_dir = os.path.abspath(skeleton_dir)
+label_dir = config['label_dir']
+if label_dir is not None:
+  label_dir = os.path.abspath(label_dir)
+
+# Input graphomic pipeline
+pipeline_cfg = os.path.abspath(config['cfg_file'])
+
+# Output graphomic pipeline
+outfile = os.path.abspath(config['outfile'])
+
+# get the file extensions to search for each input
+# directory
+# NOTE: if None, the mask extensions will be copied
+mask_extensions = config['mask_extensions']
+skeleton_extensions = config['skeleton_extensions']
+if skeleton_extensions is None:
+  skeleton_extensions = mask_extensions
+label_extensions = config['label_extensions']
+if label_extensions is None:
+  label_extensions = mask_extensions
+
+# If the extension is set to None, all the files/dirs
+# included in the mask_dir will be considered
+if mask_extensions is None:
+  mask_files = glob(f'{mask_dir}/*')
+else:
+  mask_files = get_files_multiple_ext(mask_dir, mask_extensions)
+
+# get the basename of the mask files found
+names = [os.path.basename(f) for f in mask_files]
+# remove the extension of the files to get more flexibility
+# to the other input files
+names_without_ext = [os.path.splitext(n)[0] for n in names]
+
+# handle the file names found for the correct association
+# in the snakemake rules
+handle_mask_extension = partial(handle_extension,
+  directory=mask_dir,
+  extensions=mask_extensions
+)
+handle_skeleton_extension = partial(handle_extension_with_prefix,
+  prefix='--skeleton',
+  directory=skeleton_dir,
+  extensions=skeleton_extensions
+)
+handle_label_extension = partial(handle_extension_with_prefix,
+  prefix='--label',
+  directory=label_dir,
+  extensions=label_extensions
+)
+
+# define the feature directory in which store the files
+feature_dir = os.path.abspath(config['feature_dir'])
+
+rule all:
+  input:
+    # output graphomic features
+    outfile,
+
+rule features_extraction:
+  input:
+    # Input mask file with the appropriated extension
+    mask_file = handle_mask_extension,
+  output:
+    # Output graphomic features
+    outfile = get_resulting_json_file(directory=feature_dir),
+  params:
+    # feature directory in which store the temporary files
+    feature_dir = feature_dir,
+    # configuration file of the single graphomic pipeline
+    cfg = pipeline_cfg,
+    # Input skeleton file with the appropriated extension
+    skeleton_file = handle_skeleton_extension,
+    # Input label file with the appropriated extension
+    label_file = handle_label_extension,
+  resources:
+    # Number of concurrent workers allowed
+    concurrent = mp.cpu_count()
+  log:
+    'logs/graphomic_feature_extraction_{filename}.log'
+  threads:
+    1
+  message:
+    'Make graphomic feature extraction step'
+  shell:
+    '''
+    mkdir -p {params.feature_dir}
+    graphomics --config {params.cfg} \
+               --nth 1 \
+               --input {input.mask_file} \
+               {params.skeleton_file} \
+               {params.label_file} \
+               --output {output.outfile}
+    '''
+
+rule features_merge:
+  input:
+    # Input files resulting from the extraction
+    feature_files = expand(
+      os.path.join(feature_dir,
+        '{filename}.json'
+      ),
+      filename=names_without_ext
+    ),
+  output:
+    # Output graphomic features database
+    outfile = outfile
+  params:
+    feature_dir = feature_dir,
+  resources:
+    # Number of concurrent workers allowed
+    concurrent = 1
+  log:
+    'logs/graphomic_feature_merging.log'
+  threads:
+    1
+  message:
+    'Make graphomic features merging step'
+  run:
+    # store all the flatten feature dicts
+    features = []
+    keys = None
+    # for each file produced
+    for file in input.feature_files:
+      # load the corresponding json
+      with open(file, 'r', encoding='utf-8') as fp:
+        data = json.load(fp)
+      # flatten the dictionary
+      data = dict(multidict2table(data))
+      # get the file name to use as extra key
+      # in the feature as 'PatientID'
+      PatientId = os.path.basename(file)
+      PatientId, _ = os.path.splitext(PatientId)
+      # add the PatientID key
+      data['PatientId'] = PatientId
+
+      # safety check the keys' consistency
+      if keys is None:
+        keys = data.keys()
+      else:
+        if keys != data.keys():
+          raise ValueError((
+            'Invalid feature merging. '
+            'Found graphomic features with different keys. '
+            f'The issue arise in the file: {file}'
+          ))
+      # append the resulting table of data
+      features.append(data)
+
+    # with all the stored flatten values, we
+    # can build a global database as CSV file
+    with open(output.outfile, 'w', encoding='utf-8') as fp:
+      # create the header with the keys
+      header = ','.join(keys)
+      # dump the header
+      fp.write(f'{header}\n')
+      # now for each file dump the corresponding
+      # feature values
+      for d in data:
+        values = ','.join(map(str, d.values()))
+        # dump the row of values
+        fp.write(f'{values}\n')

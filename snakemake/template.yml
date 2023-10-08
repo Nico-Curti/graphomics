@@ -1,0 +1,19 @@
+## Snakefile configuration
+
+# Input directory of the files
+mask_dir: '/path/to/the/directory/of/binary_mask'
+skeleton_dir: '/path/to/the/directory/of/skeleton_mask'
+label_dir: '/path/to/the/directory/of/label_map'
+
+# file extension to use in the file search
+mask_extensions: ['.nii', '.nii.gz', '.dcm']
+skeleton_extensions: null
+label_extensions: null
+
+# configuration file of the graphomic pipeline
+cfg_file: '/path/to/the/cfg/file/of/the/pipeline'
+# temporary directory in which store all the extracted
+# graphomic feature files
+feature_dir: '/path/to/the/tmp/graphomic/feature/files'
+# output file of resulting graphomic features
+outfile: '/path/to/the/output/file/of/graphomic/features'

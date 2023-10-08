@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1] - 2023-10-03
+## [0.0.1] - 2023-10-08
 
 First version of the library.
 This is the starting point of the development of the *pyGraphomics* package.
@@ -20,6 +20,7 @@ Further improvements will occur in the next versions.
 - :globe_with_meridians: [Global] Add first version of Github Actions CI for Python and Docs
 - :globe_with_meridians: [Global] Add download of medical image sample via Google Drive for testing
 - :globe_with_meridians: [Global] Include Codecov tracking of the package
+- :globe_with_meridians: [Global] Add snakemake workflow manager for multi-patients applications
 
 - :computer: [Python] Installation file for the Python package
 - :computer: [Python] Entry point of the library for its usage with command line interface (ref. `graphomics/__main__.py`)
@@ -251,3 +252,6 @@ Further improvements will occur in the next versions.
 - :closed_book: [Docs] Notebook example for multi-modal image analysis
   with real-case application to multiple myeloma
 - :closed_book: [Docs] List of notebook examples in the sphinx documentation
+- :closed_book: [Docs] Snakefile example for workflow management
+- :closed_book: [Docs] README documentation of the snakemake script
+- :closed_book: [Docs] README documentation of the example scripts

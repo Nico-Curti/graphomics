@@ -108,7 +108,6 @@ if __name__ == '__main__':
   # (ref. https://github.com/Nico-Curti/graphomics/blob/main/cfg/template.yml)
   # with a detailed documentation of all its sections and components
   cfg = 'path/to/the/configuration/file.yml'
-  cfg = '../cfg/template.yml'
   extractor.LoadConfig(filename=cfg)
   selected_features = extractor.GetSelectedFeatures()
   print(f'Currently enabled graphomic features: {json.dumps(selected_features, indent=2)}',

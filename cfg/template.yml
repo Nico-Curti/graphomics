@@ -10,11 +10,11 @@ mask_filepath: /path/to/the/binary_mask/dcm_or_nii_scan
 # [Optional]
 # The skeleton file can be pre-computed and pass to the
 # feature extraction step
-skeleton_filepath: /path/to/the/skeleton_mask/dcm_or_nii_scan
+#skeleton_filepath: /path/to/the/skeleton_mask/dcm_or_nii_scan
 # [Optional]
 # The label map can be used for the evaluation of the
 # weights in the skeleton graph
-label_filepath: /path/to/the/possible/labelmap/dcm_or_nii_scan
+#label_filepath: /path/to/the/possible/labelmap/dcm_or_nii_scan
 # [Optional]
 # verify the correctness of the provided inputs in terms
 # of metadata (sizing and spacing)

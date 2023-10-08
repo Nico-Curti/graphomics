@@ -75,8 +75,8 @@ class TestExtractorConfig:
     assert 'desc' in extractor._features
     assert 'pipeline_version' in extractor._features
     assert 'mask_filepath' in extractor._features
-    assert 'skeleton_filepath' in extractor._features
-    assert 'label_filepath' in extractor._features
+    #assert 'skeleton_filepath' in extractor._features
+    #assert 'label_filepath' in extractor._features
     assert 'check_consistency' in extractor._features
     assert 'nth' in extractor._features
     assert 'masklabel' in extractor._features
@@ -112,8 +112,8 @@ class TestExtractorConfig:
     assert 'desc' in extractor._features
     assert 'pipeline_version' in extractor._features
     assert 'mask_filepath' in extractor._features
-    assert 'skeleton_filepath' in extractor._features
-    assert 'label_filepath' in extractor._features
+    #assert 'skeleton_filepath' in extractor._features
+    #assert 'label_filepath' in extractor._features
     assert 'check_consistency' in extractor._features
     assert 'nth' in extractor._features
     assert 'binarize_input' in extractor._features
