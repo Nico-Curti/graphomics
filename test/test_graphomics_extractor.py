@@ -20,6 +20,9 @@ from graphomics import LoadImageFileInAnyFormat
 from graphomics import SkeletonizeImageFilter
 # import the test sample downloader
 from .download_from_drive import download_file_from_google_drive
+from skimage.data import binary_blobs
+from functools import partial
+import skimage as sk
 
 __author__  = ['Nico Curti',
                'Gianluca Carlini',
@@ -70,7 +73,11 @@ mask = LoadImageFileInAnyFormat(nifti_sample)
 # define the skeleton filter
 skeleton_filter = SkeletonizeImageFilter()
 skeleton_filter.Execute(src=mask)
-skeleton = skeleton_filter.GetSkeletonImage()
+skeleton_3d = skeleton_filter.GetSkeletonImage()
+
+_slice = mask[:, :, mask.GetSize()[-1] // 2]
+skeleton_filter.Execute(src=_slice)
+skeleton_2d = skeleton_filter.GetSkeletonImage()
 
 template_file = os.path.join(
   os.path.abspath(
@@ -78,6 +85,21 @@ template_file = os.path.join(
   ),
   '../cfg/template.yml'
 )
+
+# get the skimage version for retro-compatibility
+binary_blobs_3d = partial(binary_blobs,
+  length=128,
+  blob_size_fraction=.25,
+  volume_fraction=.5,
+  n_dim=3
+)
+binary_blobs_2d = partial(binary_blobs,
+  length=128,
+  blob_size_fraction=.25,
+  volume_fraction=.5,
+  n_dim=2
+)
+sk_major, sk_minor, *_ = sk.__version__.split('.')
 
 class TestGraphomicsFeatureExtractor:
   '''
@@ -218,7 +240,12 @@ class TestGraphomicsFeatureExtractor:
     with pytest.raises(ValueError):
       extractor.SetWeightExtractor(wtype=TestGraphomicsFeatureExtractor())
 
-  def test_execute (self):
+  @pytest.mark.parametrize('msk, skl, volume',
+                           [(mask, skeleton_3d, True), (_slice, skeleton_2d, False),
+                            *[(np.random.randint(0, 1e5), None, True) for _ in range(1)],
+                            *[(np.random.randint(0, 1e5), None, False) for _ in range(1)],])
+  @pytest.mark.filterwarnings('ignore::RuntimeWarning')
+  def test_execute (self, msk, skl, volume):
 
     # define the graphomic features extraction filter
     extractor = GraphomicsFeatureExtractor()
@@ -229,9 +256,20 @@ class TestGraphomicsFeatureExtractor:
     # enable all the available graphomic features
     extractor.EnableAllFeatures()
 
-    # set the required arguments
-    extractor.SetMaskImage(mask=mask)
-    extractor.SetSkeletonImage(skeleton=skeleton)
+    if isinstance(msk, sitk.Image) and isinstance(skl, sitk.Image):
+      # set the required arguments
+      extractor.SetMaskImage(mask=msk)
+      extractor.SetSkeletonImage(skeleton=skl)
+    else:
+      # create a random mask, either 2D or 3D
+      if volume:
+        msk = binary_blobs_3d(seed=msk) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_3d(rng=msk)
+      else:
+        msk = binary_blobs_2d(seed=msk) if sk_major == '0' and int(sk_minor) < 21 else binary_blobs_2d(rng=msk)
+      
+      # in this case we don't have a pre-computed skeleton so we just provide the mask
+      msk = sitk.GetImageFromArray(msk.astype(np.uint8))
+      extractor.SetMaskImage(mask=msk)
 
     # manually disable some features
     topology_disabled = ['ModularityScore', 'NumberOfMaximalCliques']
@@ -264,6 +302,7 @@ class TestGraphomicsFeatureExtractor:
         assert member not in graphomic_features
     
     # check if all the spatial features are present and are not empty
+    # check if the disabled features are not present
     members = extractor._feature_classes['spatial'].GetAvailableMembers()
     for member, _ in members:
       if member not in spatial_disabled:
@@ -273,6 +312,7 @@ class TestGraphomicsFeatureExtractor:
         assert member not in graphomic_features
     
     # check if all the centrality features are present and are not empty
+    # check if the disabled features are not present
     members = extractor._feature_classes['centrality'].GetAvailableMembers()
     for member, _ in members:
       if member not in centrality_disabled:
@@ -306,7 +346,7 @@ class TestGraphomicsFeatureExtractor:
     # set valid input mask and skeleton to verify that the error is raised
     # only for the label map
     extractor.SetMaskImage(mask=mask)
-    extractor.SetSkeletonImage(skeleton=skeleton)
+    extractor.SetSkeletonImage(skeleton=skeleton_3d)
 
     with pytest.raises(ValueError):
       extractor.Execute()
@@ -340,7 +380,7 @@ class TestGraphomicsFeatureExtractor:
     # set valid input mask and skeleton to verify that the error is raised
     # only for the label map
     extractor.SetMaskImage(mask=mask)
-    extractor.SetSkeletonImage(skeleton=skeleton)
+    extractor.SetSkeletonImage(skeleton=skeleton_3d)
 
     with pytest.raises(ValueError):
       extractor.Execute()
@@ -376,7 +416,7 @@ class TestGraphomicsFeatureExtractor:
     # set valid input mask and skeleton to verify that the error is raised
     # only for the label map
     extractor.SetMaskImage(mask=mask)
-    extractor.SetSkeletonImage(skeleton=skeleton)
+    extractor.SetSkeletonImage(skeleton=skeleton_3d)
 
     with pytest.raises(ValueError):
       extractor.Execute()
@@ -412,7 +452,7 @@ class TestGraphomicsFeatureExtractor:
     # set valid input mask and skeleton to verify that the error is raised
     # only for the label map
     extractor.SetMaskImage(mask=mask)
-    extractor.SetSkeletonImage(skeleton=skeleton)
+    extractor.SetSkeletonImage(skeleton=skeleton_3d)
 
     with pytest.raises(ValueError):
       extractor.Execute()
@@ -625,7 +665,7 @@ class TestGraphomicsFeatureExtractor:
 
     # set required arguments
     extractor.SetMaskImage(mask=mask)
-    extractor.SetLabelImage(label=skeleton)
+    extractor.SetLabelImage(label=skeleton_3d)
 
     # enable the weighted features
     extractor.EnableWeightedFeatures()
@@ -643,7 +683,7 @@ class TestGraphomicsFeatureExtractor:
 
     # set required arguments
     extractor.SetMaskImage(mask=mask)
-    extractor.SetLabelImage(label=skeleton)
+    extractor.SetLabelImage(label=skeleton_3d)
 
     # enable the weighted features
     extractor.EnableWeightedFeatures()
