@@ -8,6 +8,7 @@
 import os
 import json
 from glob import glob
+from itertools import chain
 import multiprocessing as mp
 from functools import partial
 
@@ -147,10 +148,24 @@ def get_resulting_json_file (directory : str):
   '''
   return f'{directory}/{{filename}}.json'
 
-def multidict2table (d : dict) :
+def multidict2table (multidict : dict):
   '''
+  Flatten a nested dictionary to a list of tuples.
+
+  Parameters
+  ----------
+    multidict: dict
+      Nested dictionary to flatten
+
+  Returns
+  -------
+    chain: iterator
+      Iterator of tuples
   '''
-  return d
+  return chain.from_iterable([(k, v)]
+    if not isinstance(v, dict) else multidict2table(v)
+      for k, v in multidict.items()
+  )
 
 
 # Load the config file

@@ -279,7 +279,36 @@ See [here](https://github.com/Nico-Curti/graphomics/blob/main/.github/CONTRIBUTI
 
 ## FAQ
 
-**TODO**
+* <details>
+    <summary>
+      <b>
+        I run the graphomic pipeline but the output is a nested dictionary (aka JSON).
+        <br>
+        How can I re-organize the features in a table of values?
+      </b>
+    </summary>
+    <p>
+
+    The output of the `GraphomicsFeatureExtractor.GetFeatures` is in a valid JSON format, in which each key corresponds to a different graphomic feature.
+    However, several features don't provide as output a single numeric value, but a set of parameters extracted from the related distribution and/or from other metric properties.
+    If we want to work with a machine learning pipeline, we need to re-organize these values in a table format, i.e. flattening this nested JSON to a plain table.
+    The above mentioned multi-value features are stored in nested dictionaries indexed by a set of unique (and self-explained) keys, so we can obtained the desired output applying something like:
+
+    ```python
+    from itertools import chain
+
+    def multidict2table (multidict) :
+      return chain.from_iterable([(k, v)]
+        if not isinstance(v, dict) else multidict2table(v)
+          for k, v in multidict.items()
+      )
+
+    extractor = GraphomicsFeatureExtractor()
+    features = extractor.GetFeatures()
+    flatten_features = dict(multidict2table(features))
+    ```
+    </p>
+  </details>
 
 ## Authors
 

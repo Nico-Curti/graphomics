@@ -7,6 +7,7 @@ import SimpleITK as sitk
 from operator import itemgetter
 from functools import lru_cache
 from scipy.stats import gaussian_kde
+from numpy.linalg import LinAlgError
 
 from ._statistics import _get_distribution_main_stats
 from ._basefeature import _BaseGraphomicsFeatures
@@ -136,9 +137,12 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
     pts = np.asarray(nodes)
     pts = np.transpose(pts) # KDE requires input (dim, N)
     # apply the Gaussian KDE for the density estimation
-    kde = gaussian_kde(pts)
-    # evaluate the density on the original points
-    density = kde(pts)
+    try:
+      kde = gaussian_kde(pts)
+      # evaluate the density on the original points
+      density = kde(pts)
+    except LinAlgError:
+      density = [0.] * len(pts)
 
     # compute the statistics of the density distribution
     stats = _get_distribution_main_stats(

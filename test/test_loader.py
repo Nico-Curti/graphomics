@@ -3,6 +3,7 @@
 
 import os
 import pytest
+import tarfile
 
 import numpy as np
 import SimpleITK as sitk
@@ -20,7 +21,6 @@ from graphomics import CropMinimumBoundingBox
 from graphomics import ResampleSize
 # import the test sample downloader
 from .download_from_drive import download_file_from_google_drive
-import tarfile
 
 __author__  = ['Nico Curti',
                'Gianluca Carlini',

@@ -4,6 +4,9 @@
 import os
 import pytest
 
+import numpy as np
+import SimpleITK as sitk
+
 # import filter for the graphomic feature extraction
 from graphomics import GraphomicsFeatureExtractor
 # import filters for graph weighing
@@ -17,8 +20,6 @@ from graphomics import LoadImageFileInAnyFormat
 from graphomics import SkeletonizeImageFilter
 # import the test sample downloader
 from .download_from_drive import download_file_from_google_drive
-import SimpleITK as sitk
-import numpy as np
 
 __author__  = ['Nico Curti',
                'Gianluca Carlini',
@@ -105,6 +106,7 @@ class TestGraphomicsFeatureExtractor:
   '''
 
   def test_set_mask_file (self):
+
     # define the graphomic features extraction filter
     extractor = GraphomicsFeatureExtractor()
     # if not present raise error
@@ -126,6 +128,7 @@ class TestGraphomicsFeatureExtractor:
     assert extractor._features['mask_filepath'] == 'dummy.nii'
 
   def test_set_skeleton_file (self):
+
     # define the graphomic features extraction filter
     extractor = GraphomicsFeatureExtractor()
     # if not present raise error
@@ -147,6 +150,7 @@ class TestGraphomicsFeatureExtractor:
     assert extractor._features['skeleton_filepath'] == 'dummy.nii'
 
   def test_set_labelmap_file (self):
+
     # define the graphomic features extraction filter
     extractor = GraphomicsFeatureExtractor()
     # if not present raise error
@@ -168,6 +172,7 @@ class TestGraphomicsFeatureExtractor:
     assert extractor._features['label_filepath'] == 'dummy.nii'
 
   def test_enable_weight (self):
+
     # define the graphomic features extraction filter
     extractor = GraphomicsFeatureExtractor()
 
@@ -185,6 +190,7 @@ class TestGraphomicsFeatureExtractor:
     assert not extractor._features['enable_weighted_features']
 
   def test_weight_extractor (self):
+
     # define the graphomic features extraction filter
     extractor = GraphomicsFeatureExtractor()
 
