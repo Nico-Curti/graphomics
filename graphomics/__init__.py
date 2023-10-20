@@ -9,6 +9,7 @@ from ._loader import (
   ResampleSize,
   BoundingBox,
   CropMinimumBoundingBox,
+  IsInImageFilter,
 )
 # import filter for skeletonize image/volume
 from ._skeletonizer import SkeletonizeImageFilter

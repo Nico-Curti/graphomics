@@ -21,7 +21,8 @@ __all__ = [
   'ResampleSpacing',
   'ResampleSize',
   'BoundingBox',
-  'CropMinimumBoundingBox'
+  'CropMinimumBoundingBox',
+  'IsInImageFilter',
 ]
 
 
@@ -41,11 +42,14 @@ def LoadImageFileInAnyFormat (filepath : str,
       Input filename or path in which load the images.
 
     masklabel : int (default := None)
-      Set the label to consider in the provided mask.
+      Set the labels to consider in the provided mask.
       The input mask is binarized considering as turned on
       all the value equal to the provided label.
       If the value is set to None, the binarization step is
       skipped and the image is loaded as it is.
+      If a list of values is provided, all the values
+      included in the list are considered as valid during
+      the mask binarization
 
     equal_spacing : bool (default := False)
       Force the image resampling to an equal spacing in all direction.
@@ -126,7 +130,20 @@ def LoadImageFileInAnyFormat (filepath : str,
   # performed a thresholding in [0, 1] of all the values
   # equal/different from the provided masklabel
   if masklabel is not None:
-    image = (image == masklabel)
+    # if the masklabel is an iterable object
+    # it means that several valid values are
+    # provided in input, therefore we need
+    # to apply an 'isin' filter
+    if hasattr(masklabel, '__iter__'):
+      image = IsInImageFilter(
+        image=image,
+        valid_idx=masklabel,
+      )
+    # otherwise it must be a single value
+    # so we can obtain the binary mask as a
+    # simple logical operation
+    else:
+      image = (image == masklabel)
 
   # if the resampling is required
   if equal_spacing:
@@ -321,3 +338,52 @@ def CropMinimumBoundingBox (mask : sitk.Image,
   )
 
   return cropped
+
+def IsInImageFilter (image : sitk.Image,
+                     valid_idx : list,
+                    ) -> sitk.Image :
+  '''
+  Binarize the input image selecting only the values
+  included in a selected list.
+
+  Parameters
+  ----------
+    image : sitk.Image
+      Input image with multiple values to binarize
+
+    valid_idx : list
+      Iterable list of values to select from the
+      input image.
+      All the values included in the list will be
+      set to 1 in the resulting mask, reserving the
+      value 0 for the background.
+
+  Returns
+  -------
+    mask : sitk.Image
+      Binary mask with only the selected values
+      as no-null entries.
+  '''
+  # compute the current values in the image
+  # using the label filter
+  stats = sitk.LabelShapeStatisticsImageFilter()
+  # set the background value to 0
+  stats.SetBackgroundValue(0)
+  # set the number of threads to use as 1
+  stats.SetGlobalDefaultNumberOfThreads(1)
+  # apply the label filter on the image
+  stats.Execute(image)
+  # create a relabel map to convert the
+  # values according to the valid indices
+  # given in input
+  relabelMap = {idx : idx in valid_idx
+    for idx in stats.GetLabels()
+  }
+  # create the final mask changing the values
+  # according to the new map
+  mask = sitk.ChangeLabel(
+    image,
+    changeMap=relabelMap,
+  )
+
+  return mask

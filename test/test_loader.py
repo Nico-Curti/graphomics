@@ -175,6 +175,42 @@ class TestLoader:
     assert np.max(np_mask) == 1
     assert np.min(np_mask) == 0
 
+  def test_binarize_brain_sample_with_multiple_values (self):
+
+    # load the image
+    mask = LoadImageFileInAnyFormat(
+      filepath=nifti_sample,
+      masklabel=[1],
+      equal_spacing=False,
+    )
+
+    # get the numpy volume for faster checks
+    np_mask = sitk.GetArrayFromImage(mask)
+
+    # check input properties
+    assert isinstance(mask, sitk.Image)
+    assert len(np_mask.shape) == 3
+    assert np.unique(np_mask).size == 2
+    assert np.max(np_mask) == 1
+    assert np.min(np_mask) == 0
+
+    # load the image
+    mask = LoadImageFileInAnyFormat(
+      filepath=nifti_sample,
+      masklabel=[0, 1],
+      equal_spacing=False,
+    )
+
+    # get the numpy volume for faster checks
+    np_mask = sitk.GetArrayFromImage(mask)
+
+    # check input properties
+    assert isinstance(mask, sitk.Image)
+    assert len(np_mask.shape) == 3
+    assert np.unique(np_mask).size == 2
+    assert np.max(np_mask) == 1
+    assert np.min(np_mask) == 0
+
   def test_resample_brain_sample (self):
 
     # load the image
