@@ -38,14 +38,17 @@ class GraphThicknessImageFilter (object):
   .. _gist: https://gist.github.com/Nico-Curti/a586e6f58d4a2c758b77a3f4492e6d3f
   '''
 
-  def __init__ (self):
+  def __init__ (self) :
+    # dimensionality of the input image
     self._ndim = None
-
+    # label filter
+    # NOTE: we define a global filter since it does not
+    # have a procedural interface
     self._stats_shape = sitk.LabelShapeStatisticsImageFilter()
     self._stats_shape.SetBackgroundValue(0)
     self._stats_shape.SetGlobalDefaultNumberOfThreads(1)
 
-  def SetInputDimensionality (self, ndim : int = 3):
+  def SetInputDimensionality (self, ndim : int = 3) :
     '''
     Set the dimensionality of the skeleton input and
     compute the internal parameters accordingly.
@@ -61,7 +64,7 @@ class GraphThicknessImageFilter (object):
     return self
 
 
-  def _SetInternalKernels (self, shape : tuple):
+  def _SetInternalKernels (self, shape : tuple) :
     '''
     Set the internal parameters of the filter according
     to the provided shape.
@@ -104,7 +107,7 @@ class GraphThicknessImageFilter (object):
 
     return self
 
-  def SetGlobalDefaultNumberOfThreads (self, nth : int):
+  def SetGlobalDefaultNumberOfThreads (self, nth : int) :
     '''
     Set the number of threads to use by the parallel
     filters used by the object.
@@ -118,7 +121,9 @@ class GraphThicknessImageFilter (object):
 
     return self
 
-  def _get_3x3_roi (self, img : sitk.Image, coords : tuple) -> sitk.Image:
+  def _get_3x3_roi (self, img : sitk.Image,
+                          coords : tuple
+                    ) -> sitk.Image :
     '''
     Extract a 3x3 ROI from the image around the coordinates
     given in input.
@@ -148,7 +153,9 @@ class GraphThicknessImageFilter (object):
                max(y - 1, 0) : min(y + 2, w),
               ]
 
-  def _get_3x3x3_voi (self, vol : sitk.Image, coords : tuple) -> sitk.Image:
+  def _get_3x3x3_voi (self, vol : sitk.Image,
+                            coords : tuple
+                      ) -> sitk.Image :
     '''
     Extract a 3x3x3 VOI from the volume around the coordinates
     given in input.
@@ -179,7 +186,7 @@ class GraphThicknessImageFilter (object):
                max(z - 1, 0) : min(z + 2, c),
               ]
 
-  def _check_input(self, src : sitk.Image):
+  def _check_input(self, src : sitk.Image) :
     '''
     Check required properties for the correct
     application of the filter on the input.
@@ -194,7 +201,7 @@ class GraphThicknessImageFilter (object):
     # since the skeleton should be binary
     return self
 
-  def Execute (self, src : sitk.Image):
+  def Execute (self, src : sitk.Image) :
     '''
     Execute the filter on the given input.
     The input must be a sitk.Image with the skeleton
@@ -241,7 +248,7 @@ class GraphThicknessImageFilter (object):
 
     return self
 
-  def _ComputeNodes (self, src : sitk.Image):
+  def _ComputeNodes (self, src : sitk.Image) :
     '''
     Compute the node coordinates using convolutional filter.
     The algorithm explanation is provided step-by-step in the
@@ -322,12 +329,31 @@ class GraphThicknessImageFilter (object):
     pendant_score = (3 ** self._ndim) - 2
     isolated_score = (3 ** self._ndim) - 1
 
-    true_vertex = ((conv < ramification_score) & (conv > 0)) | (conv == pendant_score) | (conv == isolated_score)
-    # cast to integer for next computation
-    true_vertex = sitk.Cast(
-      image=true_vertex,
-      pixelID=sitk.sitkInt32
+    # create the conversion map as result of the logical
+    # operation, i.e.
+    relabelMap = {
+        i : 1 if (0 < i < ramification_score) or # valid ramification
+                 (i == pendant_score) or         # valid pendant
+                 (i == isolated_score)           # valid isolated
+              else 0
+      for i in range(-isolated_score, isolated_score + 1)
+    }
+    # apply the relabeling using the ChangeLabel filter
+    # NOTE: this solution is 2x faster (but less readable) than
+    # the logical one commented below
+    # %%timeit 163 ms ± 2.73 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    true_vertex = sitk.ChangeLabel(
+      conv,
+      changeMap=relabelMap
     )
+
+    #true_vertex = ((conv < ramification_score) & (conv > 0)) | (conv == pendant_score) | (conv == isolated_score)
+    ## cast to integer for next computation
+    #true_vertex = sitk.Cast(
+    #  image=true_vertex,
+    #  pixelID=sitk.sitkInt32
+    #)
+    ## %%timeit 352 ms ± 25.4 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
 
     # detect the connected components of the vertices image, i.e. each
     # connected component provides a vertex.
@@ -386,7 +412,7 @@ class GraphThicknessImageFilter (object):
                            true_vertex : sitk.Image,
                            cc_vertices : sitk.Image,
                            hypernodes : dict
-                    ) -> tuple:
+                    ) -> tuple :
     '''
     Compute the edges coordinates as connected components of
     the original input with the node coordinates removed.

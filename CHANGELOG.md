@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.1] - 2023-10-20
+## [0.0.1] - 2023-10-24
 
 First version of the library.
 This is the starting point of the development of the *pyGraphomics* package.
@@ -27,6 +27,7 @@ Further improvements will occur in the next versions.
 - :computer: [Python] Automated versioning of the library via setup installation
 - :computer: [Python] Definition of Graphomics Feature classes and Statistics
 - :computer: [Python] Generalization of the `GraphThicknessImageFilter` to support also 2D inputs
+- :computer: [Python] Computational improvement of the `GraphThicknessImageFilter` playing with sitk filters
 - :computer: [Python] Wrap of the skeletonization algorithm for an easier interface of the package
 - :computer: [Python] Image loader for DCM and Nifti file formats
 - :computer: [Python] New technique of semantic segmentation via Watershed algorithm, based on graphomics extraction
