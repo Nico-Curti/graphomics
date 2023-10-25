@@ -777,7 +777,7 @@ class GraphomicsFeatureExtractor (object):
 
       # check if the graphomics weight estimation algorithm
       # was set by the member functions or by the configuration file
-      if not hasattr(self, '_wtype') and self._features.get('graph_weights'):
+      if not hasattr(self, '_wtype') or self._features.get('graph_weights', False):
         # get the selected weight type
         wtype = self._features.get('graph_weights')
         # check the correctness of the name
