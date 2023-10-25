@@ -777,24 +777,31 @@ class GraphomicsFeatureExtractor (object):
 
       # check if the graphomics weight estimation algorithm
       # was set by the member functions or by the configuration file
-      if not hasattr(self, '_wtype') or self._features.get('graph_weights', False):
+      if not hasattr(self, '_wtype') and self._features.get('graph_weights', False):
         # get the selected weight type
         wtype = self._features.get('graph_weights')
         # check the correctness of the name
+        if wtype not in self._weight_extractor.keys():
+          # get the list of available methods
+          available_wtype = ', '.join(self._weight_extractor.keys())
+          raise ValueError((
+            'Invalid weight extractor name. '
+            f'Available classes are {available_wtype}. '
+            f'Given {wtype}.'
+          ))
 
       # If not, the default EdgeLengthPathsFilter will
       # be used
-      else:
+      # NOTE: this condition must check the _wtype attribute in any
+      # case to prevent the batch-run of the extractor, in which the
+      # _wtype attribute was already set by previous runs
+      elif not hasattr(self, '_wtype'):
         wtype = 'EdgeLengthPathsFilter'
+      # If it was already set, we can directly use it
+      else:
+        # get the name of the class from the object
+        wtype = self._wtype.__class__.__name__
 
-      if wtype not in self._weight_extractor.keys():
-        # get the list of available methods
-        available_wtype = ', '.join(self._weight_extractor.keys())
-        raise ValueError((
-          'Invalid weight extractor name. '
-          f'Available classes are {available_wtype}. '
-          f'Given {wtype}.'
-        ))
       # extract the object from the available ones
       wtype = self._weight_extractor[wtype]
       # set the extra parameters that could be need by the filter
