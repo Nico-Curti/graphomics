@@ -310,6 +310,46 @@ See [here](https://github.com/Nico-Curti/graphomics/blob/main/.github/CONTRIBUTI
     </p>
   </details>
 
+* <details>
+    <summary>
+      <b>
+        I want to perform the graphomic features extraction on a batch of data, customizing the modality in which the skeleton graph weights will be computed for each sample.
+        <br>
+        How can I change the weight extractor method iteratively?
+      </b>
+    </summary>
+    <p>
+
+    First of all, change the parameters of the features extraction according to the samples is not a good choice probably, since you can introduce biases in the interpretation of the results.
+    However, all the main parameters of the extractor object could be fixed using the configuration file and overridden on the fly using the setter methods of the object.
+    In particular, if you want override the graph weight extractor you can use the `SetWeightExtractor` or `SetWeightExtractorByName` methods, according to your needs.
+    However, you need to pay attention on the order of the operations when you write your code: the configuration properties are set as default parameters, the setter methods override these parameters, but if you want to change them for each sample you need to call the setter every time you need, as in the following example:
+
+    ```python
+    extractor = GraphomicsFeatureExtractor()
+    # list of weight extractors to use, one for each sample
+    w_extractor = ['NodePairwiseDistanceFilter', 'EdgeLengthPathsFilter']
+
+    for sample, wtype in zip(samples, w_extractor):
+      # call the setter inside the for loop
+      extractor.SetWeightExtractorByName(
+        wtype=wtype
+      )
+      # set the input sample
+      extractor.SetMaskImage(
+        mask=sample
+      )
+      # perform the extraction using the desired weight
+      # extractor algorithm
+      features = extractor.GetFeatures()
+    ```
+
+    Furthermore, remember to enable the weights computation using the `EnableWeightedFeatures` setter or the related configuration parameter!
+
+    </p>
+  </details>
+
+
 ## Authors
 
 * <img src="https://avatars0.githubusercontent.com/u/24650975?s=400&v=4" width="25px"> [<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="27px">](https://github.com/Nico-Curti) [<img src="https://cdn.rawgit.com/physycom/templates/697b327d/logo_unibo.png" width="25px">](https://www.unibo.it/sitoweb/nico.curti2) **Nico Curti**
