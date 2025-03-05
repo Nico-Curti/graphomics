@@ -38,4 +38,4 @@ Please consider the following step to create a pull request which can be process
 
 1. As soon as possible the authors will review your pull request, answering to your message.
 
-2. Make sure you got credits at the end of merge: we have a lot of project to follow and we may forget to add your name to the list of `AUTHORS.md`. Please, do not hesitate to remind us!
+2. Make sure you got credits at the end of merge: we have a lot of project to follow and we may forget to add your name to the list of `authors` in the [`pyproject.toml`](https://github.com/Nico-Curti/graphomics/blob/main/pyproject.toml) file. Please, do not hesitate to remind us!
