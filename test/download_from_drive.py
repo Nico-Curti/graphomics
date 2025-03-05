@@ -1,84 +1,40 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import requests
+import os
+import gdown
 
 __author__  = ['Nico Curti']
 __email__   = ['nico.curti2@unibo.it']
 __all__ = ['download_file_from_google_drive']
 
-def download_file_from_google_drive (Id : int, destination : str):
-
+def download_file_from_google_drive (Id : str, destination : str, quiet : bool = True):
   '''
-  Download file from google drive page.
+  Download the files from google-drive repository
+  and move the files in the 'data' directory.
 
   Parameters
   ----------
-    Id : int
-      File Id in Google Drive page
+  Id : str
+    Google Drive Id of the weights file to download
 
-    destination : str
-      Destination path of the download
+  destination : str
+    Output filepath of the downloaded file
 
-  Returns
-  -------
-    None
-
-  Notes
-  -----
-  The file Id can be extracted from the google drive page when the file is shared.
+  quiet : bool
+    Verbose download
   '''
 
-  url = f'https://docs.google.com/uc?export=download&id={Id}'
-
-  def get_confirm_token (response):
-    '''
-    Check token validity.
-    '''
-    for key, value in response.cookies.items():
-      if key.startswith('download_warning'):
-        return value
-
-    return None
-
-  def save_response_content (response, destination : str):
-    '''
-    Download the file chunk by chunk and plot the progress
-    '''
-
-    chunk_size = 64 * 1024
-
-    with open(destination, 'wb') as fp:
-      dl = 0
-
-      for chunk in response.iter_content(chunk_size):
-
-        dl += len(chunk)
-
-        if chunk:
-          fp.write(chunk)
-
-    print('', end='\n')
-
-  session  = requests.Session()
-  response = session.get(
-    url,
-    stream=True
+  gdown.download(
+    id=Id,
+    output=destination,
+    quiet=quiet
   )
-  token = get_confirm_token(response)
-
-  if token:
-    params = {
-      'id' : Id,
-      'confirm' : token
-    }
-    response = session.get(
-      url,
-      params=params,
-      stream=True
-    )
-
-  save_response_content(response, destination)
+  # if something goes wrong the file does not exist
+  if not os.path.exists(destination):
+    # raise an exception
+    raise ValueError(f'Download file failed for {destination}')
+  return
   
 
 if __name__ == '__main__':
@@ -107,9 +63,19 @@ if __name__ == '__main__':
     help='Destination path of the download'
   )
 
+  parser.add_argument(
+    '--quite', '-q',
+    dest='quiet',
+    required=False,
+    action='store_true',
+    default=False,
+    help='Verbosity in download'
+  )
+
   args = parser.parse_args()
   
   download_file_from_google_drive(
     Id=args.Id,
-    destination=args.destination
+    destination=args.destination,
+    quiet=args.quiet
   )

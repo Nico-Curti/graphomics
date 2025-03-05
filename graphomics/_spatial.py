@@ -141,11 +141,9 @@ class GraphomicsSpatial (_BaseGraphomicsFeatures):
       kde = gaussian_kde(pts)
       # evaluate the density on the original points
       density = kde(pts)
-    except LinAlgError:
-      # something goes wrong in the KDE
-      density = [0.] * len(pts)
-    except ValueError:
-      # there are more dimensions than number of points
+    except (LinAlgError, ValueError) as e:
+      # LinAlgError - something goes wrong in the KDE
+      # ValueError - there are more dimensions than number of points
       density = [0.] * len(pts)
 
     # compute the statistics of the density distribution

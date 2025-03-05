@@ -51,7 +51,8 @@ if not os.path.exists(nifti_sample):
   # download the sample image
   download_file_from_google_drive(
     Id='1lbuh9m_VyKs57-aUx9ys9X6MOx8Qv6Hk',
-    destination=nifti_sample
+    destination=nifti_sample,
+    quiet=True
   )
 
 # define the path of the sample skeleton
@@ -64,7 +65,8 @@ if not os.path.exists(skeleton_sample):
   # download the sample image
   download_file_from_google_drive(
     Id='1Vdw2s-ngtTLFVK0tF3fE9SMS8Ps-Dus1',
-    destination=skeleton_sample
+    destination=skeleton_sample,
+    quiet=True
   )
 
 # load the sample image

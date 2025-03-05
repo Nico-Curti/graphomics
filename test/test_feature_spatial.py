@@ -100,8 +100,13 @@ class TestFeatureSpatial:
     )
 
     #evaluate the feature
-    with pytest.raises(LinAlgError):
-      res = feat._GetNodeDensityStatistics(G=G)
+    #with pytest.raises(ValueError):
+    res = feat._GetNodeDensityStatistics(G=G)
+    assert isinstance(res, dict)
+    for k, v in res.items():
+      assert k.startswith('node_density')
+      assert isinstance(k, str)
+      assert v == [0.]
 
   def test_feature_FractalDimension (self):
     # define the feature extractor class

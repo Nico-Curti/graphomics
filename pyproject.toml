@@ -42,6 +42,25 @@ classifiers = [
   'Programming Language :: Python :: Implementation :: CPython',
   'Programming Language :: Python :: Implementation :: PyPy'
 ]
+dependencies = [
+  'SimpleITK',
+  'numpy',
+  'scipy',
+  'scikit-image',
+  'networkx',
+  'pyyaml',
+  'nibabel',
+  'powerlaw',
+]
+
+[project.optional-dependencies]
+dev = [
+  'gdown',
+  'flake8',
+  'pytest',
+  'codecov',
+  'pytest-cov',
+]
 
 [project.urls]
 'Homepage' = 'https://github.com/Nico-Curti/graphomics'
