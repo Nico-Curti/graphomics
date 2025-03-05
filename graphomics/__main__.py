@@ -79,7 +79,7 @@ def parse_args ():
     help=(
       'Input filename or path on which load the binary mask of the shape. '
       'Ref https://simpleitk.readthedocs.io/en/master/IO.html for the list of '
-      'supported format. '
+      'supported formats. '
     )
   )
 
@@ -94,7 +94,7 @@ def parse_args ():
     help=(
       'Input filename or path on which load the binary skeleton of the shape. '
       'Ref https://simpleitk.readthedocs.io/en/master/IO.html for the list of '
-      'supported format. '
+      'supported formats. '
     )
   )
 
@@ -109,7 +109,7 @@ def parse_args ():
     help=(
       'Input filename or path on which load the labelmap to use for the network weighing. '
       'Ref https://simpleitk.readthedocs.io/en/master/IO.html for the list of '
-      'supported format. '
+      'supported formats. '
     )
   )
 
@@ -285,7 +285,7 @@ def main ():
 
   # dump the extracted features to file
   with open(args.output_filename, 'w', encoding='utf-8') as fp:
-    json.dumps(
+    json.dump(
       obj=graphomic_features,
       fp=fp,
       ensure_ascii=True,
