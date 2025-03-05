@@ -68,7 +68,7 @@ def LoadImageFileInAnyFormat (filepath : str,
   if not os.path.exists(filepath):
     raise ValueError((
       'Invalid input filepath. '
-      f'The provided filepath {filepath} does not exists or '
+      f'The provided filepath {filepath} does not exist or '
       'it is incorrect.'
     ))
 
