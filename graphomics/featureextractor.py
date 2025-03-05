@@ -75,6 +75,8 @@ class GraphomicsFeatureExtractor (object):
   def __init__ (self):
 
     self._features = {}
+    # TODO: add the graph and associated methods
+    # as class variable
 
   def LoadConfig (self, filename : str):
     '''
@@ -131,6 +133,8 @@ class GraphomicsFeatureExtractor (object):
     for name in self._feature_classes.keys():
       # remove the key and related values
       self._features.pop(name, None)
+      # reset the enable
+      self._features.pop(f'enable_{name}_features', None)
 
     return self
 
@@ -186,7 +190,8 @@ class GraphomicsFeatureExtractor (object):
     for mem, _ in members:
       # set the feature name to True
       self._features[name][mem] = True
-
+    # set the enable feature
+    self._features[f'enable_{name}_features'] = True
     return self
 
   def EnableFeaturesByName (self, features : dict):
@@ -233,6 +238,8 @@ class GraphomicsFeatureExtractor (object):
 
           # add the new feature as value turned on
           new_features[key][v] = True
+        # set the enable feature
+        new_features[f'enable_{key}_features'] = True
 
     # update the feature list
     self._features.update(new_features)
