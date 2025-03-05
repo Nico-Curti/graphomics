@@ -86,3 +86,6 @@ img/logo_hr.png
 # snakemake
 .snakemake
 snakemake/logs
+
+# debug
+debug*
