@@ -81,6 +81,27 @@ class TestFeatureSpatial:
       assert isinstance(v, float)
       assert np.isfinite(v)
 
+
+    # generate a random number of nodes
+    n = np.array([1])
+    # generate a probability from a uniform distribution
+    p = np.random.uniform(
+      low=0.5,
+      high=1.
+    )
+
+    # create a random graph according to Erdos-Renyi definition
+    G = nx.erdos_renyi_graph(
+      n=n,
+      p=p,
+      seed=42,
+      directed=False
+    )
+
+    #evaluate the feature
+    with pytest.raises(ValueError):
+      res = feat._GetNodeDensityStatistics(G=G)
+
   def test_feature_FractalDimension (self):
     # define the feature extractor class
     feat = GraphomicsSpatial()
