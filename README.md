@@ -215,8 +215,9 @@ from graphomics import GraphomicsFeatureExtractor
 
 # load the medical image in any SimpleITK supported fmt
 img = LoadImageFileInAnyFormat(
-  filename='/path/to/medical/image.nii.gz',
-  binarize=True
+  filepath='/path/to/medical/image.nii.gz',
+  masklabel=1,
+  equal_spacing=False
 )
 # define the graphomic filter
 extractor = GraphomicsFeatureExtractor()
