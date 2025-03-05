@@ -50,7 +50,7 @@ if not os.path.exists(nifti_sample):
 
   # download the sample image
   download_file_from_google_drive(
-    Id='1UBPKRkadArzZBbBn3GeCDRDIOy199NeB',
+    Id='1lbuh9m_VyKs57-aUx9ys9X6MOx8Qv6Hk',
     destination=nifti_sample
   )
 
@@ -63,7 +63,7 @@ if not os.path.exists(skeleton_sample):
 
   # download the sample image
   download_file_from_google_drive(
-    Id='1szzofLxu9lVqjOwMubVIXfvkdCJs5dJJ',
+    Id='1Vdw2s-ngtTLFVK0tF3fE9SMS8Ps-Dus1',
     destination=skeleton_sample
   )
 

@@ -83,7 +83,7 @@ class TestFeatureSpatial:
 
 
     # generate a random number of nodes
-    n = np.array([1])
+    n = 1
     # generate a probability from a uniform distribution
     p = np.random.uniform(
       low=0.5,
