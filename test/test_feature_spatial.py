@@ -10,6 +10,7 @@ import SimpleITK as sitk
 from functools import partial
 # generation of random binary blobs
 from skimage.data import binary_blobs
+from numpy.linalg import LinAlgError
 
 # import filter for the image skeletonization
 from graphomics import SkeletonizeImageFilter
@@ -99,7 +100,7 @@ class TestFeatureSpatial:
     )
 
     #evaluate the feature
-    with pytest.raises(ValueError):
+    with pytest.raises(LinAlgError):
       res = feat._GetNodeDensityStatistics(G=G)
 
   def test_feature_FractalDimension (self):
