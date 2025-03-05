@@ -67,7 +67,7 @@ latex_documents = [('index', 'graphomics.tex', u'pygraphomics - Graphomics featu
 latex_show_pagerefs = True
 latex_domain_indices = False
 
-pdf_documents = [('index', u'graphomics', u'pygraphomics - Graphomics feature extraction in Python', u'Nico Curti', '@CMAKE_PROJECT_NAME@ - @CMAKE_PROJECT_DESCRIPTION@'),]
+pdf_documents = [('index', u'graphomics', u'pygraphomics - Graphomics feature extraction in Python', u'Nico Curti'),]
 
 nbsphinx_input_prompt = 'In [%s]:'
 nbsphinx_kernel_name = 'python3'

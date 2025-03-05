@@ -42,5 +42,3 @@ Overview
    contributing
    credits
    cite
-
-.. _openslide: https://github.com/Nico-Curti/openslide
