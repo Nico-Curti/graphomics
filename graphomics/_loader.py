@@ -246,8 +246,7 @@ def ResampleSize (mask : sitk.Image,
   # loop along the available variables
   for osi, osp, nsp in zip(orig_size, orig_spacing, new_size):
     # the new spacing is given by (old_size / old_spacing) / new_size
-    s = np.round((osi * osp) / nsp)
-    s = int(s)
+    s = (osi * osp) / nsp
     new_spacing.append(s)
 
   # evaluate the resampling

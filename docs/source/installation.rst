@@ -5,12 +5,6 @@ Installation guide
 
 Python version supported : 3.5 | 3.6 | 3.7 | 3.8 | 3.9 | 3.10 | 3.11 | 3.12 | 3.13
 
-The easiest way to install the package is using `pip`
-
-.. code-block:: bash
-
-  python -m pip install graphomics
-
 The easiest way to the get the `graphomics` package in `Python` is via `pip` installation
 
 .. code-block:: bash
