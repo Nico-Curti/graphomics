@@ -8,7 +8,7 @@
 
 | **Authors**  | **Project** |  **Documentation** | **Build Status** | **Code Quality** | **Coverage** |
 |:------------:|:-----------:|:------------------:|:----------------:|:----------------:|:------------:|
-| [**N. Curti**](https://github.com/Nico-Curti) <br/> [**G. Carlini**](https://github.com/GianlucaCarlini) <br/> [**R.Biondi**](https://github.com/RiccardoBiondi) | **graphomics** | [![Doxygen Sphinx](https://github.com/Nico-Curti/graphomics/actions/workflows/docs.yml/badge.svg)](https://github.com/Nico-Curti/graphomics/actions/workflows/docs.yml) <br/> [![ReadTheDocs](https://readthedocs.org/projects/graphomics/badge/?version=latest)](https://graphomics.readthedocs.io/en/latest/?badge=latest) | [![Python](https://github.com/Nico-Curti/graphomics/actions/workflows/python.yml/badge.svg)](https://github.com/Nico-Curti/graphomics/actions/workflows/python.yml) | **TODO** | [![codecov](https://codecov.io/gh/Nico-Curti/graphomics/graph/badge.svg?token=YcCFfQqC3r)](https://codecov.io/gh/Nico-Curti/graphomics) |
+| [**N. Curti**](https://github.com/Nico-Curti) <br/> [**G. Carlini**](https://github.com/GianlucaCarlini) <br/> [**R.Biondi**](https://github.com/RiccardoBiondi) | **graphomics**<br/>[![JMIG](https://img.shields.io/badge/JMIG-10.1016.j.jmig.2025.12.037-g.svg)](https://www.jmig.org/article/S1553-4650(25)01025-8/fulltext) | [![Doxygen Sphinx](https://github.com/Nico-Curti/graphomics/actions/workflows/docs.yml/badge.svg)](https://github.com/Nico-Curti/graphomics/actions/workflows/docs.yml) <br/> [![ReadTheDocs](https://readthedocs.org/projects/graphomics/badge/?version=latest)](https://graphomics.readthedocs.io/en/latest/?badge=latest) | [![Python](https://github.com/Nico-Curti/graphomics/actions/workflows/python.yml/badge.svg)](https://github.com/Nico-Curti/graphomics/actions/workflows/python.yml) | [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2d708440de6242bc851d9b3b96392ebb)](https://app.codacy.com/gh/Nico-Curti/graphomics/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) | [![codecov](https://codecov.io/gh/Nico-Curti/graphomics/graph/badge.svg?token=YcCFfQqC3r)](https://codecov.io/gh/Nico-Curti/graphomics) |
 
 **Appveyor:** [![appveyor](https://ci.appveyor.com/api/projects/status/djnkyxc64dlm4r6p/branch/main?svg=true)](https://ci.appveyor.com/project/Nico-Curti/graphomics-9jr6a/branch/main)
 
@@ -371,7 +371,24 @@ Thanks goes to all contributors of this project.
 
 ## Citation
 
-If you have found `graphomics` helpful in your research, please consider citing the original repository
+If you have found `graphomics` helpful in your research, please consider citing the original paper
+
+```BibTeX
+@article{Peluso2025,
+  author={Peluso, Sara and Lucidi, Vincenzo and Di Giovanni, Maria Chiara and Bertoldo, Linda and De Gobbi, Valeria and Aguzzi, Alberto and Curti, Nico and Biondi, Riccardo and Raffone, Antonio and Seracchioli, Renato and Castellani, Gastone and Mosconi, Cristina and Raimondo, Diego},
+  title={Artificial Intelligence-enhanced MRI Radiomics for Discriminating Active and Fibrotic Lesions to Support Therapeutic Decision Making in Deep Endometriosis},
+  journal={Journal of Minimally Invasive Gynecology},
+  year={2025},
+  month={2026/03/02},
+  publisher={Elsevier},
+  issn={1553-4650},
+  doi={10.1016/j.jmig.2025.12.037},
+  url={https://doi.org/10.1016/j.jmig.2025.12.037},
+  abstract={Study Objective: This study investigated whether quantitative analysis of preoperative magnetic resonance imaging (MRI) scans can differentiate deep infiltrating endometriosis (DIE) lesion types (active or fibrotic lesion [FL]) and associate them with reported pain symptoms. Design: Monocenter, observational, retrospective accuracy study. Setting: Academic Hospital IRCCS Policlinico di S. Orsola, Bologna, Italy. Patients: All patients with histologically confirmed DIE who had undergone preoperative MRI were considered for recruitment during the study period (December 2022 to December 2023). Interventions: Histologic assessment was performed on all surgical specimens categorizing the lesions into active lesions and FLs. All patients underwent pelvic MRI before surgery, and Digital Imaging and Communications in Medicine files were retrieved. Radiomic features were extracted using PyRadiomics (v3.1.0). In addition to radiomic data, morphologic features were extracted. A genetic algorithm was used for feature selection to identify relevant features and build classification models. Machine learning (ML) pipelines, tuned using leave-one-out cross-validation and evaluated via balanced accuracy (BA), Matthews correlation coefficient, sensitivity, and specificity, were developed to identify the most informative morphologic and textural features for lesion classification and pain severity classification. Measurements and Main Results: Sixty-one women were enrolled. The integration of radiomic and graphomic enabled the extraction of insightful imaging features statistically linked to histologic lesion types and pain symptomatology. The ML models proved promising classification performance under the leave-one-out cross-validation framework, identifying imaging biomarkers that differentiate FLs from active stromal ones (BA, 72.7%) and correlate with pain profiles (reaching a maximum of 88.0% of BA for chronic pelvic pain). These results highlight the potential of imaging-based phenotyping in DIE.},
+}
+```
+
+or just this repository
 
 ```BibTeX
 @misc{pygraphomics,
@@ -382,4 +399,3 @@ If you have found `graphomics` helpful in your research, please consider citing 
   howpublished = {\url{https://github.com/Nico-Curti/graphomics}}
 }
 ```
-
