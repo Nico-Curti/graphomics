@@ -5,4 +5,4 @@ scikit-image
 networkx
 pyyaml
 nibabel
-powerlaw
+powerlaw<2.0.0

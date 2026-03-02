@@ -5,7 +5,6 @@ from functools import partial
 from inspect import Parameter
 from inspect import signature
 from inspect import getmembers
-import inspect
 
 __author__  = ['Nico Curti',
                'Gianluca Carlini',
